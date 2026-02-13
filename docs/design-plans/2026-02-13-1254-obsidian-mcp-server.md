@@ -1,7 +1,7 @@
 # Design: Obsidian MCP Server
 
 **Created:** 2026-02-13
-**Status:** Planning
+**Status:** Complete
 **Implementation Plan Doc:** docs/implementation-plans/2026-02-13-1332-obsidian-mcp-server.md
 
 ---
@@ -233,6 +233,27 @@ obsidian-mcp/
 | 2026-02-13 | Task 6 | src/tools/navigation.js, src/tools/periodic.js, index.js | No deviations. |
 | 2026-02-13 | Task 7 | README.md | No deviations. |
 | 2026-02-13 | Acceptance | src/api-client.js | Fix: file_open returned empty body causing JSON parse error. API client now handles empty responses gracefully. |
+
+---
+
+## Completion
+
+**Completed:** 2026-02-13
+**Final Status:** Complete
+
+### Summary
+
+Built a fully functional MCP server exposing all 15 planned tools across 7 modules (vault, search, metadata, commands, active file, navigation, periodic notes). The server connects to Obsidian's Local REST API over HTTP on localhost:27123, authenticates via Bearer token from `OBSIDIAN_API_KEY` environment variable, and communicates with Claude Code over stdio transport. All 10 acceptance criteria passed.
+
+### Deviations from Plan
+
+- **`encodePath()` utility**: Added a helper method on `ObsidianClient` for per-segment path encoding — not in the original plan but necessary to avoid encoding `/` separators in vault paths.
+- **`engines.node` field**: Added `">=18.0.0"` constraint to package.json to match the MCP SDK's Node.js requirement.
+- **`.gitignore`**: Created to exclude `node_modules/` — standard project hygiene, not originally listed.
+- **pnpm**: Used pnpm instead of npm per user preference, with `packageManager` field in package.json to enforce via corepack.
+- **Empty response fix**: `file_open` returned an empty body, causing a JSON parse error. Fixed the API client to handle empty responses gracefully (committed as a separate fix after acceptance testing).
+
+No design-level deviations. All 15 tools were implemented as specified, the architecture matched the plan, and no tools were dropped or redesigned.
 
 ---
 
