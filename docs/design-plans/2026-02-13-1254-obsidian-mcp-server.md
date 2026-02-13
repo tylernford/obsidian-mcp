@@ -1,5 +1,11 @@
 # Design: Obsidian MCP Server
 
+**Created:** 2026-02-13
+**Status:** Planning
+**Implementation Plan Doc:** docs/implementation-plans/2026-02-13-1332-obsidian-mcp-server.md
+
+---
+
 ## Overview
 
 ### What
