@@ -230,6 +230,7 @@ obsidian-mcp/
 | 2026-02-13 | Task 3 | src/tools/vault.js | No deviations. |
 | 2026-02-13 | Task 4 | src/tools/search.js, src/tools/metadata.js, index.js | No deviations. |
 | 2026-02-13 | Task 5 | src/tools/commands.js, src/tools/active-file.js, index.js | No deviations. |
+| 2026-02-13 | Task 6 | src/tools/navigation.js, src/tools/periodic.js, index.js | No deviations. |
 
 ---
 

@@ -6,6 +6,8 @@ import { registerSearchTools } from "./src/tools/search.js";
 import { registerMetadataTools } from "./src/tools/metadata.js";
 import { registerCommandTools } from "./src/tools/commands.js";
 import { registerActiveFileTools } from "./src/tools/active-file.js";
+import { registerNavigationTools } from "./src/tools/navigation.js";
+import { registerPeriodicTools } from "./src/tools/periodic.js";
 
 const client = new ObsidianClient({
   apiKey: process.env.OBSIDIAN_API_KEY,
@@ -19,6 +21,8 @@ registerSearchTools(server, client);
 registerMetadataTools(server, client);
 registerCommandTools(server, client);
 registerActiveFileTools(server, client);
+registerNavigationTools(server, client);
+registerPeriodicTools(server, client);
 
 const transport = new StdioServerTransport();
 await server.connect(transport);
