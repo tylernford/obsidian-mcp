@@ -4,6 +4,8 @@ import { ObsidianClient } from "./src/api-client.js";
 import { registerVaultTools } from "./src/tools/vault.js";
 import { registerSearchTools } from "./src/tools/search.js";
 import { registerMetadataTools } from "./src/tools/metadata.js";
+import { registerCommandTools } from "./src/tools/commands.js";
+import { registerActiveFileTools } from "./src/tools/active-file.js";
 
 const client = new ObsidianClient({
   apiKey: process.env.OBSIDIAN_API_KEY,
@@ -15,6 +17,8 @@ const server = new McpServer({ name: "obsidian", version: "1.0.0" });
 registerVaultTools(server, client);
 registerSearchTools(server, client);
 registerMetadataTools(server, client);
+registerCommandTools(server, client);
+registerActiveFileTools(server, client);
 
 const transport = new StdioServerTransport();
 await server.connect(transport);
