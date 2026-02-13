@@ -55,16 +55,20 @@ export class ObsidianClient {
       return { ok: false, status: 0, error: `Connection error: ${error.message}` };
     }
 
-    if (response.status === 204) {
-      return { ok: true, status: 204, data: null };
+    const contentLength = response.headers.get("content-length");
+    if (response.status === 204 || contentLength === "0") {
+      return { ok: true, status: response.status, data: null };
     }
 
     const contentType = response.headers.get("content-type") || "";
+    const text = await response.text();
     let data;
-    if (contentType.includes("json")) {
-      data = await response.json();
+    if (!text) {
+      data = null;
+    } else if (contentType.includes("json")) {
+      data = JSON.parse(text);
     } else {
-      data = await response.text();
+      data = text;
     }
 
     if (!response.ok) {

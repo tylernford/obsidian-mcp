@@ -232,6 +232,7 @@ obsidian-mcp/
 | 2026-02-13 | Task 5 | src/tools/commands.js, src/tools/active-file.js, index.js | No deviations. |
 | 2026-02-13 | Task 6 | src/tools/navigation.js, src/tools/periodic.js, index.js | No deviations. |
 | 2026-02-13 | Task 7 | README.md | No deviations. |
+| 2026-02-13 | Acceptance | src/api-client.js | Fix: file_open returned empty body causing JSON parse error. API client now handles empty responses gracefully. |
 
 ---
 
