@@ -402,16 +402,16 @@ export function registerVaultTools(server, client) {
 
 *Mapped from design doc. Each criterion is testable after the relevant task.*
 
-- [ ] **MCP server starts**: `node index.js` launches without error and registers all 15 tools (Tasks 2-6)
-- [ ] **Claude Code connects**: `claude mcp list` shows the obsidian server; `/mcp` in a session shows connected status (Task 2)
-- [ ] **File operations work**: Can list, read, create, update, and delete notes through MCP tools (Tasks 2-3)
-- [ ] **Search works**: Can run both simple text searches and Dataview DQL queries (Task 4)
-- [ ] **Commands work**: Can list all Obsidian commands and execute one (Task 5)
-- [ ] **Active file works**: Can read the currently open note without specifying a path (Task 5)
-- [ ] **Navigation works**: Can open a note in Obsidian's UI from Claude Code (Task 6)
-- [ ] **Periodic notes work**: Can read/write today's daily note by date reference (Task 6)
-- [ ] **Auth works**: Server uses `OBSIDIAN_API_KEY` env var; fails gracefully with clear error if missing (Task 1)
-- [ ] **Obsidian offline**: Server returns clear error messages when Obsidian isn't running — doesn't crash (Task 1)
+- [x] **MCP server starts**: `node index.js` launches without error and registers all 15 tools (Tasks 2-6)
+- [x] **Claude Code connects**: `claude mcp list` shows the obsidian server; `/mcp` in a session shows connected status (Task 2)
+- [x] **File operations work**: Can list, read, create, update, and delete notes through MCP tools (Tasks 2-3)
+- [x] **Search works**: Can run both simple text searches and Dataview DQL queries (Task 4)
+- [x] **Commands work**: Can list all Obsidian commands and execute one (Task 5)
+- [x] **Active file works**: Can read the currently open note without specifying a path (Task 5)
+- [x] **Navigation works**: Can open a note in Obsidian's UI from Claude Code (Task 6)
+- [x] **Periodic notes work**: Can read/write today's daily note by date reference (Task 6)
+- [x] **Auth works**: Server uses `OBSIDIAN_API_KEY` env var; fails gracefully with clear error if missing (Task 1)
+- [x] **Obsidian offline**: Server returns clear error messages when Obsidian isn't running — doesn't crash (Task 1)
 
 ---
 
