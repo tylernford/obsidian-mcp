@@ -226,6 +226,7 @@ obsidian-mcp/
 | Date | Task | Files Affected | Notes |
 |---|---|---|---|
 | 2026-02-13 | Task 1 | package.json, src/api-client.js | Added `encodePath()` utility method on client for path segment encoding. Added `engines.node: ">=18.0.0"` to package.json (matches MCP SDK requirement, not in original plan). Added .gitignore (not in original plan). Using pnpm instead of npm (user preference). Added `packageManager` field to enforce pnpm via corepack. |
+| 2026-02-13 | Task 2 | index.js, src/tools/vault.js | No deviations. |
 
 ---
 
