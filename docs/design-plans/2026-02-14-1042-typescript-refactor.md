@@ -2,7 +2,7 @@
 
 **Created:** 2026-02-14
 **Status:** Design
-**Implementation Plan Doc:** TBD
+**Implementation Plan Doc:** docs/implementation-plans/2026-02-14-1353-typescript-refactor.md
 
 ---
 
