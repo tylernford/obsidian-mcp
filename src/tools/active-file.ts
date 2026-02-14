@@ -1,6 +1,11 @@
 import { z } from "zod";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { ObsidianClient } from "../api-client.js";
 
-export function registerActiveFileTools(server, client) {
+export function registerActiveFileTools(
+  server: McpServer,
+  client: ObsidianClient,
+) {
   server.tool(
     "active_file_read",
     "Read the currently open note in Obsidian",
@@ -9,7 +14,7 @@ export function registerActiveFileTools(server, client) {
         .enum(["markdown", "json"])
         .default("json")
         .describe(
-          "'json' returns parsed frontmatter, tags, and stats. 'markdown' returns raw content."
+          "'json' returns parsed frontmatter, tags, and stats. 'markdown' returns raw content.",
         ),
     },
     async ({ format }) => {
@@ -23,7 +28,10 @@ export function registerActiveFileTools(server, client) {
       });
 
       if (!result.ok) {
-        return { content: [{ type: "text", text: result.error }], isError: true };
+        return {
+          content: [{ type: "text", text: result.error }],
+          isError: true,
+        };
       }
 
       const text =
@@ -32,7 +40,7 @@ export function registerActiveFileTools(server, client) {
           : JSON.stringify(result.data, null, 2);
 
       return { content: [{ type: "text", text }] };
-    }
+    },
   );
 
   server.tool(
@@ -65,12 +73,15 @@ export function registerActiveFileTools(server, client) {
       });
 
       if (!result.ok) {
-        return { content: [{ type: "text", text: result.error }], isError: true };
+        return {
+          content: [{ type: "text", text: result.error }],
+          isError: true,
+        };
       }
 
       return {
         content: [{ type: "text", text: "Updated active file" }],
       };
-    }
+    },
   );
 }

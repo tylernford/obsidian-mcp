@@ -23,6 +23,7 @@ Continue regardless of branch.
 ## Announce Your Location
 
 Every response must begin with:
+
 ```
 **Phase 1: Design** | Step [N]: [Step Name]
 ```
@@ -36,6 +37,7 @@ Work through these steps one at a time. Wait for user input before proceeding to
 ### Step 1: Context Gathering
 
 Ask the user:
+
 1. What are we building? (Get specifics)
 2. What constraints exist? (Tech stack, timeline, dependencies)
 3. What decisions have already been made?
@@ -53,6 +55,7 @@ Summarize what you learned before moving on.
 ### Step 3: Brainstorming (if needed)
 
 If there are multiple valid approaches:
+
 - Present 2-3 architectural options
 - Outline trade-offs for each (complexity, performance, maintainability)
 - Ask user to select a direction
@@ -71,6 +74,7 @@ Skip this step if the approach is obvious or already decided.
 Before creating the file, run `date +%Y-%m-%d-%H%M` to get the current timestamp.
 
 Create the design document at:
+
 ```
 docs/design-plans/YYYY-MM-DD-HHMM-feature-name.md
 ```
@@ -78,6 +82,7 @@ docs/design-plans/YYYY-MM-DD-HHMM-feature-name.md
 Use the template at `docs/templates/design-doc.md` as your guide.
 
 Include:
+
 - Overview (what and why)
 - Requirements (must have, nice to have, out of scope)
 - Design decisions with rationale

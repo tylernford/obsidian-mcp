@@ -21,6 +21,7 @@ If the user does not provide a design doc path, ask them for the file path.
 ## Announce Your Location
 
 Every response must begin with:
+
 ```
 **Phase 2: Plan** | Step [N]: [Step Name]
 ```
@@ -49,6 +50,7 @@ Every response must begin with:
 Break the design into right-sized tasks (15-45 min each).
 
 Each task must include:
+
 - **Description**: Clear statement of what to do
 - **Files**: Specific paths to create/modify
 - **Code example**: Where helpful for clarity
@@ -71,6 +73,7 @@ Present tasks to user for review. Adjust based on feedback.
 Before creating the file, run `date +%Y-%m-%d-%H%M` to get the current timestamp.
 
 Create the implementation plan at:
+
 ```
 docs/implementation-plans/YYYY-MM-DD-HHMM-feature-name.md
 ```
@@ -82,6 +85,7 @@ Use the template at `docs/templates/implementation-plan.md` as your guide.
 ## Update Design Doc
 
 After creating the implementation plan, update the design doc's header:
+
 - Replace `[link to implementation plan doc]` with the actual path to the implementation plan (e.g., `docs/implementation-plans/YYYY-MM-DD-HHMM-feature-name.md`)
 
 ---
@@ -106,15 +110,18 @@ Run `/build` to begin Phase 3: Build.
 ## Task Sizing Guide
 
 **Right-sized (15-45 min):**
+
 - Coherent unit of work
 - Independently verifiable
 - Makes a sensible commit
 
 **Too small:**
+
 - "Add import statement"
 - "Create empty file"
 
 **Too large:**
+
 - "Implement entire feature"
 - "Build the component with all variants"
 

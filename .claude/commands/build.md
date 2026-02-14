@@ -21,6 +21,7 @@ Also ask for the design doc path (needed for the Build Log).
 ## Announce Your Location
 
 Every response must begin with:
+
 ```
 **Phase 3: Build** | Task [N]/[Total]: [Task Name]
 ```
@@ -62,6 +63,7 @@ When reality doesn't match the plan:
 4. **Continue** - Proceed with adjusted approach
 
 Example Build Log entry:
+
 ```
 | 2024-01-15 | Task 3 | src/utils/helper.ts | Deviated: Used existing utility instead of creating new one |
 ```

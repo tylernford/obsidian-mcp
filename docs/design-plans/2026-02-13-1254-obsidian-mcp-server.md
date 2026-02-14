@@ -9,10 +9,13 @@
 ## Overview
 
 ### What
+
 Build a custom MCP (Model Context Protocol) server that gives Claude Code full access to the Obsidian API via the Local REST API plugin. This replaces the current approach of reading/writing vault files directly on disk with structured, API-driven access to Obsidian's internals — including search, command execution, active file awareness, and plugin interaction.
 
 ### Why
+
 Claude Code currently interacts with the vault by grepping and globbing files on disk. This ignores Obsidian's indexed search, graph structure, metadata cache, and plugin ecosystem. With API access, Claude Code can:
+
 - Run Dataview DQL queries instead of manually parsing frontmatter
 - Execute plugin commands (Spaced Repetition, Dataview, any future plugins)
 - Know what note the user currently has open
@@ -20,6 +23,7 @@ Claude Code currently interacts with the vault by grepping and globbing files on
 - Access periodic notes by date reference
 
 ### Architecture
+
 Two components:
 
 1. **Local REST API plugin** (existing, installed in Obsidian) — Exposes 30 HTTP endpoints on `localhost:27123`
@@ -34,6 +38,7 @@ Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidia
 ## Requirements
 
 ### Must Have
+
 - [ ] MCP server exposes all 15 tools defined below
 - [ ] Server authenticates with the REST API via `OBSIDIAN_API_KEY` environment variable
 - [ ] Server communicates over stdio transport (compatible with `claude mcp add`)
@@ -42,11 +47,13 @@ Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidia
 - [ ] Project lives in its own Git repository
 
 ### Nice to Have
+
 - [ ] Support configurable host/port (not just localhost:27123)
 - [ ] Structured JSON responses with parsed frontmatter where applicable
 - [ ] Document-map response support for structural info (headings, blocks)
 
 ### Out of Scope
+
 - Plugin installation/configuration (user handles this in Obsidian)
 - Workflow design (follow-up design session after we've used the tools)
 - Research into obsidian-claude-code-mcp and Nexus for ideas (follow-up task)
@@ -58,6 +65,7 @@ Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidia
 ## Design Decisions
 
 ### 1. Local REST API as the backend
+
 **Decision**: Use the Local REST API plugin (coddingtonbear/obsidian-local-rest-api) rather than building an Obsidian plugin or accessing files directly.
 
 **Rationale**: Most mature option in the ecosystem (1.7k GitHub stars, 30 endpoints, OpenAPI spec, actively maintained through Feb 2025). Supports Dataview DQL queries through its search endpoint. Extensible — other plugins can register additional routes. Well-documented with interactive Swagger UI.
@@ -65,6 +73,7 @@ Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidia
 **Trade-off**: Requires Obsidian to be running. Acceptable because Obsidian is always open during Claude Code sessions.
 
 ### 2. Custom MCP server instead of existing bridge
+
 **Decision**: Build our own MCP server rather than using an existing one (cyanheads, MarkusPfundstein, etc.).
 
 **Rationale**: No existing MCP bridge exposes command execution, active file access, or periodic notes — the capabilities that motivated this project. cyanheads covers 7 of the 30 endpoints. Building our own gives us full coverage and the ability to add tools as needed.
@@ -72,21 +81,25 @@ Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidia
 **Trade-off**: More upfront work. Mitigated by the fact that wrapping REST endpoints into MCP tools is mechanical work, and cyanheads provides a reference implementation.
 
 ### 3. HTTP on port 27123 (not HTTPS)
+
 **Decision**: Connect to the REST API over HTTP, not HTTPS.
 
 **Rationale**: The REST API binds to localhost only. HTTPS with a self-signed cert adds complexity (certificate trust, TLS configuration) with no security benefit for local traffic.
 
 ### 4. stdio transport
+
 **Decision**: Use stdio transport for the MCP server (not HTTP or SSE).
 
 **Rationale**: Claude Code spawns the server as a child process. No port management, no startup coordination. Standard approach for local MCP servers.
 
 ### 5. API key via environment variable
+
 **Decision**: Pass the REST API key as `OBSIDIAN_API_KEY` environment variable in the `claude mcp add` command.
 
 **Rationale**: Keeps the key out of committed code. Set once during configuration, never exposed in the repo.
 
 ### 6. Separate repository
+
 **Decision**: MCP server lives in its own Git repo, not inside the Obsidian vault.
 
 **Rationale**: Separation of concerns — the vault is a knowledge base, not a code project. Independent version control. Could be shared or published later.
@@ -97,47 +110,47 @@ Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidia
 
 ### Core File Operations
 
-| Tool | REST Endpoint | Description |
-|---|---|---|
-| `vault_list` | `GET /vault/{path}/` | List files and directories at a given path |
-| `vault_read` | `GET /vault/{filename}` | Read a note's content (supports markdown and JSON with parsed frontmatter) |
-| `vault_create` | `PUT /vault/{filename}` | Create a new note |
-| `vault_update` | `PATCH /vault/{filename}` | Update a note — insert at heading, block reference, or frontmatter field |
-| `vault_delete` | `DELETE /vault/{filename}` | Delete a note |
+| Tool           | REST Endpoint              | Description                                                                |
+| -------------- | -------------------------- | -------------------------------------------------------------------------- |
+| `vault_list`   | `GET /vault/{path}/`       | List files and directories at a given path                                 |
+| `vault_read`   | `GET /vault/{filename}`    | Read a note's content (supports markdown and JSON with parsed frontmatter) |
+| `vault_create` | `PUT /vault/{filename}`    | Create a new note                                                          |
+| `vault_update` | `PATCH /vault/{filename}`  | Update a note — insert at heading, block reference, or frontmatter field   |
+| `vault_delete` | `DELETE /vault/{filename}` | Delete a note                                                              |
 
 ### Search and Metadata
 
-| Tool | REST Endpoint | Description |
-|---|---|---|
-| `search` | `POST /search/` and `POST /search/simple/` | Full-text search or Dataview DQL query |
-| `tags_manage` | Composite (read via vault_read, write via vault_update) | Add, remove, or rename tags on a note |
-| `frontmatter_manage` | `PATCH /vault/{filename}` (frontmatter target) | Read or update specific YAML frontmatter fields |
+| Tool                 | REST Endpoint                                           | Description                                     |
+| -------------------- | ------------------------------------------------------- | ----------------------------------------------- |
+| `search`             | `POST /search/` and `POST /search/simple/`              | Full-text search or Dataview DQL query          |
+| `tags_manage`        | Composite (read via vault_read, write via vault_update) | Add, remove, or rename tags on a note           |
+| `frontmatter_manage` | `PATCH /vault/{filename}` (frontmatter target)          | Read or update specific YAML frontmatter fields |
 
 ### Commands and Plugin Interaction
 
-| Tool | REST Endpoint | Description |
-|---|---|---|
-| `commands_list` | `GET /commands/` | List all registered Obsidian commands (core + plugins) |
-| `commands_execute` | `POST /commands/{commandId}/` | Execute a command by ID |
+| Tool               | REST Endpoint                 | Description                                            |
+| ------------------ | ----------------------------- | ------------------------------------------------------ |
+| `commands_list`    | `GET /commands/`              | List all registered Obsidian commands (core + plugins) |
+| `commands_execute` | `POST /commands/{commandId}/` | Execute a command by ID                                |
 
 ### Active File
 
-| Tool | REST Endpoint | Description |
-|---|---|---|
-| `active_file_read` | `GET /active/` | Read the currently open note |
+| Tool                 | REST Endpoint    | Description                                                           |
+| -------------------- | ---------------- | --------------------------------------------------------------------- |
+| `active_file_read`   | `GET /active/`   | Read the currently open note                                          |
 | `active_file_update` | `PATCH /active/` | Update the currently open note (same patch semantics as vault_update) |
 
 ### Navigation
 
-| Tool | REST Endpoint | Description |
-|---|---|---|
+| Tool        | REST Endpoint           | Description                    |
+| ----------- | ----------------------- | ------------------------------ |
 | `file_open` | `POST /open/{filename}` | Open a note in the Obsidian UI |
 
 ### Periodic Notes
 
-| Tool | REST Endpoint | Description |
-|---|---|---|
-| `periodic_read` | `GET /periodic/{period}/` | Read a periodic note (daily, weekly, monthly, quarterly, yearly) |
+| Tool              | REST Endpoint               | Description                                                          |
+| ----------------- | --------------------------- | -------------------------------------------------------------------- |
+| `periodic_read`   | `GET /periodic/{period}/`   | Read a periodic note (daily, weekly, monthly, quarterly, yearly)     |
 | `periodic_update` | `PATCH /periodic/{period}/` | Write to a periodic note (creates from template if it doesn't exist) |
 
 ---
@@ -145,6 +158,7 @@ Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidia
 ## Configuration
 
 ### Claude Code MCP registration
+
 ```bash
 claude mcp add \
   --transport stdio \
@@ -155,15 +169,17 @@ claude mcp add \
 ```
 
 ### Environment variables
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `OBSIDIAN_API_KEY` | Yes | — | Bearer token from Local REST API plugin settings |
-| `OBSIDIAN_API_HOST` | No | `http://localhost` | REST API host |
-| `OBSIDIAN_API_PORT` | No | `27123` | REST API port |
+
+| Variable            | Required | Default            | Description                                      |
+| ------------------- | -------- | ------------------ | ------------------------------------------------ |
+| `OBSIDIAN_API_KEY`  | Yes      | —                  | Bearer token from Local REST API plugin settings |
+| `OBSIDIAN_API_HOST` | No       | `http://localhost` | REST API host                                    |
+| `OBSIDIAN_API_PORT` | No       | `27123`            | REST API port                                    |
 
 ---
 
 ## Tech Stack
+
 - **Runtime**: Node.js
 - **MCP SDK**: `@modelcontextprotocol/sdk`
 - **HTTP client**: Native `fetch` (Node 18+)
@@ -223,16 +239,16 @@ obsidian-mcp/
 
 ## Build Log
 
-| Date | Task | Files Affected | Notes |
-|---|---|---|---|
-| 2026-02-13 | Task 1 | package.json, src/api-client.js | Added `encodePath()` utility method on client for path segment encoding. Added `engines.node: ">=18.0.0"` to package.json (matches MCP SDK requirement, not in original plan). Added .gitignore (not in original plan). Using pnpm instead of npm (user preference). Added `packageManager` field to enforce pnpm via corepack. |
-| 2026-02-13 | Task 2 | index.js, src/tools/vault.js | No deviations. |
-| 2026-02-13 | Task 3 | src/tools/vault.js | No deviations. |
-| 2026-02-13 | Task 4 | src/tools/search.js, src/tools/metadata.js, index.js | No deviations. |
-| 2026-02-13 | Task 5 | src/tools/commands.js, src/tools/active-file.js, index.js | No deviations. |
-| 2026-02-13 | Task 6 | src/tools/navigation.js, src/tools/periodic.js, index.js | No deviations. |
-| 2026-02-13 | Task 7 | README.md | No deviations. |
-| 2026-02-13 | Acceptance | src/api-client.js | Fix: file_open returned empty body causing JSON parse error. API client now handles empty responses gracefully. |
+| Date       | Task       | Files Affected                                            | Notes                                                                                                                                                                                                                                                                                                                           |
+| ---------- | ---------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-02-13 | Task 1     | package.json, src/api-client.js                           | Added `encodePath()` utility method on client for path segment encoding. Added `engines.node: ">=18.0.0"` to package.json (matches MCP SDK requirement, not in original plan). Added .gitignore (not in original plan). Using pnpm instead of npm (user preference). Added `packageManager` field to enforce pnpm via corepack. |
+| 2026-02-13 | Task 2     | index.js, src/tools/vault.js                              | No deviations.                                                                                                                                                                                                                                                                                                                  |
+| 2026-02-13 | Task 3     | src/tools/vault.js                                        | No deviations.                                                                                                                                                                                                                                                                                                                  |
+| 2026-02-13 | Task 4     | src/tools/search.js, src/tools/metadata.js, index.js      | No deviations.                                                                                                                                                                                                                                                                                                                  |
+| 2026-02-13 | Task 5     | src/tools/commands.js, src/tools/active-file.js, index.js | No deviations.                                                                                                                                                                                                                                                                                                                  |
+| 2026-02-13 | Task 6     | src/tools/navigation.js, src/tools/periodic.js, index.js  | No deviations.                                                                                                                                                                                                                                                                                                                  |
+| 2026-02-13 | Task 7     | README.md                                                 | No deviations.                                                                                                                                                                                                                                                                                                                  |
+| 2026-02-13 | Acceptance | src/api-client.js                                         | Fix: file_open returned empty body causing JSON parse error. API client now handles empty responses gracefully.                                                                                                                                                                                                                 |
 
 ---
 

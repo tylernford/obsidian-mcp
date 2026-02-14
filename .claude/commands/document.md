@@ -25,6 +25,7 @@ Also locate the changelog at `docs/changelog.md`.
 ## Announce Your Location
 
 Every response must begin with:
+
 ```
 **Phase 4: Document** | Step [N]: [Step Name]
 ```
@@ -73,6 +74,7 @@ Brief description of what was built.
 ### Step 4: Update README (if applicable)
 
 If the feature adds user-facing functionality:
+
 - Add or update relevant README sections
 - Keep README as a comprehensive standalone reference
 - Do not mention this Claude workflow (that's internal tooling)
@@ -94,6 +96,7 @@ Generate a PR draft from the design doc and implementation plan:
 **Title format:** `[type-prefix]: [feature name from design doc title]`
 
 **Type → Prefix mapping:**
+
 - Enhancement → `feat:`
 - Bug Fix → `fix:`
 - Refactor → `refactor:`
@@ -103,6 +106,7 @@ Generate a PR draft from the design doc and implementation plan:
 If the design doc Type doesn't match these, use best judgment or default to `feat:`.
 
 **Description content:**
+
 - Summary: 2-3 sentences from design doc Overview
 - Changes: Key files/areas from design doc's Files to Create/Modify section
 - Documentation: Paths to design doc and implementation plan

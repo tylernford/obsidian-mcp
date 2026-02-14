@@ -1,16 +1,16 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { ObsidianClient } from "./src/api-client.js";
-import { registerVaultTools } from "./src/tools/vault.js";
-import { registerSearchTools } from "./src/tools/search.js";
-import { registerMetadataTools } from "./src/tools/metadata.js";
-import { registerCommandTools } from "./src/tools/commands.js";
-import { registerActiveFileTools } from "./src/tools/active-file.js";
-import { registerNavigationTools } from "./src/tools/navigation.js";
-import { registerPeriodicTools } from "./src/tools/periodic.js";
+import { ObsidianClient } from "./api-client.js";
+import { registerVaultTools } from "./tools/vault.js";
+import { registerSearchTools } from "./tools/search.js";
+import { registerMetadataTools } from "./tools/metadata.js";
+import { registerCommandTools } from "./tools/commands.js";
+import { registerActiveFileTools } from "./tools/active-file.js";
+import { registerNavigationTools } from "./tools/navigation.js";
+import { registerPeriodicTools } from "./tools/periodic.js";
 
 const client = new ObsidianClient({
-  apiKey: process.env.OBSIDIAN_API_KEY,
+  apiKey: process.env.OBSIDIAN_API_KEY!,
   host: process.env.OBSIDIAN_API_HOST,
   port: process.env.OBSIDIAN_API_PORT,
 });

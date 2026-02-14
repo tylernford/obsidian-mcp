@@ -13,7 +13,7 @@ Build a Node.js MCP server that wraps Obsidian's Local REST API (30 HTTP endpoin
 
 ## Codebase Verification
 
-*Confirmed assumptions from design doc against actual codebase and API spec.*
+_Confirmed assumptions from design doc against actual codebase and API spec._
 
 - [x] Repo is greenfield — only docs scaffolding exists. No source files, no package.json. Verified.
 - [x] All 14 REST API endpoints referenced in design doc exist and match the OpenAPI spec at `obsidian-local-rest-api/docs/openapi.yaml`. Verified.
@@ -25,10 +25,12 @@ Build a Node.js MCP server that wraps Obsidian's Local REST API (30 HTTP endpoin
 - [x] Search uses Content-Type header to distinguish DQL (`application/vnd.olrapi.dataview.dql+txt`) from JsonLogic. Simple search uses query params. Verified.
 
 **Patterns to leverage:**
+
 - REST API's Accept header controls response format — we can request JSON with parsed frontmatter by default for richer tool responses
 - PATCH header-based targeting is consistent across `/vault/{filename}`, `/active/`, and `/periodic/{period}/` — API client can share one patch helper
 
 **Discrepancies found:**
+
 - None. Design doc matches the actual API spec.
 
 ---
@@ -40,10 +42,12 @@ Build a Node.js MCP server that wraps Obsidian's Local REST API (30 HTTP endpoin
 **Description:** Set up the Node.js project with ES module support and install dependencies (`@modelcontextprotocol/sdk`, `zod`). Create the HTTP client that wraps the Local REST API with Bearer token auth, configurable base URL, and graceful error handling for connection failures (Obsidian offline).
 
 **Files:**
+
 - `package.json` — create
 - `src/api-client.js` — create
 
 **Code example:** API client shape:
+
 ```js
 // src/api-client.js
 export class ObsidianClient {
@@ -58,6 +62,7 @@ export class ObsidianClient {
 ```
 
 Key implementation details:
+
 - Auth: `Authorization: Bearer ${apiKey}` header on every request
 - Base URL: `http://${host}:${port}` (defaults: `localhost`, `27123`)
 - Error handling: catch `fetch` connection errors → return clear "Obsidian is not running" message
@@ -80,10 +85,12 @@ Key implementation details:
 **Description:** Create the MCP server with stdio transport and implement the first two vault tools. This is the pattern-setting task — it establishes how tools are structured, registered, and how they return responses. `vault_list` and `vault_read` are read-only GET operations that prove the server starts, connects to the REST API, and returns data.
 
 **Files:**
+
 - `index.js` — create (server setup, tool imports, stdio transport)
 - `src/tools/vault.js` — create (2 tools initially)
 
 **Code example:** Entry point and tool registration pattern:
+
 ```js
 // index.js
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -115,16 +122,20 @@ export function registerVaultTools(server, client) {
 **Tool input schemas:**
 
 `vault_list`:
+
 ```js
 {
-  path: z.string().optional()
-    .describe("Directory path relative to vault root. Omit to list root.")
+  path: z.string()
+    .optional()
+    .describe("Directory path relative to vault root. Omit to list root.");
 }
 ```
+
 - REST: `GET /vault/` (root) or `GET /vault/{path}/` (subdirectory)
 - Response: `{files: ["note.md", "subfolder/"]}` — directories end with `/`
 
 `vault_read`:
+
 ```js
 {
   filename: z.string()
@@ -133,6 +144,7 @@ export function registerVaultTools(server, client) {
     .describe("'json' returns parsed frontmatter, tags, and file stats. 'markdown' returns raw content.")
 }
 ```
+
 - REST: `GET /vault/{filename}` with `Accept` header:
   - `json` → `Accept: application/vnd.olrapi.note+json` → returns `{content, frontmatter, tags, stat, path}`
   - `markdown` → `Accept: text/markdown` → returns raw markdown string
@@ -148,11 +160,13 @@ export function registerVaultTools(server, client) {
 **Description:** Add the write operations to the vault tools. This exercises PUT, PATCH, and DELETE methods and proves the API client's `patch()` helper works correctly with the header-based targeting.
 
 **Files:**
+
 - `src/tools/vault.js` — modify (add 3 tools)
 
 **Tool input schemas:**
 
 `vault_create`:
+
 ```js
 {
   filename: z.string()
@@ -161,10 +175,12 @@ export function registerVaultTools(server, client) {
     .describe("Markdown content for the new note")
 }
 ```
+
 - REST: `PUT /vault/{filename}` with `Content-Type: text/markdown`, body is content
 - Returns 204 on success. Overwrites if file exists.
 
 `vault_update`:
+
 ```js
 {
   filename: z.string()
@@ -181,16 +197,18 @@ export function registerVaultTools(server, client) {
     .describe("If true, create the target if it doesn't exist (useful for new frontmatter fields)")
 }
 ```
+
 - REST: `PATCH /vault/{filename}` with headers `Operation`, `Target-Type`, `Target`, optionally `Create-Target-If-Missing`
 - Body: content as `text/markdown`
 
 `vault_delete`:
+
 ```js
 {
-  filename: z.string()
-    .describe("Path to file relative to vault root")
+  filename: z.string().describe("Path to file relative to vault root");
 }
 ```
+
 - REST: `DELETE /vault/{filename}`
 - Returns 204 on success. 404 if file doesn't exist.
 
@@ -205,6 +223,7 @@ export function registerVaultTools(server, client) {
 **Description:** Implement the search tool (supporting both Dataview DQL queries and simple text search via a `type` parameter) and the two metadata tools (`tags_manage`, `frontmatter_manage`).
 
 **Files:**
+
 - `src/tools/search.js` — create
 - `src/tools/metadata.js` — create
 - `index.js` — modify (import and register new tools)
@@ -212,6 +231,7 @@ export function registerVaultTools(server, client) {
 **Tool input schemas:**
 
 `search`:
+
 ```js
 {
   type: z.enum(["simple", "dataview"])
@@ -222,12 +242,14 @@ export function registerVaultTools(server, client) {
     .describe("(simple only) Characters of context to return around each match")
 }
 ```
+
 - Simple: `POST /search/simple/?query={query}&contextLength={contextLength}` (query in URL params, no body)
   - Returns: `[{filename, score, matches: [{match: {start, end}, context}]}]`
 - DQL: `POST /search/` with `Content-Type: application/vnd.olrapi.dataview.dql+txt`, body is the query string
   - Returns: `[{filename, result}]`
 
 `tags_manage`:
+
 ```js
 {
   filename: z.string()
@@ -238,10 +260,12 @@ export function registerVaultTools(server, client) {
     .describe("Tags to add or remove (required for 'add' and 'remove'). Include '#' prefix.")
 }
 ```
+
 - `list`: `GET /vault/{filename}` with `Accept: application/vnd.olrapi.note+json`, return the `tags` array from response
 - `add`/`remove`: Read current tags via GET, compute new tag list, write via `PATCH /vault/{filename}` with `Target-Type: frontmatter`, `Target: tags`, `Operation: replace`, body is JSON array
 
 `frontmatter_manage`:
+
 ```js
 {
   filename: z.string()
@@ -254,6 +278,7 @@ export function registerVaultTools(server, client) {
     .describe("(set only) Value to set. For complex values (arrays, objects), pass a JSON string.")
 }
 ```
+
 - `read`: `GET /vault/{filename}` with `Accept: application/vnd.olrapi.note+json`, return the `frontmatter` object
 - `set`: `PATCH /vault/{filename}` with `Target-Type: frontmatter`, `Target: {key}`, `Operation: replace`, `Create-Target-If-Missing: true`, body is value (use `Content-Type: application/json` for structured values)
 
@@ -268,6 +293,7 @@ export function registerVaultTools(server, client) {
 **Description:** Implement command listing/execution and active file read/update tools.
 
 **Files:**
+
 - `src/tools/commands.js` — create
 - `src/tools/active-file.js` — create
 - `index.js` — modify (import and register new tools)
@@ -275,33 +301,45 @@ export function registerVaultTools(server, client) {
 **Tool input schemas:**
 
 `commands_list`:
+
 ```js
-{} // no input parameters
+{
+} // no input parameters
 ```
+
 - REST: `GET /commands/`
 - Returns: `{commands: [{id: "global-search:open", name: "Search: Search in all files"}, ...]}`
 
 `commands_execute`:
+
 ```js
 {
-  commandId: z.string()
-    .describe("Command ID to execute (e.g. 'global-search:open'). Use commands_list to find available IDs.")
+  commandId: z.string().describe(
+    "Command ID to execute (e.g. 'global-search:open'). Use commands_list to find available IDs.",
+  );
 }
 ```
+
 - REST: `POST /commands/{commandId}/` — no body
 - Returns 204 on success, 404 if command doesn't exist
 
 `active_file_read`:
+
 ```js
 {
-  format: z.enum(["markdown", "json"]).default("json")
-    .describe("'json' returns parsed frontmatter, tags, and stats. 'markdown' returns raw content.")
+  format: z.enum(["markdown", "json"])
+    .default("json")
+    .describe(
+      "'json' returns parsed frontmatter, tags, and stats. 'markdown' returns raw content.",
+    );
 }
 ```
+
 - REST: `GET /active/` with same `Accept` header logic as `vault_read`
 - Returns 404 if no file is currently open
 
 `active_file_update`:
+
 ```js
 {
   operation: z.enum(["append", "prepend", "replace"])
@@ -316,6 +354,7 @@ export function registerVaultTools(server, client) {
     .describe("If true, create the target if it doesn't exist")
 }
 ```
+
 - REST: `PATCH /active/` with same PATCH headers as `vault_update`
 
 **Done when:** 12 total tools registered. Can list commands, execute one, read the active file, and update it.
@@ -329,6 +368,7 @@ export function registerVaultTools(server, client) {
 **Description:** Implement file opening in the Obsidian UI and periodic note read/update tools.
 
 **Files:**
+
 - `src/tools/navigation.js` — create
 - `src/tools/periodic.js` — create
 - `index.js` — modify (import and register new tools)
@@ -336,6 +376,7 @@ export function registerVaultTools(server, client) {
 **Tool input schemas:**
 
 `file_open`:
+
 ```js
 {
   filename: z.string()
@@ -344,10 +385,12 @@ export function registerVaultTools(server, client) {
     .describe("If true, open in a new tab instead of replacing the current one")
 }
 ```
+
 - REST: `POST /open/{filename}?newLeaf={newLeaf}`
 - Returns 200. Note: Obsidian creates the file if it doesn't exist.
 
 `periodic_read`:
+
 ```js
 {
   period: z.enum(["daily", "weekly", "monthly", "quarterly", "yearly"])
@@ -356,10 +399,12 @@ export function registerVaultTools(server, client) {
     .describe("'json' returns parsed frontmatter, tags, and stats. 'markdown' returns raw content.")
 }
 ```
+
 - REST: `GET /periodic/{period}/` with same `Accept` header logic as `vault_read`
 - Returns 404 if the periodic note doesn't exist yet
 
 `periodic_update`:
+
 ```js
 {
   period: z.enum(["daily", "weekly", "monthly", "quarterly", "yearly"])
@@ -376,6 +421,7 @@ export function registerVaultTools(server, client) {
     .describe("If true, create the target if it doesn't exist")
 }
 ```
+
 - REST: `PATCH /periodic/{period}/` with same PATCH headers as `vault_update`
 - Note: If the periodic note doesn't exist yet, PATCH will fail. The tool should fall back to `POST /periodic/{period}/` to create it first (POST creates from template).
 
@@ -390,6 +436,7 @@ export function registerVaultTools(server, client) {
 **Description:** Create README.md with prerequisites, installation steps, MCP registration command, environment variable reference, and tool listing. Verify the server starts and registers all 15 tools.
 
 **Files:**
+
 - `README.md` — create
 
 **Done when:** README covers: prerequisites (Node.js 18+, Obsidian with Local REST API plugin), installation (`npm install`), configuration (`claude mcp add` command with env var), and lists all 15 tools with descriptions. `node index.js` starts with all 15 tools registered without errors.
@@ -400,7 +447,7 @@ export function registerVaultTools(server, client) {
 
 ## Acceptance Criteria
 
-*Mapped from design doc. Each criterion is testable after the relevant task.*
+_Mapped from design doc. Each criterion is testable after the relevant task._
 
 - [x] **MCP server starts**: `node index.js` launches without error and registers all 15 tools (Tasks 2-6)
 - [x] **Claude Code connects**: `claude mcp list` shows the obsidian server; `/mcp` in a session shows connected status (Task 2)
