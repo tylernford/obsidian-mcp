@@ -1,6 +1,8 @@
 import { z } from "zod";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { ObsidianClient } from "../api-client.js";
 
-export function registerMetadataTools(server, client) {
+export function registerMetadataTools(server: McpServer, client: ObsidianClient) {
   server.tool(
     "tags_manage",
     "List, add, or remove tags on a note",
@@ -34,7 +36,8 @@ export function registerMetadataTools(server, client) {
         return { content: [{ type: "text", text: readResult.error }], isError: true };
       }
 
-      const currentTags = readResult.data.tags || [];
+      const noteData = readResult.data as { tags?: string[] };
+      const currentTags = noteData.tags || [];
 
       if (action === "list") {
         return {
@@ -42,10 +45,10 @@ export function registerMetadataTools(server, client) {
         };
       }
 
-      let newTags;
+      let newTags: string[];
       if (action === "add") {
         const tagSet = new Set(currentTags);
-        for (const tag of tags) {
+        for (const tag of tags!) {
           tagSet.add(tag);
         }
         newTags = [...tagSet];
@@ -109,9 +112,10 @@ export function registerMetadataTools(server, client) {
           return { content: [{ type: "text", text: result.error }], isError: true };
         }
 
+        const noteData = result.data as { frontmatter?: Record<string, unknown> };
         return {
           content: [
-            { type: "text", text: JSON.stringify(result.data.frontmatter || {}, null, 2) },
+            { type: "text", text: JSON.stringify(noteData.frontmatter || {}, null, 2) },
           ],
         };
       }
@@ -120,8 +124,8 @@ export function registerMetadataTools(server, client) {
       const result = await client.patch(`/vault/${encodedPath}`, {
         operation: "replace",
         targetType: "frontmatter",
-        target: key,
-        content: value,
+        target: key!,
+        content: value!,
         createIfMissing: true,
       });
 

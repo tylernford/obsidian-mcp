@@ -1,6 +1,8 @@
 import { z } from "zod";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { ObsidianClient } from "../api-client.js";
 
-export function registerNavigationTools(server, client) {
+export function registerNavigationTools(server: McpServer, client: ObsidianClient) {
   server.tool(
     "file_open",
     "Open a note in the Obsidian UI",

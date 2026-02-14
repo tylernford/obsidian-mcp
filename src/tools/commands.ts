@@ -1,6 +1,8 @@
 import { z } from "zod";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { ObsidianClient } from "../api-client.js";
 
-export function registerCommandTools(server, client) {
+export function registerCommandTools(server: McpServer, client: ObsidianClient) {
   server.tool(
     "commands_list",
     "List all registered Obsidian commands (core + plugins)",

@@ -1,6 +1,8 @@
 import { z } from "zod";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { ObsidianClient } from "../api-client.js";
 
-export function registerVaultTools(server, client) {
+export function registerVaultTools(server: McpServer, client: ObsidianClient) {
   server.tool(
     "vault_list",
     "List files and directories at a given path in the vault",

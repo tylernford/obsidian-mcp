@@ -246,6 +246,7 @@ src/tools/*.js                 # Replaced by .ts
 |------|------|-------|-------|
 | 2026-02-14 | Task 1 | tsconfig.json, package.json, .gitignore | Used `tsc --init` then edited to match design doc config |
 | 2026-02-14 | Task 2 | src/api-client.ts, src/index.ts, deleted api-client.js + index.js | Deviated: added `@types/node` devDependency (needed for `process.env` and `NodeJS.ErrnoException`) |
+| 2026-02-14 | Task 3 | src/tools/*.ts (7 files), deleted src/tools/*.js (7 files) | Clean build, no deviations |
 
 ---
 

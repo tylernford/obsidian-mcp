@@ -1,6 +1,8 @@
 import { z } from "zod";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { ObsidianClient } from "../api-client.js";
 
-export function registerActiveFileTools(server, client) {
+export function registerActiveFileTools(server: McpServer, client: ObsidianClient) {
   server.tool(
     "active_file_read",
     "Read the currently open note in Obsidian",

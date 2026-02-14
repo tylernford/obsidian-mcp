@@ -1,6 +1,8 @@
 import { z } from "zod";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { ObsidianClient } from "../api-client.js";
 
-export function registerSearchTools(server, client) {
+export function registerSearchTools(server: McpServer, client: ObsidianClient) {
   server.tool(
     "search",
     "Search the vault using full-text search or Dataview DQL queries",

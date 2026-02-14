@@ -1,8 +1,10 @@
 import { z } from "zod";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { ObsidianClient } from "../api-client.js";
 
 const periodEnum = z.enum(["daily", "weekly", "monthly", "quarterly", "yearly"]);
 
-export function registerPeriodicTools(server, client) {
+export function registerPeriodicTools(server: McpServer, client: ObsidianClient) {
   server.tool(
     "periodic_read",
     "Read a periodic note (daily, weekly, monthly, quarterly, yearly)",
