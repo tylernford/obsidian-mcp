@@ -248,12 +248,13 @@ src/tools/*.js                 # Replaced by .ts
 
 _Filled in during `/build` phase_
 
-| Date       | Task   | Files                                                             | Notes                                                                                              |
-| ---------- | ------ | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| 2026-02-14 | Task 1 | tsconfig.json, package.json, .gitignore                           | Used `tsc --init` then edited to match design doc config                                           |
-| 2026-02-14 | Task 2 | src/api-client.ts, src/index.ts, deleted api-client.js + index.js | Deviated: added `@types/node` devDependency (needed for `process.env` and `NodeJS.ErrnoException`) |
-| 2026-02-14 | Task 3 | src/tools/_.ts (7 files), deleted src/tools/_.js (7 files)        | Clean build, no deviations                                                                         |
+| Date       | Task   | Files                                                             | Notes                                                                                                                          |
+| ---------- | ------ | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-02-14 | Task 1 | tsconfig.json, package.json, .gitignore                           | Used `tsc --init` then edited to match design doc config                                                                       |
+| 2026-02-14 | Task 2 | src/api-client.ts, src/index.ts, deleted api-client.js + index.js | Deviated: added `@types/node` devDependency (needed for `process.env` and `NodeJS.ErrnoException`)                             |
+| 2026-02-14 | Task 3 | src/tools/_.ts (7 files), deleted src/tools/_.js (7 files)        | Clean build, no deviations                                                                                                     |
 | 2026-02-14 | Task 4 | eslint.config.js, .prettierrc, package.json, all .ts files        | Deviated: pinned ESLint 9 (v10 incompatible with @typescript-eslint), used `typescript-eslint` unified package for flat config |
+| 2026-02-14 | Task 5 | lefthook.yml, package.json                                        | Deviated: added `pnpm.onlyBuiltDependencies` to approve lefthook postinstall (pnpm v10 blocks build scripts by default)        |
 
 ---
 

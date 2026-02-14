@@ -1,0 +1,13 @@
+pre-commit:
+  piped: true
+  jobs:
+    - name: prettier
+      glob: "*.{ts,tsx,mts,js,jsx,mjs,json,css,md,yml,yaml}"
+      run: pnpm prettier --write {staged_files} && git add {staged_files}
+
+    - name: typecheck
+      run: pnpm tsc --noEmit
+
+    - name: lint
+      glob: "*.{ts,tsx,mts,js,jsx,mjs}"
+      run: pnpm eslint --fix {staged_files} && git add {staged_files}
