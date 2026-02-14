@@ -10,19 +10,19 @@ export function registerSearchTools(server: McpServer, client: ObsidianClient) {
       type: z
         .enum(["simple", "dataview"])
         .describe(
-          "'simple' for full-text search, 'dataview' for Dataview DQL queries"
+          "'simple' for full-text search, 'dataview' for Dataview DQL queries",
         ),
       query: z
         .string()
         .describe(
-          "For 'simple': text to search for. For 'dataview': a TABLE-type DQL query (e.g. 'TABLE file.name FROM #tag')"
+          "For 'simple': text to search for. For 'dataview': a TABLE-type DQL query (e.g. 'TABLE file.name FROM #tag')",
         ),
       contextLength: z
         .number()
         .optional()
         .default(100)
         .describe(
-          "(simple only) Characters of context to return around each match"
+          "(simple only) Characters of context to return around each match",
         ),
     },
     async ({ type, query, contextLength }) => {
@@ -42,12 +42,15 @@ export function registerSearchTools(server: McpServer, client: ObsidianClient) {
       }
 
       if (!result.ok) {
-        return { content: [{ type: "text", text: result.error }], isError: true };
+        return {
+          content: [{ type: "text", text: result.error }],
+          isError: true,
+        };
       }
 
       return {
         content: [{ type: "text", text: JSON.stringify(result.data, null, 2) }],
       };
-    }
+    },
   );
 }

@@ -13,7 +13,7 @@ Convert the entire codebase from JavaScript to TypeScript with `strict: true`, a
 
 ## Codebase Verification
 
-*Confirmed 2026-02-14 against actual codebase*
+_Confirmed 2026-02-14 against actual codebase_
 
 - [x] 8 JS source files in `src/` (1 api-client + 7 tool files) - Verified
 - [x] Root `index.js` entry point exists - Verified
@@ -25,10 +25,12 @@ Convert the entire codebase from JavaScript to TypeScript with `strict: true`, a
 - [x] No devDependencies currently - Verified
 
 **Patterns to leverage:**
+
 - Consistent `register*Tools(server, client)` pattern across all tool files
 - SDK generics infer handler parameter types from Zod schemas automatically
 
 **Discrepancies found:**
+
 - Design types `apiKey` as optional (`apiKey?: string`), but constructor throws if missing. Will type the constructor param as required (`string`) and handle the env-var read as `string | undefined` at the call site.
 
 ---
@@ -40,11 +42,13 @@ Convert the entire codebase from JavaScript to TypeScript with `strict: true`, a
 **Description:** Install TypeScript via CLI, create `tsconfig.json`, update `package.json` scripts and entry point, add `dist/` to `.gitignore`.
 
 **Files:**
+
 - `tsconfig.json` — create
 - `package.json` — modify (`main`, `scripts`)
 - `.gitignore` — modify (add `dist/`)
 
 **Steps:**
+
 1. `pnpm add -D typescript`
 2. Create `tsconfig.json` with strict config from design doc
 3. Update `package.json`: set `"main": "dist/index.js"`, add `build`, `start`, `typecheck` scripts
@@ -61,12 +65,14 @@ Convert the entire codebase from JavaScript to TypeScript with `strict: true`, a
 **Description:** Rename `src/api-client.js` → `src/api-client.ts` with typed interfaces (`ObsidianClientConfig`, `RequestOptions`, `PatchOptions`, `ApiResponse`). Move root `index.js` → `src/index.ts` with typed imports. Delete original `.js` files in-place.
 
 **Files:**
+
 - `src/api-client.ts` — create (replace `src/api-client.js`)
 - `src/index.ts` — create (replace root `index.js`)
 - `src/api-client.js` — delete
 - `index.js` — delete
 
 **Key types to define in `src/api-client.ts`:**
+
 ```ts
 interface ObsidianClientConfig {
   apiKey: string;
@@ -104,6 +110,7 @@ type ApiResponse =
 **Description:** Rename all 7 tool files from `.js` → `.ts` in-place. Add typed function signatures (`server: McpServer, client: ObsidianClient`) to each `register*Tools` function. SDK generics handle handler parameter inference from Zod schemas — no manual handler typing needed.
 
 **Files:**
+
 - `src/tools/vault.js` → `src/tools/vault.ts`
 - `src/tools/search.js` → `src/tools/search.ts`
 - `src/tools/metadata.js` → `src/tools/metadata.ts`
@@ -123,11 +130,13 @@ type ApiResponse =
 **Description:** Install ESLint and Prettier via CLI, create config files with project conventions.
 
 **Files:**
+
 - `eslint.config.js` — create
 - `.prettierrc` — create
 - `package.json` — modify (scripts)
 
 **Steps:**
+
 1. `pnpm add -D eslint @typescript-eslint/eslint-plugin @typescript-eslint/parser prettier`
 2. Create `eslint.config.js` — flat config with `@typescript-eslint/recommended`
 3. Create `.prettierrc` — semi, double quotes, trailing commas, 2-space, 80 width
@@ -146,10 +155,12 @@ type ApiResponse =
 **Description:** Install Lefthook via CLI, create `lefthook.yml` with piped pre-commit hook: prettier → typecheck → lint.
 
 **Files:**
+
 - `lefthook.yml` — create
 - `package.json` — modify (devDependency added via CLI)
 
 **Steps:**
+
 1. `pnpm add -D lefthook`
 2. Create `lefthook.yml` with piped pre-commit config from design doc
 3. Run `lefthook install`

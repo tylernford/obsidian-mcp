@@ -70,55 +70,55 @@ Start a new Claude Code session and run `/mcp` to confirm the obsidian server sh
 
 ### Environment Variables
 
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `OBSIDIAN_API_KEY` | Yes | — | Bearer token from Local REST API plugin settings |
-| `OBSIDIAN_API_HOST` | No | `localhost` | REST API host — only change if you modified the plugin's bind address |
-| `OBSIDIAN_API_PORT` | No | `27123` | REST API port — only change if you modified the plugin's HTTP port |
+| Variable            | Required | Default     | Description                                                           |
+| ------------------- | -------- | ----------- | --------------------------------------------------------------------- |
+| `OBSIDIAN_API_KEY`  | Yes      | —           | Bearer token from Local REST API plugin settings                      |
+| `OBSIDIAN_API_HOST` | No       | `localhost` | REST API host — only change if you modified the plugin's bind address |
+| `OBSIDIAN_API_PORT` | No       | `27123`     | REST API port — only change if you modified the plugin's HTTP port    |
 
 ## Tools
 
 ### Core File Operations
 
-| Tool | Description |
-|---|---|
-| `vault_list` | List files and directories at a given path |
-| `vault_read` | Read a note's content (markdown or JSON with parsed frontmatter) |
-| `vault_create` | Create a new note |
-| `vault_update` | Update a note at a heading, block, or frontmatter field |
-| `vault_delete` | Delete a note |
+| Tool           | Description                                                      |
+| -------------- | ---------------------------------------------------------------- |
+| `vault_list`   | List files and directories at a given path                       |
+| `vault_read`   | Read a note's content (markdown or JSON with parsed frontmatter) |
+| `vault_create` | Create a new note                                                |
+| `vault_update` | Update a note at a heading, block, or frontmatter field          |
+| `vault_delete` | Delete a note                                                    |
 
 ### Search and Metadata
 
-| Tool | Description |
-|---|---|
-| `search` | Full-text search or Dataview DQL query |
-| `tags_manage` | List, add, or remove tags on a note |
+| Tool                 | Description                            |
+| -------------------- | -------------------------------------- |
+| `search`             | Full-text search or Dataview DQL query |
+| `tags_manage`        | List, add, or remove tags on a note    |
 | `frontmatter_manage` | Read or update YAML frontmatter fields |
 
 ### Commands
 
-| Tool | Description |
-|---|---|
-| `commands_list` | List all registered Obsidian commands (core + plugins) |
-| `commands_execute` | Execute a command by ID |
+| Tool               | Description                                            |
+| ------------------ | ------------------------------------------------------ |
+| `commands_list`    | List all registered Obsidian commands (core + plugins) |
+| `commands_execute` | Execute a command by ID                                |
 
 ### Active File
 
-| Tool | Description |
-|---|---|
-| `active_file_read` | Read the currently open note |
+| Tool                 | Description                    |
+| -------------------- | ------------------------------ |
+| `active_file_read`   | Read the currently open note   |
 | `active_file_update` | Update the currently open note |
 
 ### Navigation
 
-| Tool | Description |
-|---|---|
+| Tool        | Description                    |
+| ----------- | ------------------------------ |
 | `file_open` | Open a note in the Obsidian UI |
 
 ### Periodic Notes
 
-| Tool | Description |
-|---|---|
-| `periodic_read` | Read a periodic note (daily, weekly, monthly, quarterly, yearly) |
-| `periodic_update` | Update a periodic note (creates from template if needed) |
+| Tool              | Description                                                      |
+| ----------------- | ---------------------------------------------------------------- |
+| `periodic_read`   | Read a periodic note (daily, weekly, monthly, quarterly, yearly) |
+| `periodic_update` | Update a periodic note (creates from template if needed)         |

@@ -19,6 +19,7 @@
 ## Requirements
 
 ### Must Have
+
 - [ ] All source files converted from `.js` to `.ts` in `src/`
 - [ ] `tsconfig.json` with `strict: true`
 - [ ] Typed `ObsidianClient` class (constructor config, request/response types, patch options)
@@ -31,9 +32,11 @@
 - [ ] Zero behavioral changes — all 15 tools work identically
 
 ### Nice to Have
+
 - [ ] Migrate from deprecated `server.tool()` to `registerTool()` API (see Future Work)
 
 ### Out of Scope
+
 - Structural refactoring (folder reorganization, module splitting)
 - New features or tool changes
 - Test infrastructure (no tests exist today; adding them is a separate effort)
@@ -45,6 +48,7 @@
 ### Build Tooling: `tsc` vs `tsup`
 
 **Options considered:**
+
 1. `tsc` — Standard TypeScript compiler, mirrors source structure in `dist/`, no extra dependencies beyond `typescript`
 2. `tsup` — esbuild-based bundler, faster builds, but adds config complexity and extra dependency
 
@@ -53,6 +57,7 @@
 ### Type Strategy for Tool Handlers
 
 **Options considered:**
+
 1. Hand-write types for every tool handler's parameters
 2. Use `z.infer<>` to derive types from existing Zod schemas
 3. Rely on MCP SDK's built-in generic inference from Zod schemas
@@ -62,6 +67,7 @@
 ### `server.tool()` vs `registerTool()`
 
 **Options considered:**
+
 1. Stay on `server.tool()` (deprecated but functional)
 2. Migrate to `registerTool()` during this refactor
 
@@ -240,13 +246,14 @@ src/tools/*.js                 # Replaced by .ts
 
 ## Build Log
 
-*Filled in during `/build` phase*
+_Filled in during `/build` phase_
 
-| Date | Task | Files | Notes |
-|------|------|-------|-------|
-| 2026-02-14 | Task 1 | tsconfig.json, package.json, .gitignore | Used `tsc --init` then edited to match design doc config |
+| Date       | Task   | Files                                                             | Notes                                                                                              |
+| ---------- | ------ | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| 2026-02-14 | Task 1 | tsconfig.json, package.json, .gitignore                           | Used `tsc --init` then edited to match design doc config                                           |
 | 2026-02-14 | Task 2 | src/api-client.ts, src/index.ts, deleted api-client.js + index.js | Deviated: added `@types/node` devDependency (needed for `process.env` and `NodeJS.ErrnoException`) |
-| 2026-02-14 | Task 3 | src/tools/*.ts (7 files), deleted src/tools/*.js (7 files) | Clean build, no deviations |
+| 2026-02-14 | Task 3 | src/tools/_.ts (7 files), deleted src/tools/_.js (7 files)        | Clean build, no deviations                                                                         |
+| 2026-02-14 | Task 4 | eslint.config.js, .prettierrc, package.json, all .ts files        | Deviated: pinned ESLint 9 (v10 incompatible with @typescript-eslint), used `typescript-eslint` unified package for flat config |
 
 ---
 

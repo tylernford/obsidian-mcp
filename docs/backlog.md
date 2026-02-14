@@ -11,34 +11,38 @@ Ideas, enhancements, and future work for obsidian-mcp.
 **Idea:** Rewrite the MCP server as an Obsidian plugin instead of a standalone Node.js process that talks to the Local REST API plugin over HTTP. This would eliminate the dependency on the Local REST API plugin and give us direct access to Obsidian's `app` API.
 
 **Current architecture:**
+
 ```
 Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidian
 ```
 
 **Proposed architecture:**
+
 ```
 Claude Code <--stdio/ws--> Obsidian Plugin <--> Obsidian
 ```
 
 **Benefits:**
+
 - Remove Local REST API plugin dependency (one plugin instead of two)
 - No HTTP middleman — direct `app` API access
 - No auth/API key management needed
 - Simpler stack for end users
 
 **Trade-offs:**
+
 - Must maintain an Obsidian plugin (TypeScript, esbuild, Obsidian plugin API)
 - More friction to develop and test vs. standalone Node.js
 - Structured update logic (insert at heading/block/frontmatter) currently handled server-side by the REST API would need to be reimplemented locally
 
 **Effort estimate: ~15-20 hours**
 
-| Category | Hours | Notes |
-|---|---|---|
-| Trivial swaps (commands, navigation, vault CRUD) | 2-3 | Direct `app.vault` / `app.commands` equivalents |
-| Medium (search, metadata, periodic notes, plugin scaffolding) | 4-6 | Dataview and Periodic Notes plugin integration needed |
-| Hard (vault_update, active_file_update targeting) | 6-8 | Must reimplement heading/block/frontmatter content targeting locally |
-| Testing and edge cases | 3-4 | |
+| Category                                                      | Hours | Notes                                                                |
+| ------------------------------------------------------------- | ----- | -------------------------------------------------------------------- |
+| Trivial swaps (commands, navigation, vault CRUD)              | 2-3   | Direct `app.vault` / `app.commands` equivalents                      |
+| Medium (search, metadata, periodic notes, plugin scaffolding) | 4-6   | Dataview and Periodic Notes plugin integration needed                |
+| Hard (vault_update, active_file_update targeting)             | 6-8   | Must reimplement heading/block/frontmatter content targeting locally |
+| Testing and edge cases                                        | 3-4   |                                                                      |
 
 **What carries over as-is:** Tool definitions, parameter schemas (Zod), response formatting, error response patterns.
 

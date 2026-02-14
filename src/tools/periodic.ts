@@ -2,9 +2,18 @@ import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { ObsidianClient } from "../api-client.js";
 
-const periodEnum = z.enum(["daily", "weekly", "monthly", "quarterly", "yearly"]);
+const periodEnum = z.enum([
+  "daily",
+  "weekly",
+  "monthly",
+  "quarterly",
+  "yearly",
+]);
 
-export function registerPeriodicTools(server: McpServer, client: ObsidianClient) {
+export function registerPeriodicTools(
+  server: McpServer,
+  client: ObsidianClient,
+) {
   server.tool(
     "periodic_read",
     "Read a periodic note (daily, weekly, monthly, quarterly, yearly)",
@@ -14,7 +23,7 @@ export function registerPeriodicTools(server: McpServer, client: ObsidianClient)
         .enum(["markdown", "json"])
         .default("json")
         .describe(
-          "'json' returns parsed frontmatter, tags, and stats. 'markdown' returns raw content."
+          "'json' returns parsed frontmatter, tags, and stats. 'markdown' returns raw content.",
         ),
     },
     async ({ period, format }) => {
@@ -28,7 +37,10 @@ export function registerPeriodicTools(server: McpServer, client: ObsidianClient)
       });
 
       if (!result.ok) {
-        return { content: [{ type: "text", text: result.error }], isError: true };
+        return {
+          content: [{ type: "text", text: result.error }],
+          isError: true,
+        };
       }
 
       const text =
@@ -37,7 +49,7 @@ export function registerPeriodicTools(server: McpServer, client: ObsidianClient)
           : JSON.stringify(result.data, null, 2);
 
       return { content: [{ type: "text", text }] };
-    }
+    },
   );
 
   server.tool(
@@ -61,7 +73,14 @@ export function registerPeriodicTools(server: McpServer, client: ObsidianClient)
         .default(false)
         .describe("If true, create the target if it doesn't exist"),
     },
-    async ({ period, operation, targetType, target, content, createIfMissing }) => {
+    async ({
+      period,
+      operation,
+      targetType,
+      target,
+      content,
+      createIfMissing,
+    }) => {
       const result = await client.patch(`/periodic/${period}/`, {
         operation,
         targetType,
@@ -75,7 +94,7 @@ export function registerPeriodicTools(server: McpServer, client: ObsidianClient)
         if (result.status === 404) {
           const createResult = await client.request(
             "POST",
-            `/periodic/${period}/`
+            `/periodic/${period}/`,
           );
 
           if (!createResult.ok) {
@@ -101,13 +120,16 @@ export function registerPeriodicTools(server: McpServer, client: ObsidianClient)
             };
           }
         } else {
-          return { content: [{ type: "text", text: result.error }], isError: true };
+          return {
+            content: [{ type: "text", text: result.error }],
+            isError: true,
+          };
         }
       }
 
       return {
         content: [{ type: "text", text: `Updated ${period} note` }],
       };
-    }
+    },
   );
 }

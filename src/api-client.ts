@@ -26,10 +26,14 @@ export class ObsidianClient {
   private apiKey: string;
   private baseUrl: string;
 
-  constructor({ apiKey, host = "localhost", port = "27123" }: ObsidianClientConfig) {
+  constructor({
+    apiKey,
+    host = "localhost",
+    port = "27123",
+  }: ObsidianClientConfig) {
     if (!apiKey) {
       throw new Error(
-        "OBSIDIAN_API_KEY is required. Set it in your environment or MCP configuration."
+        "OBSIDIAN_API_KEY is required. Set it in your environment or MCP configuration.",
       );
     }
     this.apiKey = apiKey;
@@ -39,7 +43,7 @@ export class ObsidianClient {
   async request(
     method: string,
     path: string,
-    { body, headers = {}, queryParams }: RequestOptions = {}
+    { body, headers = {}, queryParams }: RequestOptions = {},
   ): Promise<ApiResponse> {
     const url = new URL(path, this.baseUrl);
     if (queryParams) {
@@ -74,10 +78,7 @@ export class ObsidianClient {
     } catch (error) {
       const err = error as NodeJS.ErrnoException;
       const cause = err.cause as NodeJS.ErrnoException | undefined;
-      if (
-        err.code === "ECONNREFUSED" ||
-        cause?.code === "ECONNREFUSED"
-      ) {
+      if (err.code === "ECONNREFUSED" || cause?.code === "ECONNREFUSED") {
         return {
           ok: false,
           status: 0,
@@ -85,7 +86,11 @@ export class ObsidianClient {
             "Could not connect to Obsidian. Make sure Obsidian is running and the Local REST API plugin is enabled.",
         };
       }
-      return { ok: false, status: 0, error: `Connection error: ${err.message}` };
+      return {
+        ok: false,
+        status: 0,
+        error: `Connection error: ${err.message}`,
+      };
     }
 
     const contentLength = response.headers.get("content-length");
@@ -109,8 +114,7 @@ export class ObsidianClient {
       const message =
         (dataObj && typeof dataObj === "object" && "message" in dataObj
           ? dataObj.message
-          : null) ||
-        (typeof data === "string" ? data : JSON.stringify(data));
+          : null) || (typeof data === "string" ? data : JSON.stringify(data));
       return {
         ok: false,
         status: response.status,
@@ -130,7 +134,7 @@ export class ObsidianClient {
 
   async patch(
     path: string,
-    { operation, targetType, target, content, createIfMissing }: PatchOptions
+    { operation, targetType, target, content, createIfMissing }: PatchOptions,
   ): Promise<ApiResponse> {
     const headers: Record<string, string> = {
       "Content-Type": "text/markdown",
