@@ -29,6 +29,7 @@ Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidia
 git clone https://github.com/tylernford/obsidian-mcp.git
 cd obsidian-mcp
 pnpm install
+pnpm build
 ```
 
 ### 3. Register with Claude Code
@@ -42,7 +43,7 @@ Create or edit `~/.mcp.json`:
   "mcpServers": {
     "obsidian": {
       "command": "node",
-      "args": ["/absolute/path/to/obsidian-mcp/index.js"],
+      "args": ["/absolute/path/to/obsidian-mcp/dist/index.js"],
       "env": {
         "OBSIDIAN_API_KEY": "<key-from-step-1>"
       }
@@ -51,7 +52,7 @@ Create or edit `~/.mcp.json`:
 }
 ```
 
-Replace `/absolute/path/to/obsidian-mcp/index.js` with the actual path and paste your API key.
+Replace `/absolute/path/to/obsidian-mcp/dist/index.js` with the actual path and paste your API key.
 
 **Option B: `claude mcp add`**
 
@@ -61,7 +62,7 @@ claude mcp add \
   --scope user \
   --env OBSIDIAN_API_KEY=<key-from-step-1> \
   obsidian \
-  -- node /absolute/path/to/obsidian-mcp/index.js
+  -- node /absolute/path/to/obsidian-mcp/dist/index.js
 ```
 
 ### 4. Verify

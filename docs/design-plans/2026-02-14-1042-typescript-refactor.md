@@ -1,7 +1,7 @@
 # TypeScript Refactor
 
 **Created:** 2026-02-14
-**Status:** Design
+**Status:** Complete
 **Implementation Plan Doc:** docs/implementation-plans/2026-02-14-1353-typescript-refactor.md
 
 ---
@@ -260,9 +260,14 @@ _Filled in during `/build` phase_
 
 ## Completion
 
-**Completed:** TBD
-**Final Status:** TBD
+**Completed:** 2026-02-14
+**Final Status:** Complete
 
-**Summary:** TBD
+**Summary:** All 8 source files converted from JavaScript to TypeScript with `strict: true`. Build infrastructure (`tsc`), linting (ESLint with `@typescript-eslint/recommended` flat config), formatting (Prettier), and pre-commit hooks (Lefthook: prettier → typecheck → lint) all installed and passing. All 15 tools work identically to pre-refactor. All acceptance criteria met.
 
-**Deviations from Plan:** TBD
+**Deviations from Plan:**
+
+- Added `@types/node` as a devDependency — needed for `process.env` types and `NodeJS.ErrnoException` in error handling
+- Pinned ESLint to v9 — ESLint v10 is incompatible with `@typescript-eslint` at time of build
+- Used `typescript-eslint` unified package for flat config instead of the separate `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser` packages specified in the design doc
+- Added `pnpm.onlyBuiltDependencies: ["lefthook"]` to `package.json` — pnpm v10 blocks postinstall build scripts by default, requiring explicit approval
