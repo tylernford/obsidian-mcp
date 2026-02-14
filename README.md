@@ -9,35 +9,72 @@ Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidia
 ## Prerequisites
 
 - **Node.js** 18+
-- **Obsidian** with the [Local REST API](https://github.com/coddingtonbear/obsidian-local-rest-api) plugin installed and enabled
-- **API key** from the Local REST API plugin settings
+- **pnpm** (`npm install -g pnpm` or see [pnpm.io](https://pnpm.io/installation))
+- **Obsidian** with the following community plugins installed and enabled:
+  - [Local REST API](https://github.com/coddingtonbear/obsidian-local-rest-api) (required)
+  - [Dataview](https://github.com/blacksmithgu/obsidian-dataview) (required for DQL queries via the `search` tool)
+  - [Periodic Notes](https://github.com/liamcain/obsidian-periodic-notes) (required for the `periodic_read` and `periodic_update` tools)
 
-## Installation
+## Setup
+
+### 1. Configure the Local REST API plugin
+
+1. In Obsidian, go to **Settings > Community Plugins > Local REST API** (gear icon)
+2. Enable **"Enable Non-encrypted (HTTP) Server"** — the MCP server connects over HTTP on localhost
+3. Note the **API key** shown in the plugin settings — you'll need it in step 3
+
+### 2. Clone and install
 
 ```bash
+git clone https://github.com/tylernford/obsidian-mcp.git
+cd obsidian-mcp
 pnpm install
 ```
 
-## Configuration
+### 3. Register with Claude Code
 
-Register the server with Claude Code:
+**Option A: `~/.mcp.json`** (recommended — available in all projects)
+
+Create or edit `~/.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "node",
+      "args": ["/absolute/path/to/obsidian-mcp/index.js"],
+      "env": {
+        "OBSIDIAN_API_KEY": "<key-from-step-1>"
+      }
+    }
+  }
+}
+```
+
+Replace `/absolute/path/to/obsidian-mcp/index.js` with the actual path and paste your API key.
+
+**Option B: `claude mcp add`**
 
 ```bash
 claude mcp add \
   --transport stdio \
   --scope user \
-  --env OBSIDIAN_API_KEY=<key-from-plugin-settings> \
+  --env OBSIDIAN_API_KEY=<key-from-step-1> \
   obsidian \
-  -- node /path/to/obsidian-mcp/index.js
+  -- node /absolute/path/to/obsidian-mcp/index.js
 ```
+
+### 4. Verify
+
+Start a new Claude Code session and run `/mcp` to confirm the obsidian server shows as connected.
 
 ### Environment Variables
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
 | `OBSIDIAN_API_KEY` | Yes | — | Bearer token from Local REST API plugin settings |
-| `OBSIDIAN_API_HOST` | No | `localhost` | REST API host |
-| `OBSIDIAN_API_PORT` | No | `27123` | REST API port |
+| `OBSIDIAN_API_HOST` | No | `localhost` | REST API host — only change if you modified the plugin's bind address |
+| `OBSIDIAN_API_PORT` | No | `27123` | REST API port — only change if you modified the plugin's HTTP port |
 
 ## Tools
 
