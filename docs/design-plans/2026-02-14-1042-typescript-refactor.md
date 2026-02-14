@@ -244,6 +244,7 @@ src/tools/*.js                 # Replaced by .ts
 
 | Date | Task | Files | Notes |
 |------|------|-------|-------|
+| 2026-02-14 | Task 1 | tsconfig.json, package.json, .gitignore | Used `tsc --init` then edited to match design doc config |
 
 ---
 
