@@ -173,16 +173,16 @@ type ApiResponse =
 
 ## Acceptance Criteria
 
-- [ ] All source files are `.ts` in `src/`, no `.js` source files remain
-- [ ] `pnpm build` compiles cleanly with zero errors under `strict: true`
-- [ ] `pnpm typecheck` passes (`tsc --noEmit`)
-- [ ] `pnpm lint` passes with no errors
-- [ ] `pnpm format` produces no changes (code is already formatted)
-- [ ] `lefthook install` succeeds and pre-commit hook runs prettier → typecheck → lint
-- [ ] `pnpm start` launches the MCP server and responds to tool calls identically to before
-- [ ] No behavioral changes — all 15 tools work exactly as pre-refactor
-- [ ] `dist/` is gitignored
-- [ ] `server.tool()` → `registerTool()` migration noted as future work (not done)
+- [x] All source files are `.ts` in `src/`, no `.js` source files remain
+- [x] `pnpm build` compiles cleanly with zero errors under `strict: true`
+- [x] `pnpm typecheck` passes (`tsc --noEmit`)
+- [x] `pnpm lint` passes with no errors
+- [x] `pnpm format` produces no changes (code is already formatted)
+- [x] `lefthook install` succeeds and pre-commit hook runs prettier → typecheck → lint
+- [x] `pnpm start` launches the MCP server and responds to tool calls identically to before
+- [x] No behavioral changes — all 15 tools work exactly as pre-refactor
+- [x] `dist/` is gitignored
+- [x] `server.tool()` → `registerTool()` migration noted as future work (not done)
 
 ---
 
