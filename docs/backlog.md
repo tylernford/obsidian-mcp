@@ -69,3 +69,19 @@ Claude Code <--stdio/ws--> Obsidian Plugin <--> Obsidian
 **Source:** Comparison research (2026-02-13)
 
 **Idea:** A third project worth reviewing. Uses the same Local REST API backend as ours but adds semantic search (via Smart Connections plugin) and Templater integration. Currently seeking new maintainers. Worth checking for ideas around semantic search and template execution.
+
+---
+
+## Workflow Design
+
+**Source:** Design plan follow-up (2026-02-13)
+
+**Idea:** Design how to best use the MCP tools day-to-day. Now that all 15 tools are available, figure out common workflows — e.g., daily note routines, search-then-edit patterns, Dataview query conventions, command execution use cases. Capture these as repeatable patterns.
+
+---
+
+## CLAUDE.md MCP Conventions
+
+**Source:** Design plan follow-up (2026-02-13)
+
+**Idea:** Add MCP tool usage conventions to CLAUDE.md once workflows are established. This would guide Claude Code on when to prefer MCP tools over direct file access (e.g., always use `search` instead of grepping the vault, use `vault_update` for targeted edits instead of rewriting files).

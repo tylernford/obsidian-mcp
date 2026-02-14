@@ -259,6 +259,6 @@ No design-level deviations. All 15 tools were implemented as specified, the arch
 
 ## Follow-Up Work (separate design sessions)
 
-- **Workflow design**: How to best use these new capabilities day-to-day
-- **Research**: Investigate obsidian-claude-code-mcp and Nexus for ideas worth borrowing
-- **CLAUDE.md updates**: Add MCP tool usage conventions once workflows are established
+- **Workflow design**: How to best use these new capabilities day-to-day → moved to [backlog](../backlog.md)
+- ~~**Research**: Investigate obsidian-claude-code-mcp and Nexus for ideas worth borrowing~~ — Reviewed both. [obsidian-claude-code-mcp](https://github.com/iansinnott/obsidian-claude-code-mcp) yielded several backlog items (see [backlog](../backlog.md)). [obsidian-nexus](https://github.com/nkriman/obsidian-nexus) is a filesystem-only approach with 6 basic tools, fully covered by our server; nothing to borrow.
+- **CLAUDE.md updates**: Add MCP tool usage conventions once workflows are established → moved to [backlog](../backlog.md)
