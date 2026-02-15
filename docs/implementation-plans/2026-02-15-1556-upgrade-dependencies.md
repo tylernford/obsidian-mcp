@@ -97,13 +97,13 @@ Upgrade Node engine to 24, pnpm to 10.29.3, Zod to v4, remove redundant `@typesc
 
 ## Acceptance Criteria
 
-- [ ] `pnpm install` completes with no unmet peer dependency warnings
-- [ ] `pnpm typecheck` passes
-- [ ] `pnpm lint` passes
-- [ ] `pnpm build` succeeds
-- [ ] No `@typescript-eslint/eslint-plugin` or `@typescript-eslint/parser` in `package.json` devDependencies
-- [ ] `.nvmrc` exists and contains `24`
-- [ ] `engines.node` is `>=24.0.0` in `package.json`
+- [x] `pnpm install` completes with no unmet peer dependency warnings
+- [x] `pnpm typecheck` passes
+- [x] `pnpm lint` passes
+- [x] `pnpm build` succeeds
+- [x] No `@typescript-eslint/eslint-plugin` or `@typescript-eslint/parser` in `package.json` devDependencies
+- [x] `.nvmrc` exists and contains `24`
+- [x] `engines.node` is `>=24.0.0` in `package.json`
 
 ---
 
