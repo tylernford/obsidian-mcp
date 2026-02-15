@@ -2,7 +2,7 @@
 
 **Created:** 2026-02-15
 **Status:** Design
-**Implementation Plan Doc:** _TBD_
+**Implementation Plan Doc:** docs/implementation-plans/2026-02-15-1556-upgrade-dependencies.md
 
 ---
 
