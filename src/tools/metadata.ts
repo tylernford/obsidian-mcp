@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { ObsidianClient } from "../api-client.js";
+import { ObsidianClient, type ApiResponse } from "../api-client.js";
 
 export function registerMetadataTools(
   server: McpServer,
@@ -27,9 +27,9 @@ export function registerMetadataTools(
       const encodedPath = client.encodePath(filename);
 
       // Read current note to get existing tags
-      const readResult = await client.request("GET", `/vault/${encodedPath}`, {
+      const readResult = (await client.request("GET", `/vault/${encodedPath}`, {
         headers: { Accept: "application/vnd.olrapi.note+json" },
-      });
+      })) as ApiResponse<{ tags?: string[] }>;
 
       if (!readResult.ok) {
         return {
@@ -38,8 +38,7 @@ export function registerMetadataTools(
         };
       }
 
-      const noteData = readResult.data as { tags?: string[] };
-      const currentTags = noteData.tags || [];
+      const currentTags = readResult.data.tags || [];
 
       if (action === "list") {
         return {
@@ -49,10 +48,19 @@ export function registerMetadataTools(
         };
       }
 
+      if (!tags || tags.length === 0) {
+        return {
+          content: [
+            { type: "text", text: "tags are required for add/remove actions" },
+          ],
+          isError: true,
+        };
+      }
+
       let newTags: string[];
       if (action === "add") {
         const tagSet = new Set(currentTags);
-        for (const tag of tags!) {
+        for (const tag of tags) {
           tagSet.add(tag);
         }
         newTags = [...tagSet];
@@ -107,9 +115,9 @@ export function registerMetadataTools(
       const encodedPath = client.encodePath(filename);
 
       if (action === "read") {
-        const result = await client.request("GET", `/vault/${encodedPath}`, {
+        const result = (await client.request("GET", `/vault/${encodedPath}`, {
           headers: { Accept: "application/vnd.olrapi.note+json" },
-        });
+        })) as ApiResponse<{ frontmatter?: Record<string, unknown> }>;
 
         if (!result.ok) {
           return {
@@ -118,25 +126,34 @@ export function registerMetadataTools(
           };
         }
 
-        const noteData = result.data as {
-          frontmatter?: Record<string, unknown>;
-        };
         return {
           content: [
             {
               type: "text",
-              text: JSON.stringify(noteData.frontmatter || {}, null, 2),
+              text: JSON.stringify(result.data.frontmatter || {}, null, 2),
             },
           ],
         };
       }
 
       // action === "set"
+      if (!key || !value) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: "key and value are required for the set action",
+            },
+          ],
+          isError: true,
+        };
+      }
+
       const result = await client.patch(`/vault/${encodedPath}`, {
         operation: "replace",
         targetType: "frontmatter",
-        target: key!,
-        content: value!,
+        target: key,
+        content: value,
         createIfMissing: true,
       });
 
