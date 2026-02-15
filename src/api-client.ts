@@ -1,5 +1,5 @@
-interface ObsidianClientConfig {
-  apiKey: string;
+export interface ObsidianClientConfig {
+  apiKey: string | undefined;
   host?: string;
   port?: string;
 }
@@ -18,8 +18,8 @@ interface PatchOptions {
   createIfMissing?: boolean;
 }
 
-type ApiResponse =
-  | { ok: true; status: number; data: unknown }
+export type ApiResponse<T = unknown> =
+  | { ok: true; status: number; data: T }
   | { ok: false; status: number; error: string };
 
 export class ObsidianClient {
@@ -94,7 +94,7 @@ export class ObsidianClient {
     }
 
     const contentLength = response.headers.get("content-length");
-    if (response.status === 204 || contentLength === "0") {
+    if (response.status === 204 || (contentLength === "0" && response.ok)) {
       return { ok: true, status: response.status, data: null };
     }
 
@@ -104,7 +104,15 @@ export class ObsidianClient {
     if (!text) {
       data = null;
     } else if (contentType.includes("json")) {
-      data = JSON.parse(text);
+      try {
+        data = JSON.parse(text);
+      } catch {
+        return {
+          ok: false,
+          status: response.status,
+          error: `Malformed JSON response from Obsidian API: ${text.slice(0, 200)}`,
+        };
+      }
     } else {
       data = text;
     }
