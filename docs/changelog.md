@@ -29,3 +29,11 @@ Addressed all 12 in-scope issues from the post-TypeScript refactor QA review. Re
 Made `request()` and `patch()` generic (`<T>`) so callers specify expected response types at the call site, eliminating `as` type assertions in tool code. Unexported `ApiResponse` and `ObsidianClientConfig` types since they're internal to the API client module.
 
 **Key files:** src/api-client.ts, src/tools/metadata.ts
+
+## 2026-02-15: Upgrade Dependencies
+
+Upgraded Node engine to 24, pnpm to 10.29.3, and Zod from v3 to v4 (zero code changes). Removed redundant `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser` direct devDependencies. Created `.nvmrc` pinned to Node 24.
+
+**Design:** docs/design-plans/2026-02-15-1452-upgrade-dependencies.md
+**Plan:** docs/implementation-plans/2026-02-15-1556-upgrade-dependencies.md
+**Key files:** .nvmrc, package.json, pnpm-lock.yaml, docs/notes/eslint-peer-conflicts.md
