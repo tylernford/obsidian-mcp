@@ -10,7 +10,7 @@ import { registerNavigationTools } from "./tools/navigation.js";
 import { registerPeriodicTools } from "./tools/periodic.js";
 
 const client = new ObsidianClient({
-  apiKey: process.env.OBSIDIAN_API_KEY!,
+  apiKey: process.env.OBSIDIAN_API_KEY,
   host: process.env.OBSIDIAN_API_HOST,
   port: process.env.OBSIDIAN_API_PORT,
 });
@@ -25,4 +25,9 @@ registerNavigationTools(server, client);
 registerPeriodicTools(server, client);
 
 const transport = new StdioServerTransport();
-await server.connect(transport);
+try {
+  await server.connect(transport);
+} catch (error) {
+  console.error("Failed to start MCP server:", error);
+  process.exit(1);
+}

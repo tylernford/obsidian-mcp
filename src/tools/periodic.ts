@@ -2,13 +2,8 @@ import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { ObsidianClient } from "../api-client.js";
 
-const periodEnum = z.enum([
-  "daily",
-  "weekly",
-  "monthly",
-  "quarterly",
-  "yearly",
-]);
+const PERIODS = ["daily", "weekly", "monthly", "quarterly", "yearly"] as const;
+const periodEnum = z.enum(PERIODS);
 
 export function registerPeriodicTools(
   server: McpServer,
@@ -119,6 +114,10 @@ export function registerPeriodicTools(
               isError: true,
             };
           }
+
+          return {
+            content: [{ type: "text", text: `Updated ${period} note` }],
+          };
         } else {
           return {
             content: [{ type: "text", text: result.error }],

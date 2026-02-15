@@ -15,3 +15,11 @@ Converted the entire codebase from JavaScript to TypeScript with `strict: true` 
 **Design:** docs/design-plans/2026-02-14-1042-typescript-refactor.md
 **Plan:** docs/implementation-plans/2026-02-14-1353-typescript-refactor.md
 **Key files:** tsconfig.json, eslint.config.js, .prettierrc, lefthook.yml, src/index.ts, src/api-client.ts, src/tools/\*.ts
+
+## 2026-02-15: QA Fixes (Post-TypeScript Refactor)
+
+Addressed all 12 in-scope issues from the post-TypeScript refactor QA review. Removed non-null assertions, added runtime validation guards in metadata tools, hardened the API client with generic `ApiResponse<T>` and safe JSON parsing, fixed ESLint scoping to `src/**/*.ts`, and cleaned up minor issues across periodic and commands tools.
+
+**Design:** docs/design-plans/2026-02-15-0902-qa-fixes.md
+**Plan:** docs/implementation-plans/2026-02-15-0905-qa-fixes.md
+**Key files:** src/api-client.ts, src/index.ts, src/tools/metadata.ts, src/tools/periodic.ts, src/tools/commands.ts, eslint.config.js

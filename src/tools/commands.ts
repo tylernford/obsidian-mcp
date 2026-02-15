@@ -39,6 +39,7 @@ export function registerCommandTools(
     async ({ commandId }) => {
       const result = await client.request(
         "POST",
+        // encodeURIComponent (not encodePath) is correct here — command IDs are flat identifiers, not file paths
         `/commands/${encodeURIComponent(commandId)}/`,
       );
 
