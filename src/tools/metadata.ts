@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { ObsidianClient, type ApiResponse } from "../api-client.js";
+import { ObsidianClient } from "../api-client.js";
 
 export function registerMetadataTools(
   server: McpServer,
@@ -27,9 +27,13 @@ export function registerMetadataTools(
       const encodedPath = client.encodePath(filename);
 
       // Read current note to get existing tags
-      const readResult = (await client.request("GET", `/vault/${encodedPath}`, {
-        headers: { Accept: "application/vnd.olrapi.note+json" },
-      })) as ApiResponse<{ tags?: string[] }>;
+      const readResult = await client.request<{ tags?: string[] }>(
+        "GET",
+        `/vault/${encodedPath}`,
+        {
+          headers: { Accept: "application/vnd.olrapi.note+json" },
+        },
+      );
 
       if (!readResult.ok) {
         return {
@@ -115,9 +119,11 @@ export function registerMetadataTools(
       const encodedPath = client.encodePath(filename);
 
       if (action === "read") {
-        const result = (await client.request("GET", `/vault/${encodedPath}`, {
+        const result = await client.request<{
+          frontmatter?: Record<string, unknown>;
+        }>("GET", `/vault/${encodedPath}`, {
           headers: { Accept: "application/vnd.olrapi.note+json" },
-        })) as ApiResponse<{ frontmatter?: Record<string, unknown> }>;
+        });
 
         if (!result.ok) {
           return {

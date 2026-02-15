@@ -23,3 +23,9 @@ Addressed all 12 in-scope issues from the post-TypeScript refactor QA review. Re
 **Design:** docs/design-plans/2026-02-15-0902-qa-fixes.md
 **Plan:** docs/implementation-plans/2026-02-15-0905-qa-fixes.md
 **Key files:** src/api-client.ts, src/index.ts, src/tools/metadata.ts, src/tools/periodic.ts, src/tools/commands.ts, eslint.config.js
+
+## 2026-02-15: API Client Type Refinements
+
+Made `request()` and `patch()` generic (`<T>`) so callers specify expected response types at the call site, eliminating `as` type assertions in tool code. Unexported `ApiResponse` and `ObsidianClientConfig` types since they're internal to the API client module.
+
+**Key files:** src/api-client.ts, src/tools/metadata.ts
