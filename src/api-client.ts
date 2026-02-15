@@ -1,4 +1,4 @@
-export interface ObsidianClientConfig {
+interface ObsidianClientConfig {
   apiKey: string | undefined;
   host?: string;
   port?: string;
@@ -18,7 +18,7 @@ interface PatchOptions {
   createIfMissing?: boolean;
 }
 
-export type ApiResponse<T = unknown> =
+type ApiResponse<T = unknown> =
   | { ok: true; status: number; data: T }
   | { ok: false; status: number; error: string };
 
