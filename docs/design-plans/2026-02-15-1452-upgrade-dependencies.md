@@ -99,7 +99,7 @@ _Filled in during `/build` phase_
 
 | Date | Task | Files | Notes |
 | ---- | ---- | ----- | ----- |
-|      |      |       |       |
+| 2026-02-15 | Task 1 | `.nvmrc`, `package.json` | Created `.nvmrc` pinned to 24; bumped `engines.node` to `>=24.0.0` and `packageManager` to `pnpm@10.29.3` |
 
 ---
 
