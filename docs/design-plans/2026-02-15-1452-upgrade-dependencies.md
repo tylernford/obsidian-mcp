@@ -1,7 +1,7 @@
 # Upgrade Dependencies
 
 **Created:** 2026-02-15
-**Status:** Design
+**Status:** Complete
 **Implementation Plan Doc:** docs/implementation-plans/2026-02-15-1556-upgrade-dependencies.md
 
 ---
@@ -107,9 +107,9 @@ _Filled in during `/build` phase_
 
 ## Completion
 
-**Completed:** _TBD_
-**Final Status:** _TBD_
+**Completed:** 2026-02-15
+**Final Status:** Complete
 
-**Summary:** _TBD_
+**Summary:** Bumped Node engine to 24 and pnpm to 10.29.3, created `.nvmrc`, upgraded Zod from 3.25.76 to 4.3.6 (zero code changes required), removed redundant `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser` direct devDependencies, and updated the eslint-peer-conflicts doc. All acceptance criteria met — `pnpm install`, `typecheck`, `lint`, and `build` all pass cleanly.
 
-**Deviations from Plan:** _TBD_
+**Deviations from Plan:** None. The build followed the implementation plan exactly as specified.
