@@ -40,11 +40,11 @@ export class ObsidianClient {
     this.baseUrl = `http://${host}:${port}`;
   }
 
-  async request(
+  async request<T = unknown>(
     method: string,
     path: string,
     { body, headers = {}, queryParams }: RequestOptions = {},
-  ): Promise<ApiResponse> {
+  ): Promise<ApiResponse<T>> {
     const url = new URL(path, this.baseUrl);
     if (queryParams) {
       for (const [key, value] of Object.entries(queryParams)) {
@@ -95,7 +95,7 @@ export class ObsidianClient {
 
     const contentLength = response.headers.get("content-length");
     if (response.status === 204 || (contentLength === "0" && response.ok)) {
-      return { ok: true, status: response.status, data: null };
+      return { ok: true, status: response.status, data: null as T };
     }
 
     const contentType = response.headers.get("content-type") || "";
@@ -130,7 +130,7 @@ export class ObsidianClient {
       };
     }
 
-    return { ok: true, status: response.status, data };
+    return { ok: true, status: response.status, data: data as T };
   }
 
   encodePath(path: string): string {
@@ -140,10 +140,10 @@ export class ObsidianClient {
       .join("/");
   }
 
-  async patch(
+  async patch<T = unknown>(
     path: string,
     { operation, targetType, target, content, createIfMissing }: PatchOptions,
-  ): Promise<ApiResponse> {
+  ): Promise<ApiResponse<T>> {
     const headers: Record<string, string> = {
       "Content-Type": "text/markdown",
       Operation: operation,
