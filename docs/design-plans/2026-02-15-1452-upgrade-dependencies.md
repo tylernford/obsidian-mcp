@@ -97,10 +97,11 @@ docs/notes/eslint-peer-conflicts.md # update to reflect final state
 
 _Filled in during `/build` phase_
 
-| Date       | Task   | Files                            | Notes                                                                                                                     |
-| ---------- | ------ | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| 2026-02-15 | Task 1 | `.nvmrc`, `package.json`         | Created `.nvmrc` pinned to 24; bumped `engines.node` to `>=24.0.0` and `packageManager` to `pnpm@10.29.3`                 |
-| 2026-02-15 | Task 2 | `package.json`, `pnpm-lock.yaml` | Upgraded zod 3.25.76 → 4.3.6; removed `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser`; all checks pass |
+| Date       | Task   | Files                                 | Notes                                                                                                                     |
+| ---------- | ------ | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| 2026-02-15 | Task 1 | `.nvmrc`, `package.json`              | Created `.nvmrc` pinned to 24; bumped `engines.node` to `>=24.0.0` and `packageManager` to `pnpm@10.29.3`                 |
+| 2026-02-15 | Task 2 | `package.json`, `pnpm-lock.yaml`      | Upgraded zod 3.25.76 → 4.3.6; removed `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser`; all checks pass |
+| 2026-02-15 | Task 3 | `docs/notes/eslint-peer-conflicts.md` | Updated to reflect dep cleanup and clarify ESLint 10 is still blocked                                                     |
 
 ---
 

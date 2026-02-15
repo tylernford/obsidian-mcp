@@ -40,8 +40,10 @@ export default tseslint.config(
 );
 ```
 
-The unified package re-exports the plugin and parser internally, so all three (`typescript-eslint`, `@typescript-eslint/eslint-plugin`, `@typescript-eslint/parser`) end up installed. This is fine — no duplication, just different entry points.
+The unified package re-exports the plugin and parser internally — the separate `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser` packages remain installed as transitive dependencies but don't need to be listed as direct devDependencies.
 
-## When this can be cleaned up
+**Update (2026-02-15):** Removed `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser` from direct devDependencies. The unified `typescript-eslint` package provides them transitively, so listing them separately was redundant.
 
-Once `@typescript-eslint` releases a version supporting ESLint 10, all three can be upgraded together and `@typescript-eslint/eslint-plugin` + `@typescript-eslint/parser` can likely be removed as direct dependencies (the unified package handles them).
+## Remaining: ESLint 10 upgrade
+
+Still blocked. `typescript-eslint@8` only supports `eslint ^8.57.0 || ^9.0.0`. Once `typescript-eslint` ships ESLint 10 support, ESLint and `@eslint/js` can be upgraded from v9 to v10.
