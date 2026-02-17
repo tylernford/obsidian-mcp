@@ -126,19 +126,19 @@ export function handleHttpError(
 
 ## Acceptance Criteria
 
-- [ ] ECONNRESET produces: `Connection to Obsidian at ${baseUrl} was reset. This usually means Obsidian restarted mid-request — try again.`
-- [ ] 5xx produces: `Obsidian REST API plugin returned an internal error. This is usually a plugin-side issue — try restarting Obsidian. (HTTP ${status}: ${message})`
-- [ ] ECONNREFUSED, EACCES, ETIMEDOUT, ECONNRESET messages include `baseUrl`
-- [ ] Default connection error fallback includes `baseUrl`
-- [ ] 401 produces: `Authentication failed. Check that OBSIDIAN_API_KEY matches the key in Obsidian's Local REST API plugin settings. (HTTP 401: ${message})`
-- [ ] 403 produces: `Request forbidden by Obsidian. Check the Local REST API plugin's access settings. (HTTP 403: ${message})`
-- [ ] 404 produces: `Not found: ${path}. Check that the file or path exists in your vault. (HTTP 404: ${message})`
-- [ ] Default HTTP error produces: `Obsidian API error (HTTP ${status}: ${message})`
-- [ ] ENOTFOUND message is unchanged (hostname only, no `baseUrl`)
-- [ ] `src/errors.ts` exports `handleConnectionError` and `handleHttpError` as standalone functions
-- [ ] `request()` in `api-client.ts` calls the extracted functions instead of inline switch blocks
-- [ ] `pnpm build` compiles without errors
-- [ ] Error message extraction logic (parsing `data` for server message) lives in `errors.ts`
+- [x] ECONNRESET produces: `Connection to Obsidian at ${baseUrl} was reset. This usually means Obsidian restarted mid-request — try again.`
+- [x] 5xx produces: `Obsidian REST API plugin returned an internal error. This is usually a plugin-side issue — try restarting Obsidian. (HTTP ${status}: ${message})`
+- [x] ECONNREFUSED, EACCES, ETIMEDOUT, ECONNRESET messages include `baseUrl`
+- [x] Default connection error fallback includes `baseUrl`
+- [x] 401 produces: `Authentication failed. Check that OBSIDIAN_API_KEY matches the key in Obsidian's Local REST API plugin settings. (HTTP 401: ${message})`
+- [x] 403 produces: `Request forbidden by Obsidian. Check the Local REST API plugin's access settings. (HTTP 403: ${message})`
+- [x] 404 produces: `Not found: ${path}. Check that the file or path exists in your vault. (HTTP 404: ${message})`
+- [x] Default HTTP error produces: `Obsidian API error (HTTP ${status}: ${message})`
+- [x] ENOTFOUND message is unchanged (hostname only, no `baseUrl`)
+- [x] `src/errors.ts` exports `handleConnectionError` and `handleHttpError` as standalone functions
+- [x] `request()` in `api-client.ts` calls the extracted functions instead of inline switch blocks
+- [x] `pnpm build` compiles without errors
+- [x] Error message extraction logic (parsing `data` for server message) lives in `errors.ts`
 
 ---
 
