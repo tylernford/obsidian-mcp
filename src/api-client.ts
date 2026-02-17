@@ -78,19 +78,43 @@ export class ObsidianClient {
     } catch (error) {
       const err = error as NodeJS.ErrnoException;
       const cause = err.cause as NodeJS.ErrnoException | undefined;
-      if (err.code === "ECONNREFUSED" || cause?.code === "ECONNREFUSED") {
-        return {
-          ok: false,
-          status: 0,
-          error:
-            "Could not connect to Obsidian. Make sure Obsidian is running and the Local REST API plugin is enabled.",
-        };
+      const code = err.code || cause?.code;
+
+      switch (code) {
+        case "ECONNREFUSED":
+          return {
+            ok: false,
+            status: 0,
+            error:
+              "Could not connect to Obsidian. Make sure Obsidian is running and the Local REST API plugin is enabled.",
+          };
+        case "EACCES":
+          return {
+            ok: false,
+            status: 0,
+            error:
+              "Permission denied when connecting to Obsidian. Check that the configured port (default 27123) is accessible.",
+          };
+        case "ETIMEDOUT":
+          return {
+            ok: false,
+            status: 0,
+            error:
+              "Connection to Obsidian timed out. Check that the host and port settings are correct and that Obsidian is responsive.",
+          };
+        case "ENOTFOUND":
+          return {
+            ok: false,
+            status: 0,
+            error: `Could not resolve host '${url.hostname}'. Check the OBSIDIAN_API_HOST setting.`,
+          };
+        default:
+          return {
+            ok: false,
+            status: 0,
+            error: `Could not connect to Obsidian: ${err.message}`,
+          };
       }
-      return {
-        ok: false,
-        status: 0,
-        error: `Connection error: ${err.message}`,
-      };
     }
 
     const contentLength = response.headers.get("content-length");

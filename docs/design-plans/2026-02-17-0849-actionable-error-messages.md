@@ -108,9 +108,9 @@ src/api-client.ts  # Add system error branches in fetch catch block (~line 78-94
 
 _Filled in during `/build` phase_
 
-| Date | Task | Files | Notes |
-| ---- | ---- | ----- | ----- |
-|      |      |       |       |
+| Date       | Task   | Files             | Notes                                                                                             |
+| ---------- | ------ | ----------------- | ------------------------------------------------------------------------------------------------- |
+| 2026-02-17 | Task 1 | src/api-client.ts | Refactored catch block to switch on resolved error code; added EACCES, ETIMEDOUT, ENOTFOUND cases |
 
 ---
 
