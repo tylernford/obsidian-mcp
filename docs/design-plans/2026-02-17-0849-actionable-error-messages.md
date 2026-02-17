@@ -1,7 +1,7 @@
 # Actionable Error Messages
 
 **Created:** 2026-02-17
-**Status:** Design
+**Status:** Complete
 **Implementation Plan Doc:** docs/implementation-plans/2026-02-17-0910-actionable-error-messages.md
 
 ---
@@ -117,9 +117,9 @@ _Filled in during `/build` phase_
 
 ## Completion
 
-**Completed:** _TBD_
-**Final Status:** _TBD_
+**Completed:** 2026-02-17
+**Final Status:** Complete
 
-**Summary:** _TBD_
+**Summary:** Added actionable error messages to the API client for 6 error scenarios (EACCES, ETIMEDOUT, ENOTFOUND system errors and HTTP 401, 403, 404). Refactored both the catch block and HTTP error handling to use `switch` statements. All messages follow the existing human-readable style. Only `src/api-client.ts` was modified.
 
-**Deviations from Plan:** _TBD_
+**Deviations from Plan:** None.
