@@ -37,3 +37,11 @@ Upgraded Node engine to 24, pnpm to 10.29.3, and Zod from v3 to v4 (zero code ch
 **Design:** docs/design-plans/2026-02-15-1452-upgrade-dependencies.md
 **Plan:** docs/implementation-plans/2026-02-15-1556-upgrade-dependencies.md
 **Key files:** .nvmrc, package.json, pnpm-lock.yaml, docs/notes/eslint-peer-conflicts.md
+
+## 2026-02-17: Actionable Error Messages
+
+Improved error messages in the API client to include actionable guidance for common failure scenarios. Added specific messages for EACCES, ETIMEDOUT, and ENOTFOUND system errors and HTTP 401, 403, and 404 responses. Refactored error handling to use switch statements.
+
+**Design:** docs/design-plans/2026-02-17-0849-actionable-error-messages.md
+**Plan:** docs/implementation-plans/2026-02-17-0910-actionable-error-messages.md
+**Key files:** src/api-client.ts
