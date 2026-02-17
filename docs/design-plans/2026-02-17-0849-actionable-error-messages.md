@@ -2,7 +2,7 @@
 
 **Created:** 2026-02-17
 **Status:** Design
-**Implementation Plan Doc:** _TBD during /plan phase_
+**Implementation Plan Doc:** docs/implementation-plans/2026-02-17-0910-actionable-error-messages.md
 
 ---
 
