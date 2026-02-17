@@ -1,7 +1,7 @@
 # Error Handling QA Updates
 
 **Created:** 2026-02-17
-**Status:** Design
+**Status:** Complete
 **Implementation Plan Doc:** docs/implementation-plans/2026-02-17-1016-error-handling-qa.md
 
 ---
@@ -148,9 +148,9 @@ _Filled in during `/build` phase_
 
 ## Completion
 
-**Completed:** TBD
-**Final Status:** TBD
+**Completed:** 2026-02-17
+**Final Status:** Complete
 
-**Summary:** TBD
+**Summary:** Extracted error handling into a dedicated `src/errors.ts` module with `handleConnectionError` and `handleHttpError` functions. Added ECONNRESET and 5xx error handling. Included `baseUrl` in network error messages for non-DNS errors. Preserved server-provided messages in all HTTP error responses. Simplified `request()` in `api-client.ts` to delegate to the new module.
 
-**Deviations from Plan:** TBD
+**Deviations from Plan:** Used if/else instead of switch for the 5xx check in `handleHttpError`, since switch statements can't express range conditions (`status >= 500`). No other deviations.

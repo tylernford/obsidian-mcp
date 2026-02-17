@@ -45,3 +45,11 @@ Improved error messages in the API client to include actionable guidance for com
 **Design:** docs/design-plans/2026-02-17-0849-actionable-error-messages.md
 **Plan:** docs/implementation-plans/2026-02-17-0910-actionable-error-messages.md
 **Key files:** src/api-client.ts
+
+## 2026-02-17: Error Handling QA Updates
+
+QA improvements to actionable error messages: extracted error handling into a dedicated `src/errors.ts` module, added missing ECONNRESET and 5xx error cases, included `baseUrl` in network error messages, and preserved server-provided messages in HTTP error responses.
+
+**Design:** docs/design-plans/2026-02-17-0953-error-handling-qa.md
+**Plan:** docs/implementation-plans/2026-02-17-1016-error-handling-qa.md
+**Key files:** src/errors.ts, src/api-client.ts
