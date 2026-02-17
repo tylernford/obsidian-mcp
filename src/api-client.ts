@@ -142,6 +142,29 @@ export class ObsidianClient {
     }
 
     if (!response.ok) {
+      switch (response.status) {
+        case 401:
+          return {
+            ok: false,
+            status: 401,
+            error:
+              "Authentication failed. Check that OBSIDIAN_API_KEY matches the key in Obsidian's Local REST API plugin settings.",
+          };
+        case 403:
+          return {
+            ok: false,
+            status: 403,
+            error:
+              "Request forbidden by Obsidian. Check the Local REST API plugin's access settings.",
+          };
+        case 404:
+          return {
+            ok: false,
+            status: 404,
+            error: `Not found: ${path}. Check that the file or path exists in your vault.`,
+          };
+      }
+
       const dataObj = data as Record<string, unknown> | null;
       const message =
         (dataObj && typeof dataObj === "object" && "message" in dataObj

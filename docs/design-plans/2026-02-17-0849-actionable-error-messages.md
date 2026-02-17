@@ -111,6 +111,7 @@ _Filled in during `/build` phase_
 | Date       | Task   | Files             | Notes                                                                                             |
 | ---------- | ------ | ----------------- | ------------------------------------------------------------------------------------------------- |
 | 2026-02-17 | Task 1 | src/api-client.ts | Refactored catch block to switch on resolved error code; added EACCES, ETIMEDOUT, ENOTFOUND cases |
+| 2026-02-17 | Task 2 | src/api-client.ts | Added switch on response.status for 401, 403, 404 before generic fallback                         |
 
 ---
 
