@@ -1,3 +1,5 @@
+import { handleConnectionError, handleHttpError } from "./errors.js";
+
 interface ObsidianClientConfig {
   apiKey: string | undefined;
   host?: string;
@@ -76,45 +78,11 @@ export class ObsidianClient {
     try {
       response = await fetch(url, options);
     } catch (error) {
-      const err = error as NodeJS.ErrnoException;
-      const cause = err.cause as NodeJS.ErrnoException | undefined;
-      const code = err.code || cause?.code;
-
-      switch (code) {
-        case "ECONNREFUSED":
-          return {
-            ok: false,
-            status: 0,
-            error:
-              "Could not connect to Obsidian. Make sure Obsidian is running and the Local REST API plugin is enabled.",
-          };
-        case "EACCES":
-          return {
-            ok: false,
-            status: 0,
-            error:
-              "Permission denied when connecting to Obsidian. Check that the configured port (default 27123) is accessible.",
-          };
-        case "ETIMEDOUT":
-          return {
-            ok: false,
-            status: 0,
-            error:
-              "Connection to Obsidian timed out. Check that the host and port settings are correct and that Obsidian is responsive.",
-          };
-        case "ENOTFOUND":
-          return {
-            ok: false,
-            status: 0,
-            error: `Could not resolve host '${url.hostname}'. Check the OBSIDIAN_API_HOST setting.`,
-          };
-        default:
-          return {
-            ok: false,
-            status: 0,
-            error: `Could not connect to Obsidian: ${err.message}`,
-          };
-      }
+      return handleConnectionError(
+        error as NodeJS.ErrnoException,
+        this.baseUrl,
+        url,
+      );
     }
 
     const contentLength = response.headers.get("content-length");
@@ -142,39 +110,7 @@ export class ObsidianClient {
     }
 
     if (!response.ok) {
-      switch (response.status) {
-        case 401:
-          return {
-            ok: false,
-            status: 401,
-            error:
-              "Authentication failed. Check that OBSIDIAN_API_KEY matches the key in Obsidian's Local REST API plugin settings.",
-          };
-        case 403:
-          return {
-            ok: false,
-            status: 403,
-            error:
-              "Request forbidden by Obsidian. Check the Local REST API plugin's access settings.",
-          };
-        case 404:
-          return {
-            ok: false,
-            status: 404,
-            error: `Not found: ${path}. Check that the file or path exists in your vault.`,
-          };
-      }
-
-      const dataObj = data as Record<string, unknown> | null;
-      const message =
-        (dataObj && typeof dataObj === "object" && "message" in dataObj
-          ? dataObj.message
-          : null) || (typeof data === "string" ? data : JSON.stringify(data));
-      return {
-        ok: false,
-        status: response.status,
-        error: `Obsidian API error (${response.status}): ${message}`,
-      };
+      return handleHttpError(response.status, data, path);
     }
 
     return { ok: true, status: response.status, data: data as T };

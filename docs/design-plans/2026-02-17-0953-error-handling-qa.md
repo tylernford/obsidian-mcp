@@ -139,9 +139,10 @@ handleHttpError(status: number, data: unknown, path: string):
 
 _Filled in during `/build` phase_
 
-| Date       | Task   | Files                  | Notes                                                                                                    |
-| ---------- | ------ | ---------------------- | -------------------------------------------------------------------------------------------------------- |
-| 2026-02-17 | Task 1 | src/errors.ts (create) | No deviations. Used if/else for 5xx (>= 500 check) instead of switch since switch can't do range checks. |
+| Date       | Task   | Files                      | Notes                                                                                                    |
+| ---------- | ------ | -------------------------- | -------------------------------------------------------------------------------------------------------- |
+| 2026-02-17 | Task 1 | src/errors.ts (create)     | No deviations. Used if/else for 5xx (>= 500 check) instead of switch since switch can't do range checks. |
+| 2026-02-17 | Task 2 | src/api-client.ts (modify) | No deviations.                                                                                           |
 
 ---
 
