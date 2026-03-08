@@ -8,7 +8,7 @@ Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidia
 
 ## Prerequisites
 
-- **Node.js** 18+
+- **Node.js** 24+
 - **pnpm** (`npm install -g pnpm` or see [pnpm.io](https://pnpm.io/installation))
 - **Obsidian** with the following community plugins installed and enabled:
   - [Local REST API](https://github.com/coddingtonbear/obsidian-local-rest-api) (required)
@@ -77,6 +77,19 @@ Start a new Claude Code session and run `/mcp` to confirm the obsidian server sh
 | `OBSIDIAN_API_HOST` | No       | `localhost` | REST API host — only change if you modified the plugin's bind address |
 | `OBSIDIAN_API_PORT` | No       | `27123`     | REST API port — only change if you modified the plugin's HTTP port    |
 
+## Usage Examples
+
+Once the server is connected, you can use natural language in Claude Code:
+
+| Prompt                                   | Tool            |
+| ---------------------------------------- | --------------- |
+| "List everything in my Projects folder"  | `vault_list`    |
+| "Read my weekly note"                    | `periodic_read` |
+| "Create a new note called Meeting Notes" | `vault_create`  |
+| "Search my vault for anything about MCP" | `search`        |
+| "Tag this note with #review"             | `tags_manage`   |
+| "Open my daily note in Obsidian"         | `file_open`     |
+
 ## Tools
 
 ### Core File Operations
@@ -123,3 +136,12 @@ Start a new Claude Code session and run `/mcp` to confirm the obsidian server sh
 | ----------------- | ---------------------------------------------------------------- |
 | `periodic_read`   | Read a periodic note (daily, weekly, monthly, quarterly, yearly) |
 | `periodic_update` | Update a periodic note (creates from template if needed)         |
+
+## Built With
+
+- [TypeScript](https://www.typescriptlang.org/)
+- [MCP SDK](https://github.com/modelcontextprotocol/typescript-sdk) (`@modelcontextprotocol/sdk`)
+- [Zod](https://zod.dev/) (schema validation)
+- [ESLint](https://eslint.org/) + [Prettier](https://prettier.io/) (linting/formatting)
+- [Lefthook](https://github.com/evilmartians/lefthook) (git hooks)
+- [pnpm](https://pnpm.io/) (package manager)
