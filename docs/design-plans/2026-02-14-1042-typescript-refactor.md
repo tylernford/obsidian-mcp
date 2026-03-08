@@ -250,7 +250,7 @@ _Filled in during `/build` phase_
 
 | Date       | Task   | Files                                                             | Notes                                                                                                                          |
 | ---------- | ------ | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| 2026-02-14 | Task 1 | tsconfig.json, package.json, .gitignore                           | Used `tsc --init` then edited to match design doc config                                                                       |
+| 2026-02-14 | Task 1 | tsconfig.json, package.json, .gitignore                           | Used `tsc --init` then edited to match design spec config                                                                      |
 | 2026-02-14 | Task 2 | src/api-client.ts, src/index.ts, deleted api-client.js + index.js | Deviated: added `@types/node` devDependency (needed for `process.env` and `NodeJS.ErrnoException`)                             |
 | 2026-02-14 | Task 3 | src/tools/_.ts (7 files), deleted src/tools/_.js (7 files)        | Clean build, no deviations                                                                                                     |
 | 2026-02-14 | Task 4 | eslint.config.js, .prettierrc, package.json, all .ts files        | Deviated: pinned ESLint 9 (v10 incompatible with @typescript-eslint), used `typescript-eslint` unified package for flat config |
@@ -269,5 +269,5 @@ _Filled in during `/build` phase_
 
 - Added `@types/node` as a devDependency — needed for `process.env` types and `NodeJS.ErrnoException` in error handling
 - Pinned ESLint to v9 — ESLint v10 is incompatible with `@typescript-eslint` at time of build
-- Used `typescript-eslint` unified package for flat config instead of the separate `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser` packages specified in the design doc
+- Used `typescript-eslint` unified package for flat config instead of the separate `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser` packages specified in the design spec
 - Added `pnpm.onlyBuiltDependencies: ["lefthook"]` to `package.json` — pnpm v10 blocks postinstall build scripts by default, requiring explicit approval

@@ -1,6 +1,6 @@
 # Implementation Plan: Actionable Error Messages
 
-**Design Doc:** docs/design-plans/2026-02-17-0849-actionable-error-messages.md
+**Design Spec:** docs/design-plans/2026-02-17-0849-actionable-error-messages.md
 **Created:** 2026-02-17
 
 ---
@@ -27,7 +27,7 @@ Add actionable error messages to `src/api-client.ts` for common system errors (`
 
 **Discrepancies found:**
 
-- None. Design doc line references match the current codebase.
+- None. Design spec line references match the current codebase.
 
 ---
 

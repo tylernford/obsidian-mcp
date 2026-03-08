@@ -1,6 +1,6 @@
 # Implementation Plan: Upgrade Dependencies
 
-**Design Doc:** docs/design-plans/2026-02-15-1452-upgrade-dependencies.md
+**Design Spec:** docs/design-plans/2026-02-15-1452-upgrade-dependencies.md
 **Created:** 2026-02-15
 
 ---
@@ -27,7 +27,7 @@ Upgrade Node engine to 24, pnpm to 10.29.3, Zod to v4, remove redundant `@typesc
 
 **Discrepancies found:**
 
-- None — design doc accurately reflects the codebase
+- None — design spec accurately reflects the codebase
 
 ---
 

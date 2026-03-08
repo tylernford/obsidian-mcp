@@ -1,6 +1,6 @@
 # Implementation Plan: TypeScript Refactor
 
-**Design Doc:** docs/design-plans/2026-02-14-1042-typescript-refactor.md
+**Design Spec:** docs/design-plans/2026-02-14-1042-typescript-refactor.md
 **Created:** 2026-02-14
 
 ---
@@ -50,7 +50,7 @@ _Confirmed 2026-02-14 against actual codebase_
 **Steps:**
 
 1. `pnpm add -D typescript`
-2. Create `tsconfig.json` with strict config from design doc
+2. Create `tsconfig.json` with strict config from design spec
 3. Update `package.json`: set `"main": "dist/index.js"`, add `build`, `start`, `typecheck` scripts
 4. Add `dist/` to `.gitignore`
 
@@ -162,7 +162,7 @@ type ApiResponse =
 **Steps:**
 
 1. `pnpm add -D lefthook`
-2. Create `lefthook.yml` with piped pre-commit config from design doc
+2. Create `lefthook.yml` with piped pre-commit config from design spec
 3. Run `lefthook install`
 
 **Done when:** `lefthook install` succeeds. Pre-commit hook runs prettier → typecheck → lint pipeline.
