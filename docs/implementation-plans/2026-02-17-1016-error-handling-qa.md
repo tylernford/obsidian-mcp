@@ -1,6 +1,6 @@
 # Implementation Plan: Error Handling QA Updates
 
-**Design Doc:** docs/design-plans/2026-02-17-0953-error-handling-qa.md
+**Design Spec:** docs/design-plans/2026-02-17-0953-error-handling-qa.md
 **Created:** 2026-02-17
 
 ---
@@ -38,7 +38,7 @@ QA improvements to actionable error messages: add missing error cases (ECONNRESE
 
 ### Task 1: Create `src/errors.ts` with `handleConnectionError` and `handleHttpError`
 
-**Description:** Create the new error handling module with both exported functions, implementing all error cases from the design doc's error message reference tables. Include the message extraction logic (parsing `data` for server message) in `handleHttpError`.
+**Description:** Create the new error handling module with both exported functions, implementing all error cases from the design spec's error message reference tables. Include the message extraction logic (parsing `data` for server message) in `handleHttpError`.
 
 **Files:**
 

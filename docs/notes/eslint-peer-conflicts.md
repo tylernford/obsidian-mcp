@@ -28,7 +28,7 @@ pnpm add -D eslint@9 @eslint/js@9
 
 ## Flat config approach
 
-The design doc planned to use the separate packages (`@typescript-eslint/eslint-plugin` + `@typescript-eslint/parser`), but ESLint 9 flat config works best with the unified `typescript-eslint` package:
+The design spec planned to use the separate packages (`@typescript-eslint/eslint-plugin` + `@typescript-eslint/parser`), but ESLint 9 flat config works best with the unified `typescript-eslint` package:
 
 ```js
 import eslint from "@eslint/js";

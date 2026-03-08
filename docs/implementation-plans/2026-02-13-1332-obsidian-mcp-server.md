@@ -1,6 +1,6 @@
 # Implementation Plan: Obsidian MCP Server
 
-**Design Doc:** docs/design-plans/2026-02-13-1254-obsidian-mcp-server.md
+**Design Spec:** docs/design-plans/2026-02-13-1254-obsidian-mcp-server.md
 **Created:** 2026-02-13
 
 ---
@@ -13,12 +13,12 @@ Build a Node.js MCP server that wraps Obsidian's Local REST API (30 HTTP endpoin
 
 ## Codebase Verification
 
-_Confirmed assumptions from design doc against actual codebase and API spec._
+_Confirmed assumptions from design spec against actual codebase and API spec._
 
 - [x] Repo is greenfield — only docs scaffolding exists. No source files, no package.json. Verified.
-- [x] All 14 REST API endpoints referenced in design doc exist and match the OpenAPI spec at `obsidian-local-rest-api/docs/openapi.yaml`. Verified.
+- [x] All 14 REST API endpoints referenced in design spec exist and match the OpenAPI spec at `obsidian-local-rest-api/docs/openapi.yaml`. Verified.
 - [x] Auth is Bearer token in Authorization header (`scheme: "bearer"`, `type: "http"`). Verified.
-- [x] HTTP mode available on port 27123 (HTTPS on 27124). Design doc correctly targets HTTP. Verified.
+- [x] HTTP mode available on port 27123 (HTTPS on 27124). Design spec correctly targets HTTP. Verified.
 - [x] MCP SDK `@modelcontextprotocol/sdk` v1.26.0 supports `server.tool()` API with Zod schemas and `StdioServerTransport`. Verified.
 - [x] PATCH endpoints use custom headers (`Operation`, `Target-Type`, `Target`) not body fields. Verified.
 - [x] GET endpoints support `Accept: application/vnd.olrapi.note+json` for JSON response with parsed frontmatter/tags. Verified.
@@ -31,7 +31,7 @@ _Confirmed assumptions from design doc against actual codebase and API spec._
 
 **Discrepancies found:**
 
-- None. Design doc matches the actual API spec.
+- None. Design spec matches the actual API spec.
 
 ---
 
@@ -447,7 +447,7 @@ export function registerVaultTools(server, client) {
 
 ## Acceptance Criteria
 
-_Mapped from design doc. Each criterion is testable after the relevant task._
+_Mapped from design spec. Each criterion is testable after the relevant task._
 
 - [x] **MCP server starts**: `node index.js` launches without error and registers all 15 tools (Tasks 2-6)
 - [x] **Claude Code connects**: `claude mcp list` shows the obsidian server; `/mcp` in a session shows connected status (Task 2)
