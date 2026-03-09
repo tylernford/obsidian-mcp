@@ -1,3 +1,5 @@
+rc: ./lefthook.rc
+
 pre-commit:
   piped: true
   jobs:
