@@ -6,7 +6,7 @@ MCP server that wraps Obsidian's [Local REST API](https://github.com/coddingtonb
 Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidian
 ```
 
-[Roadmap](## Roadmap): convert to a proper Obsidian plugin for direct API access.
+[Roadmap](##Roadmap): convert to a proper Obsidian plugin for direct API access.
 
 ## Prerequisites
 
