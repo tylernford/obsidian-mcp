@@ -22,8 +22,8 @@ Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidia
 ### 1. Configure the Local REST API plugin
 
 1. In Obsidian, go to **Settings > Community Plugins > Local REST API** (gear icon)
-2. Enable **"Enable Non-encrypted (HTTP) Server"** — the MCP server connects over HTTP on localhost
-3. Note the **API key** shown in the plugin settings — you'll need it in step 3
+2. Enable **"Enable Non-encrypted (HTTP) Server"**. The MCP server connects over HTTP on localhost
+3. Note the **API key** shown in the plugin settings. You'll need it in step 3
 
 ### 2. Clone and install
 
@@ -36,7 +36,7 @@ pnpm build
 
 ### 3. Register with Claude Code
 
-**Option A: `~/.mcp.json`** (recommended — available in all projects)
+**Option A: `~/.mcp.json`** (recommended: available in all projects)
 
 Create or edit `~/.mcp.json`:
 
@@ -152,10 +152,9 @@ Once the server is connected, you can use natural language in Claude Code:
 
 ### Plugin migration
 
-- Direct access to Obsidian's `app` API instead of HTTP calls through the Local REST API plugin
+- Direct access to Obsidian's API instead of HTTP calls through the Local REST API plugin
 - Single plugin instead of two (removes the Local REST API dependency)
-- No HTTP or API key overhead — the plugin runs inside Obsidian
-
+- No HTTP or API key overhead
 ### Tool redesign
 
 - Every tool is strictly read or write with no mixed operations (split `tags_manage`, `frontmatter_manage`)
