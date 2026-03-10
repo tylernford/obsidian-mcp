@@ -2,11 +2,11 @@
 
 MCP server that wraps Obsidian's [Local REST API](https://github.com/coddingtonbear/obsidian-local-rest-api) into 15 tools for Claude Code.
 
-[Roadmap](#roadmap): convert to a proper Obsidian plugin for direct API access.
-
 ```
 Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidian
 ```
+
+[Roadmap](##roadmap): convert to a proper Obsidian plugin for direct API access.
 
 ## Prerequisites
 
