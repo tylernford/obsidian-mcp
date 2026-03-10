@@ -2,6 +2,8 @@
 
 MCP server that wraps Obsidian's [Local REST API](https://github.com/coddingtonbear/obsidian-local-rest-api) into 15 tools for Claude Code.
 
+[Roadmap](#roadmap): convert to a proper Obsidian plugin for direct API access.
+
 ```
 Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidian
 ```
@@ -145,3 +147,20 @@ Once the server is connected, you can use natural language in Claude Code:
 - [ESLint](https://eslint.org/) + [Prettier](https://prettier.io/) (linting/formatting)
 - [Lefthook](https://github.com/evilmartians/lefthook) (git hooks)
 - [pnpm](https://pnpm.io/) (package manager)
+
+# Roadmap
+
+### Plugin migration
+
+- Direct access to Obsidian's `app` API instead of HTTP calls through the Local REST API plugin
+- Single plugin instead of two (removes the Local REST API dependency)
+- No HTTP or API key overhead — the plugin runs inside Obsidian
+
+### Tool redesign
+
+- Every tool is strictly read or write with no mixed operations (split `tags_manage`, `frontmatter_manage`)
+- `vault_create` accepts frontmatter as a validated object, not embedded in raw markdown
+- Remove `commands_execute`. If a capability matters, it gets a dedicated tool with named parameters
+- Write operations return human-readable receipts that echo what changed
+
+See [docs/backlog.md](docs/backlog.md) for the full backlog.
