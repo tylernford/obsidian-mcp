@@ -148,7 +148,9 @@ Once the server is connected, you can use natural language in Claude Code:
 - [Lefthook](https://github.com/evilmartians/lefthook) (git hooks)
 - [pnpm](https://pnpm.io/) (package manager)
 
-# Roadmap
+---
+
+## Roadmap
 
 ### Plugin migration
 
