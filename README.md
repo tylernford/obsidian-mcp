@@ -2,6 +2,8 @@
 
 MCP server that wraps Obsidian's [Local REST API](https://github.com/coddingtonbear/obsidian-local-rest-api) into 15 tools for Claude Code.
 
+[Roadmap](#roadmap): Convert to a proper Obsidian plugin for direct API access.
+
 ```
 Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidian
 ```
@@ -20,8 +22,8 @@ Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidia
 ### 1. Configure the Local REST API plugin
 
 1. In Obsidian, go to **Settings > Community Plugins > Local REST API** (gear icon)
-2. Enable **"Enable Non-encrypted (HTTP) Server"** — the MCP server connects over HTTP on localhost
-3. Note the **API key** shown in the plugin settings — you'll need it in step 3
+2. Enable **"Enable Non-encrypted (HTTP) Server"**. The MCP server connects over HTTP on localhost
+3. Note the **API key** shown in the plugin settings. You'll need it in step 3
 
 ### 2. Clone and install
 
@@ -34,7 +36,7 @@ pnpm build
 
 ### 3. Register with Claude Code
 
-**Option A: `~/.mcp.json`** (recommended — available in all projects)
+**Option A: `~/.mcp.json`** (recommended: available in all projects)
 
 Create or edit `~/.mcp.json`:
 
@@ -139,9 +141,27 @@ Once the server is connected, you can use natural language in Claude Code:
 
 ## Built With
 
-- [TypeScript](https://www.typescriptlang.org/)
-- [MCP SDK](https://github.com/modelcontextprotocol/typescript-sdk) (`@modelcontextprotocol/sdk`)
-- [Zod](https://zod.dev/) (schema validation)
-- [ESLint](https://eslint.org/) + [Prettier](https://prettier.io/) (linting/formatting)
-- [Lefthook](https://github.com/evilmartians/lefthook) (git hooks)
-- [pnpm](https://pnpm.io/) (package manager)
+- TypeScript
+- MCP SDK (`@modelcontextprotocol/sdk`)
+- Zod (schema validation)
+- ESLint + Prettier (linting/formatting)
+- Lefthook (git hooks)
+- pnpm (package manager)
+
+## Roadmap
+
+### Plugin migration
+
+- Direct access to Obsidian's API instead of HTTP calls through the Local REST API plugin
+- Allows `vault_delete` to use Obsidian's trash rather than hard deletion
+- Single plugin instead of two (removes the Local REST API dependency)
+- No HTTP or API key overhead
+
+### Tool redesign
+
+- Every tool is strictly read or write with no mixed operations (split `tags_manage`, `frontmatter_manage`)
+- `vault_create` accepts frontmatter as a validated object, not embedded in raw markdown
+- Remove `commands_execute`. If a capability matters, it gets a dedicated tool with named parameters
+- Write operations return human-readable receipts that echo what changed
+
+See [docs/backlog.md](docs/backlog.md).
