@@ -265,9 +265,10 @@ _From design spec_
 
 _Filled in during `/build` phase_
 
-| Date       | Task   | Files                                                                            | Notes                                               |
-| ---------- | ------ | -------------------------------------------------------------------------------- | --------------------------------------------------- |
-| 2026-03-12 | Task 1 | legacy/src/, legacy/dist/, legacy/.nvmrc, legacy/eslint.config.js, tsconfig.json | Moved as planned, no dangling functional references |
+| Date       | Task   | Files                                                                            | Notes                                                           |
+| ---------- | ------ | -------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| 2026-03-12 | Task 1 | legacy/src/, legacy/dist/, legacy/.nvmrc, legacy/eslint.config.js, tsconfig.json | Moved as planned, no dangling functional references             |
+| 2026-03-13 | Task 2 | package.json, .gitignore, lefthook.yml                                           | As planned; pnpm install succeeds with only lefthook + prettier |
 
 ---
 

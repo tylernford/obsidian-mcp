@@ -1,3 +1,5 @@
 node_modules/
 dist/
 .DS_Store
+plugin/main.js
+plugin/node_modules/

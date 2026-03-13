@@ -8,8 +8,10 @@ pre-commit:
       run: pnpm prettier --write {staged_files} && git add {staged_files}
 
     - name: typecheck
+      root: "plugin/"
       run: pnpm tsc --noEmit
 
     - name: lint
-      glob: "*.{ts,tsx,mts,js,jsx,mjs}"
+      root: "plugin/"
+      glob: "plugin/*.{ts,tsx,mts,js,jsx,mjs}"
       run: pnpm eslint --fix {staged_files} && git add {staged_files}
