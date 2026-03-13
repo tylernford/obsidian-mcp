@@ -246,18 +246,18 @@ export default class MCPToolsPlugin extends Plugin {
 
 _From design spec_
 
-- [ ] `legacy/` contains `src/`, `dist/`, `.nvmrc`, `eslint.config.js` — no dangling references elsewhere
-- [ ] `pnpm install` at repo root succeeds and installs lefthook + prettier
-- [ ] `pnpm install` in `plugin/` succeeds and installs all dependencies
-- [ ] `pnpm build` in `plugin/` produces `plugin/main.js` (CJS format)
-- [ ] `pnpm dev` in `plugin/` starts esbuild in watch mode
-- [ ] `pnpm typecheck` in `plugin/` passes with no errors
-- [ ] `pnpm lint` in `plugin/` passes with no errors
-- [ ] Plugin loads in Obsidian (symlink `plugin/` → `.obsidian/plugins/mcp-tools/`, enable plugin, no console errors)
-- [ ] Plugin unloads cleanly (disable plugin, no console errors or orphaned state)
-- [ ] Lefthook pre-commit hooks run successfully when committing changes under `plugin/`
-- [ ] Lefthook prettier hook runs on `docs/` files
-- [ ] `plugin/main.js` and `plugin/node_modules/` are gitignored
+- [x] `legacy/` contains `src/`, `dist/`, `.nvmrc`, `eslint.config.js` — no dangling references elsewhere
+- [x] `pnpm install` at repo root succeeds and installs lefthook + prettier
+- [x] `pnpm install` in `plugin/` succeeds and installs all dependencies
+- [x] `pnpm build` in `plugin/` produces `plugin/main.js` (CJS format)
+- [x] `pnpm dev` in `plugin/` starts esbuild in watch mode
+- [x] `pnpm typecheck` in `plugin/` passes with no errors
+- [x] `pnpm lint` in `plugin/` passes with no errors
+- [x] Plugin loads in Obsidian (symlink `plugin/` → `.obsidian/plugins/mcp-tools/`, enable plugin, no console errors)
+- [x] Plugin unloads cleanly (disable plugin, no console errors or orphaned state)
+- [x] Lefthook pre-commit hooks run successfully when committing changes under `plugin/`
+- [x] Lefthook prettier hook runs on `docs/` files
+- [x] `plugin/main.js` and `plugin/node_modules/` are gitignored
 
 ---
 
@@ -276,12 +276,16 @@ _Filled in during `/build` phase_
 
 ## Completion
 
-**Completed:** [Date]
-**Final Status:** [Complete | Partial | Abandoned]
+**Completed:** 2026-03-13
+**Final Status:** Complete
 
-**Summary:** [Brief description of what was actually built]
+**Summary:** Moved existing source to legacy/, set up pnpm workspace with plugin/ as a member, created full Obsidian plugin build toolchain (esbuild, TypeScript, ESLint with obsidianmd plugin), and a minimal MCPToolsPlugin entry point that loads/unloads cleanly.
 
-**Deviations from Plan:** [Any significant changes from original design]
+**Deviations from Plan:**
+
+- Added `packages: ["plugin"]` to `pnpm-workspace.yaml` — required for plugin deps to install as workspace member
+- Added `esbuild` to root `onlyBuiltDependencies` — pnpm 10 blocks build scripts by default
+- Changed `console.log` to `console.debug` in main.ts — obsidianmd ESLint plugin disallows `console.log`
 
 ---
 
