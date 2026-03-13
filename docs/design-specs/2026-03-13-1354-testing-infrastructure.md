@@ -1,6 +1,6 @@
 # Testing Infrastructure
 
-**Created:** 2026-03-13 **Implementation Plan:** TBD
+**Created:** 2026-03-13 **Implementation Plan:** docs/implementation-plans/2026-03-13-1402-testing-infrastructure.md
 
 ---
 
