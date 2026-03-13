@@ -113,7 +113,6 @@ src/
 - HTTPS support
 - Community plugin registry publishing
 - Stdio or WebSocket transports
-- Tests
 
 ---
 
