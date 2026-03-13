@@ -143,8 +143,9 @@ export default defineConfig({
 
 _Filled in during `/build` phase_
 
-| Date | Task | Files | Notes |
-| ---- | ---- | ----- | ----- |
+| Date       | Task   | Files                               | Notes                                                                                   |
+| ---------- | ------ | ----------------------------------- | --------------------------------------------------------------------------------------- |
+| 2026-03-13 | Task 1 | plugin/package.json, pnpm-lock.yaml | Scripts and deps added as planned. Pre-existing peer warnings unrelated to our changes. |
 
 ---
 
