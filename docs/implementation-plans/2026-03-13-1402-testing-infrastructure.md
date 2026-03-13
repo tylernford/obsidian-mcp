@@ -143,9 +143,10 @@ export default defineConfig({
 
 _Filled in during `/build` phase_
 
-| Date       | Task   | Files                               | Notes                                                                                   |
-| ---------- | ------ | ----------------------------------- | --------------------------------------------------------------------------------------- |
-| 2026-03-13 | Task 1 | plugin/package.json, pnpm-lock.yaml | Scripts and deps added as planned. Pre-existing peer warnings unrelated to our changes. |
+| Date       | Task   | Files                                                                               | Notes                                                                                   |
+| ---------- | ------ | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| 2026-03-13 | Task 1 | plugin/package.json, pnpm-lock.yaml                                                 | Scripts and deps added as planned. Pre-existing peer warnings unrelated to our changes. |
+| 2026-03-13 | Task 2 | plugin/vitest.config.ts, plugin/src/**mocks**/obsidian.ts, plugin/eslint.config.mts | Added vitest.config.ts to eslint globalIgnores (same pattern as esbuild.config.mjs).    |
 
 ---
 
