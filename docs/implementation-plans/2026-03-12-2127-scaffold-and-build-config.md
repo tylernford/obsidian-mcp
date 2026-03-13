@@ -265,8 +265,9 @@ _From design spec_
 
 _Filled in during `/build` phase_
 
-| Date | Task | Files | Notes |
-| ---- | ---- | ----- | ----- |
+| Date       | Task   | Files                                                                            | Notes                                               |
+| ---------- | ------ | -------------------------------------------------------------------------------- | --------------------------------------------------- |
+| 2026-03-12 | Task 1 | legacy/src/, legacy/dist/, legacy/.nvmrc, legacy/eslint.config.js, tsconfig.json | Moved as planned, no dangling functional references |
 
 ---
 
