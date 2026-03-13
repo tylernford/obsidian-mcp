@@ -6,6 +6,7 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
+      "esbuild",
       "lefthook"
     ]
   }

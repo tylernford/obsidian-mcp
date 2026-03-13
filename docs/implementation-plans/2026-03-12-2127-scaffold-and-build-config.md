@@ -265,10 +265,11 @@ _From design spec_
 
 _Filled in during `/build` phase_
 
-| Date       | Task   | Files                                                                            | Notes                                                           |
-| ---------- | ------ | -------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| 2026-03-12 | Task 1 | legacy/src/, legacy/dist/, legacy/.nvmrc, legacy/eslint.config.js, tsconfig.json | Moved as planned, no dangling functional references             |
-| 2026-03-13 | Task 2 | package.json, .gitignore, lefthook.yml                                           | As planned; pnpm install succeeds with only lefthook + prettier |
+| Date       | Task   | Files                                                                                                                 | Notes                                                                                                                                                                        |
+| ---------- | ------ | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-12 | Task 1 | legacy/src/, legacy/dist/, legacy/.nvmrc, legacy/eslint.config.js, tsconfig.json                                      | Moved as planned, no dangling functional references                                                                                                                          |
+| 2026-03-13 | Task 2 | package.json, .gitignore, lefthook.yml                                                                                | As planned; pnpm install succeeds with only lefthook + prettier                                                                                                              |
+| 2026-03-13 | Task 3 | plugin/{package,manifest,versions,tsconfig}.json, esbuild.config.mjs, eslint.config.mts, version-bump.mjs, styles.css | Deviated: added `packages: ["plugin"]` to pnpm-workspace.yaml and `esbuild` to root onlyBuiltDependencies — without these, plugin deps weren't installed as workspace member |
 
 ---
 
