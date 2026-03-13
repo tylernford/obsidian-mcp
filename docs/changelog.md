@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-03-13: Scaffold & Build Config
+
+Moved existing MCP server source to `legacy/`, created a `plugin/` workspace with full Obsidian plugin build toolchain (esbuild, TypeScript, ESLint with obsidianmd plugin), and a minimal `MCPToolsPlugin` entry point that loads and unloads cleanly in Obsidian.
+
+**Design:** docs/design-specs/2026-03-12-2030-scaffold-and-build-config.md
+**Plan:** docs/implementation-plans/2026-03-12-2127-scaffold-and-build-config.md
+**Key files:** plugin/package.json, plugin/tsconfig.json, plugin/esbuild.config.mjs, plugin/eslint.config.mts, plugin/manifest.json, plugin/src/main.ts, pnpm-workspace.yaml, lefthook.yml
+
 ## 2026-02-13: Obsidian MCP Server
 
 MCP server exposing 15 tools for Claude Code to interact with Obsidian via the Local REST API plugin. Supports vault file operations, search (including Dataview DQL), command execution, active file awareness, navigation, and periodic notes.

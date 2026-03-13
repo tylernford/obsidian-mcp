@@ -1,12 +1,44 @@
-# Obsidian MCP Server
+# MCP Tools for Obsidian
 
-MCP server that wraps Obsidian's [Local REST API](https://github.com/coddingtonbear/obsidian-local-rest-api) into 15 tools for Claude Code.
-
-[Roadmap](#roadmap): Convert to a proper Obsidian plugin for direct API access.
+Obsidian plugin that runs an MCP server directly inside Obsidian, giving AI assistants native access to the Obsidian API — no HTTP bridge or third-party plugins required.
 
 ```
-Claude Code <--stdio--> MCP Server <--HTTP--> Local REST API plugin <--> Obsidian
+Claude Code <--stdio--> Obsidian Plugin (MCP Server) <--> Obsidian API
 ```
+
+> **Status:** Early development. The plugin scaffold and build toolchain are in place. The MCP server is not yet implemented.
+
+## Project Structure
+
+```
+plugin/          Obsidian plugin (in development)
+  src/main.ts    Plugin entry point
+legacy/          Original MCP server (standalone Node.js process)
+docs/            Design specs, implementation plans, changelog
+```
+
+## Development
+
+```bash
+# Install root tooling (lefthook, prettier)
+pnpm install
+
+# Install plugin dependencies
+cd plugin
+pnpm install
+
+# Build the plugin
+pnpm build
+
+# Start dev mode (esbuild watch)
+pnpm dev
+```
+
+---
+
+# Legacy
+
+> The original MCP server, located in `legacy/`. It connects to Obsidian over HTTP via the Local REST API community plugin. This will be replaced once the native plugin is complete.
 
 ## Prerequisites
 
