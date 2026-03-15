@@ -2,7 +2,7 @@
 
 **Created:** 2026-03-15
 **Updated:** 2026-03-15
-**Implementation Plan:** TBD
+**Implementation Plan:** docs/implementation-plans/2026-03-15-1634-http-server-and-auth.md
 **Parent Spec:** [Plugin Architecture from Scaffold](./2026-03-12-1651-plugin-architecture-from-scaffold.md)
 **Validation:** [HTTP Server & Auth — Design Spec Validation](./2026-03-15-1516-http-server-auth-validation.md)
 
