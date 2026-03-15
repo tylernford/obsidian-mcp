@@ -175,8 +175,9 @@ Expand `main.test.ts`: first load generates key, subsequent load preserves key, 
 
 _Filled in during `/build` phase_
 
-| Date | Task | Files | Notes |
-| ---- | ---- | ----- | ----- |
+| Date       | Task   | Files               | Notes                                                                                                                                                                                                                    |
+| ---------- | ------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-03-15 | Task 1 | plugin/package.json | Deviated: Transport class is `StreamableHTTPServerTransport` (not `NodeStreamableHTTPServerTransport`). Import paths: `@modelcontextprotocol/sdk/server/mcp.js` and `@modelcontextprotocol/sdk/server/streamableHttp.js` |
 
 ---
 
