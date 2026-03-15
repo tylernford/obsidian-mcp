@@ -15,3 +15,8 @@ pre-commit:
       root: "plugin/"
       glob: "plugin/*.{ts,tsx,mts,js,jsx,mjs}"
       run: pnpm eslint --fix {staged_files} && git add {staged_files}
+
+    - name: test
+      root: "plugin/"
+      glob: "plugin/src/**/*.ts"
+      run: pnpm test

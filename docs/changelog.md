@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-03-15: Testing Infrastructure
+
+Added vitest-based testing infrastructure to the plugin workspace with manual Obsidian API mocks, v8 coverage reporting, and lefthook pre-commit integration. Includes a smoke test validating the full pipeline.
+
+**Design:** docs/design-specs/2026-03-13-1354-testing-infrastructure.md
+**Plan:** docs/implementation-plans/2026-03-13-1402-testing-infrastructure.md
+**Key files:** plugin/vitest.config.ts, plugin/src/**mocks**/obsidian.ts, plugin/src/main.test.ts, plugin/package.json, lefthook.yml, .gitignore
+
 ## 2026-03-13: Scaffold & Build Config
 
 Moved existing MCP server source to `legacy/`, created a `plugin/` workspace with full Obsidian plugin build toolchain (esbuild, TypeScript, ESLint with obsidianmd plugin), and a minimal `MCPToolsPlugin` entry point that loads and unloads cleanly in Obsidian.

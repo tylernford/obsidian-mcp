@@ -32,6 +32,15 @@ pnpm build
 
 # Start dev mode (esbuild watch)
 pnpm dev
+
+# Run tests
+pnpm test
+
+# Run tests in watch mode
+pnpm test:watch
+
+# Run tests with coverage
+pnpm test:coverage
 ```
 
 ---
