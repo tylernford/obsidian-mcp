@@ -129,13 +129,13 @@ export default defineConfig({
 
 ## Acceptance Criteria
 
-- [ ] `pnpm test` runs vitest and exits cleanly (even with zero test files)
-- [ ] `pnpm test:watch` starts vitest in watch mode
-- [ ] `pnpm test:coverage` generates a v8 coverage report
-- [ ] Importing from `obsidian` in test files resolves to the manual mock
-- [ ] Lefthook pre-commit runs tests when plugin source files change
-- [ ] Test files (`*.test.ts`) are excluded from the production esbuild bundle
-- [ ] No new runtime dependencies — all test deps are devDependencies
+- [x] `pnpm test` runs vitest and exits cleanly (even with zero test files)
+- [x] `pnpm test:watch` starts vitest in watch mode
+- [x] `pnpm test:coverage` generates a v8 coverage report
+- [x] Importing from `obsidian` in test files resolves to the manual mock
+- [x] Lefthook pre-commit runs tests when plugin source files change
+- [x] Test files (`*.test.ts`) are excluded from the production esbuild bundle
+- [x] No new runtime dependencies — all test deps are devDependencies
 
 ---
 
@@ -154,11 +154,11 @@ _Filled in during `/build` phase_
 
 ## Completion
 
-**Completed:** TBD **Final Status:** TBD
+**Completed:** 2026-03-15 **Final Status:** Complete
 
-**Summary:** TBD
+**Summary:** Vitest testing infrastructure is fully operational with manual Obsidian API mocks, v8 coverage reporting, lefthook pre-commit integration, and a passing smoke test.
 
-**Deviations from Plan:** TBD
+**Deviations from Plan:** Changed `moduleResolution` from `"node"` to `"bundler"` and added `skipLibCheck: true` in `plugin/tsconfig.json` to resolve vitest `.d.ts` type incompatibilities. Both changes are net positives — `"bundler"` more accurately reflects how esbuild resolves modules, and `skipLibCheck` only skips typechecking third-party declaration files.
 
 ---
 
