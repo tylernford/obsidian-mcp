@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-03-16: Fix mcp.json Transport Type
+
+Fixed the mcp.json snippet in the settings tab using `"type": "streamable-http"` — Claude Code expects `"type": "http"`. The server wasn't discovered until this was corrected.
+
+**Key files:** plugin/src/settings.ts
+
 ## 2026-03-16: Trivial Tool Porting
 
 Ported 8 MCP tools across 4 modules (vault, commands, active-file, navigation) from HTTP-based REST API calls to direct Obsidian `app` API access. Expanded the obsidian mock for tool-level unit testing and added 21 unit tests. Adopted `obsidian-typings` for type-safe undocumented API access.
