@@ -57,11 +57,58 @@ export class PluginSettingTab {
   constructor(app: App, plugin: Plugin) {
     this.app = app;
     this.plugin = plugin;
-    this.containerEl = document.createElement("div");
+    this.containerEl = createObsidianEl("div");
   }
 
   display(): void {}
   hide(): void {}
+}
+
+/**
+ * Creates an HTMLElement with Obsidian's augmented methods (createEl, empty).
+ * Obsidian monkey-patches these onto HTMLElement.prototype at runtime.
+ */
+function createObsidianEl<K extends keyof HTMLElementTagNameMap>(
+  tag: K,
+  o?: { text?: string; cls?: string | string[]; attr?: Record<string, string> },
+): HTMLElementTagNameMap[K] {
+  const el = document.createElement(tag);
+  if (o?.text) el.textContent = o.text;
+  if (o?.cls) {
+    const classes = Array.isArray(o.cls) ? o.cls : o.cls.split(" ");
+    el.classList.add(...classes);
+  }
+  if (o?.attr) {
+    for (const [k, v] of Object.entries(o.attr)) {
+      el.setAttribute(k, v);
+    }
+  }
+
+  // Obsidian augments HTMLElement.prototype with createEl/empty at runtime.
+  // We attach them directly to each element in the mock.
+  const record = el as unknown as Record<string, unknown>;
+
+  record.createEl = (
+    childTag: string,
+    childOpts?: {
+      text?: string;
+      cls?: string | string[];
+      attr?: Record<string, string>;
+    },
+  ) => {
+    const child = createObsidianEl(
+      childTag as keyof HTMLElementTagNameMap,
+      childOpts,
+    );
+    el.appendChild(child);
+    return child;
+  };
+
+  record.empty = () => {
+    el.replaceChildren();
+  };
+
+  return el;
 }
 
 export class Setting {
@@ -71,18 +118,27 @@ export class Setting {
   descEl: HTMLElement;
   controlEl: HTMLElement;
 
-  constructor(_containerEl: HTMLElement) {
+  constructor(containerEl: HTMLElement) {
     this.settingEl = document.createElement("div");
     this.infoEl = document.createElement("div");
     this.nameEl = document.createElement("div");
     this.descEl = document.createElement("div");
     this.controlEl = document.createElement("div");
+    this.infoEl.appendChild(this.nameEl);
+    this.infoEl.appendChild(this.descEl);
+    this.settingEl.appendChild(this.infoEl);
+    this.settingEl.appendChild(this.controlEl);
+    containerEl.appendChild(this.settingEl);
   }
 
-  setName(_name: string | DocumentFragment): this {
+  setName(name: string | DocumentFragment): this {
+    if (typeof name === "string") this.nameEl.textContent = name;
+    else this.nameEl.appendChild(name);
     return this;
   }
-  setDesc(_desc: string | DocumentFragment): this {
+  setDesc(desc: string | DocumentFragment): this {
+    if (typeof desc === "string") this.descEl.textContent = desc;
+    else this.descEl.appendChild(desc);
     return this;
   }
   setClass(_cls: string): this {
@@ -92,11 +148,15 @@ export class Setting {
     return this;
   }
   addText(cb: (component: TextComponent) => unknown): this {
-    cb(new TextComponent(document.createElement("div")));
+    const tc = new TextComponent(this.controlEl);
+    this.controlEl.appendChild(tc.inputEl);
+    cb(tc);
     return this;
   }
   addButton(cb: (component: ButtonComponent) => unknown): this {
-    cb(new ButtonComponent(document.createElement("div")));
+    const bc = new ButtonComponent(this.controlEl);
+    this.controlEl.appendChild(bc.buttonEl);
+    cb(bc);
     return this;
   }
 }
@@ -110,7 +170,8 @@ export class TextComponent {
       : document.createElement("input");
   }
 
-  setValue(_value: string): this {
+  setValue(value: string): this {
+    this.inputEl.value = value;
     return this;
   }
   setPlaceholder(_placeholder: string): this {
@@ -133,7 +194,8 @@ export class ButtonComponent {
       : document.createElement("button");
   }
 
-  setButtonText(_name: string): this {
+  setButtonText(name: string): this {
+    this.buttonEl.textContent = name;
     return this;
   }
   setCta(): this {
@@ -165,10 +227,10 @@ export class Modal {
 
   constructor(app: App) {
     this.app = app;
-    this.containerEl = document.createElement("div");
-    this.modalEl = document.createElement("div");
-    this.titleEl = document.createElement("div");
-    this.contentEl = document.createElement("div");
+    this.containerEl = createObsidianEl("div");
+    this.modalEl = createObsidianEl("div");
+    this.titleEl = createObsidianEl("div");
+    this.contentEl = createObsidianEl("div");
   }
 
   open(): void {}

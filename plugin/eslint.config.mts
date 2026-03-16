@@ -19,6 +19,17 @@ export default tseslint.config(
     },
   },
   ...obsidianmd.configs.recommended,
+  {
+    rules: {
+      "obsidianmd/ui/sentence-case": [
+        "error",
+        {
+          acronyms: ["API", "CLI", "HTTP", "MCP"],
+          brands: ["Claude Code"],
+        },
+      ],
+    },
+  },
   // Server code uses Node.js APIs (http, Buffer, etc.)
   {
     files: ["src/server.ts"],
