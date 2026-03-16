@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-03-15: HTTP Server & Auth
+
+Added HTTP server with Streamable HTTP transport, Bearer token authentication, and stateful session management to the Obsidian plugin. Includes API key auto-generation via `SecretStorage`, a settings tab with copyable connection info (`mcp.json` snippet and `claude mcp add` command), and full plugin lifecycle wiring (start on load, clean shutdown on unload).
+
+**Design:** docs/design-specs/2026-03-15-1453-http-server-and-auth.md
+**Plan:** docs/implementation-plans/2026-03-15-1634-http-server-and-auth.md
+**Key files:** plugin/src/server.ts, plugin/src/settings.ts, plugin/src/crypto.ts, plugin/src/main.ts, plugin/src/**mocks**/obsidian.ts
+
 ## 2026-03-15: Testing Infrastructure
 
 Added vitest-based testing infrastructure to the plugin workspace with manual Obsidian API mocks, v8 coverage reporting, and lefthook pre-commit integration. Includes a smoke test validating the full pipeline.
