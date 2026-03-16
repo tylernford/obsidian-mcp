@@ -14,7 +14,6 @@ export default class MCPToolsPlugin extends Plugin {
   settings: MCPToolsSettings = { ...DEFAULT_SETTINGS };
   private apiKey = "";
   private httpServer: HttpServer | null = null;
-  private mcpServer: McpServer | null = null;
 
   async onload(): Promise<void> {
     const saved = (await this.loadData()) as Partial<MCPToolsSettings> | null;
@@ -22,16 +21,11 @@ export default class MCPToolsPlugin extends Plugin {
 
     this.apiKey = this.loadOrGenerateApiKey();
 
-    this.mcpServer = new McpServer({
-      name: this.manifest.name,
-      version: this.manifest.version,
-    });
-
     this.httpServer = new HttpServer({
       port: this.settings.port,
       host: "127.0.0.1",
       apiKey: this.apiKey,
-      mcpServer: this.mcpServer,
+      createMcpServer: () => this.createMcpServer(),
     });
 
     try {
@@ -68,16 +62,21 @@ export default class MCPToolsPlugin extends Plugin {
       await this.httpServer.stop();
     }
 
-    if (!this.mcpServer) return;
-
     this.httpServer = new HttpServer({
       port: this.settings.port,
       host: "127.0.0.1",
       apiKey: this.apiKey,
-      mcpServer: this.mcpServer,
+      createMcpServer: () => this.createMcpServer(),
     });
 
     await this.httpServer.start();
+  }
+
+  private createMcpServer(): McpServer {
+    return new McpServer({
+      name: this.manifest.name,
+      version: this.manifest.version,
+    });
   }
 
   private loadOrGenerateApiKey(): string {

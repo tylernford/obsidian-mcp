@@ -50,15 +50,13 @@ async function initializeSession(): Promise<string> {
 
 describe("HttpServer", () => {
   let httpServer: HttpServer;
-  let mcpServer: McpServer;
 
   beforeEach(async () => {
-    mcpServer = createMcpServer();
     httpServer = new HttpServer({
       port: TEST_PORT,
       host: TEST_HOST,
       apiKey: TEST_API_KEY,
-      mcpServer,
+      createMcpServer,
     });
     await httpServer.start();
   });

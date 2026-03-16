@@ -8,7 +8,7 @@ export interface HttpServerConfig {
   port: number;
   host: string;
   apiKey: string;
-  mcpServer: McpServer;
+  createMcpServer: () => McpServer;
 }
 
 export class HttpServer {
@@ -159,7 +159,8 @@ export class HttpServer {
       if (sid) this.transports.delete(sid);
     };
 
-    await this.config.mcpServer.connect(transport);
+    const mcpServer = this.config.createMcpServer();
+    await mcpServer.connect(transport);
     await transport.handleRequest(req, res, body);
   }
 }
