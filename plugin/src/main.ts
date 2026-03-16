@@ -7,6 +7,10 @@ import {
   MCPToolsSettings,
   DEFAULT_SETTINGS,
 } from "./settings";
+import { registerVaultTools } from "./tools/vault";
+import { registerCommandTools } from "./tools/commands";
+import { registerActiveFileTools } from "./tools/active-file";
+import { registerNavigationTools } from "./tools/navigation";
 
 const API_KEY_SECRET_ID = "mcp-api-key";
 
@@ -73,10 +77,15 @@ export default class MCPToolsPlugin extends Plugin {
   }
 
   private createMcpServer(): McpServer {
-    return new McpServer({
+    const server = new McpServer({
       name: this.manifest.name,
       version: this.manifest.version,
     });
+    registerVaultTools(server, this.app);
+    registerCommandTools(server, this.app);
+    registerActiveFileTools(server, this.app);
+    registerNavigationTools(server, this.app);
+    return server;
   }
 
   private loadOrGenerateApiKey(): string {
