@@ -154,26 +154,26 @@ private createMcpServer(): McpServer {
 
 ## Acceptance Criteria
 
-- [ ] `vault_list` returns files and folders at a given path, matching REST API shape
-- [ ] `vault_list` with no path returns vault root contents
-- [ ] `vault_list` with non-existent path returns error
-- [ ] `vault_read` with `format: "markdown"` returns raw file content
-- [ ] `vault_read` with `format: "json"` returns content, frontmatter, tags, and stat
-- [ ] `vault_read` with non-existent file returns error
-- [ ] `vault_create` creates a new file with given content
-- [ ] `vault_create` with existing filename returns error
-- [ ] `vault_delete` moves file to trash via `vault.trash()`
-- [ ] `vault_delete` with non-existent file returns error
-- [ ] `commands_list` returns all registered commands as `{ id, name }` array
-- [ ] `commands_execute` executes a valid command and returns success
-- [ ] `commands_execute` with unknown command returns error
-- [ ] `active_file_read` returns active file content (both formats)
-- [ ] `active_file_read` with no active file returns error
-- [ ] `file_open` opens a file in Obsidian
-- [ ] `file_open` with `newLeaf: true` opens in a new tab
-- [ ] All paths normalized via `normalizePath()` before API calls
-- [ ] All tools registered on `McpServer` via `createMcpServer()` in `main.ts`
-- [ ] Unit tests pass for all 4 tool modules
+- [x] `vault_list` returns files and folders at a given path, matching REST API shape
+- [x] `vault_list` with no path returns vault root contents
+- [x] `vault_list` with non-existent path returns error
+- [x] `vault_read` with `format: "markdown"` returns raw file content
+- [x] `vault_read` with `format: "json"` returns content, frontmatter, tags, and stat
+- [x] `vault_read` with non-existent file returns error
+- [x] `vault_create` creates a new file with given content
+- [x] `vault_create` with existing filename returns error
+- [x] `vault_delete` moves file to trash via `vault.trash()`
+- [x] `vault_delete` with non-existent file returns error
+- [x] `commands_list` returns all registered commands as `{ id, name }` array
+- [x] `commands_execute` executes a valid command and returns success
+- [x] `commands_execute` with unknown command returns error
+- [x] `active_file_read` returns active file content (both formats)
+- [x] `active_file_read` with no active file returns error
+- [x] `file_open` opens a file in Obsidian
+- [x] `file_open` with `newLeaf: true` opens in a new tab
+- [x] All paths normalized via `normalizePath()` before API calls
+- [x] All tools registered on `McpServer` via `createMcpServer()` in `main.ts`
+- [x] Unit tests pass for all 4 tool modules
 
 ---
 
