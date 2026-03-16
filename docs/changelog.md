@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-03-16: Trivial Tool Porting
+
+Ported 8 MCP tools across 4 modules (vault, commands, active-file, navigation) from HTTP-based REST API calls to direct Obsidian `app` API access. Expanded the obsidian mock for tool-level unit testing and added 21 unit tests. Adopted `obsidian-typings` for type-safe undocumented API access.
+
+**Design:** docs/design-specs/2026-03-15-2250-trivial-tool-porting.md
+**Plan:** docs/implementation-plans/2026-03-15-2303-trivial-tool-porting.md
+**Key files:** plugin/src/tools/vault.ts, plugin/src/tools/commands.ts, plugin/src/tools/active-file.ts, plugin/src/tools/navigation.ts, plugin/src/main.ts, plugin/src/**mocks**/obsidian.ts, docs/testing-guidelines.md
+
 ## 2026-03-15: HTTP Server & Auth
 
 Added HTTP server with Streamable HTTP transport, Bearer token authentication, and stateful session management to the Obsidian plugin. Includes API key auto-generation via `SecretStorage`, a settings tab with copyable connection info (`mcp.json` snippet and `claude mcp add` command), and full plugin lifecycle wiring (start on load, clean shutdown on unload).

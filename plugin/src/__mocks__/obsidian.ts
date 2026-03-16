@@ -1,3 +1,11 @@
+export function normalizePath(path: string): string {
+  // Strip leading/trailing slashes, collapse consecutive slashes
+  return path
+    .replace(/\\/g, "/")
+    .replace(/\/+/g, "/")
+    .replace(/^\/|\/$/g, "");
+}
+
 export class Plugin {
   app = {} as App;
   manifest = {} as PluginManifest;
@@ -17,6 +25,10 @@ export class Notice {
 
 export interface App {
   vault: Vault;
+  workspace: Workspace;
+  metadataCache: MetadataCache;
+  fileManager: FileManager;
+  commands: Commands;
   secretStorage: SecretStorage;
 }
 
@@ -36,6 +48,42 @@ export class SecretStorage {
 
 export interface Vault {
   getAbstractFileByPath(path: string): TAbstractFile | null;
+  getRoot(): TFolder;
+  read(file: TFile): Promise<string>;
+  create(path: string, content: string): Promise<TFile>;
+  trash(file: TFile, useSystemTrash: boolean): Promise<void>;
+}
+
+export interface Workspace {
+  getActiveFile(): TFile | null;
+  openLinkText(
+    linktext: string,
+    sourcePath: string,
+    newLeaf?: boolean,
+  ): Promise<void>;
+}
+
+export interface CachedMetadata {
+  frontmatter?: Record<string, unknown>;
+  tags?: Array<{ tag: string; position: unknown }>;
+}
+
+export interface MetadataCache {
+  getFileCache(file: TFile): CachedMetadata | null;
+}
+
+export interface Command {
+  id: string;
+  name: string;
+}
+
+export interface FileManager {
+  trashFile(file: TAbstractFile): Promise<void>;
+}
+
+export interface Commands {
+  commands: Record<string, Command>;
+  executeCommandById(id: string): boolean;
 }
 
 export interface PluginManifest {
@@ -47,6 +95,19 @@ export interface PluginManifest {
 export abstract class TAbstractFile {
   path = "";
   name = "";
+}
+
+export class TFile extends TAbstractFile {
+  stat = { ctime: 0, mtime: 0, size: 0 };
+  basename = "";
+  extension = "md";
+}
+
+export class TFolder extends TAbstractFile {
+  children: TAbstractFile[] = [];
+  isRoot(): boolean {
+    return this.path === "" || this.path === "/";
+  }
 }
 
 export class PluginSettingTab {
