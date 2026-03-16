@@ -180,6 +180,7 @@ _Filled in during `/build` phase_
 | 2026-03-15 | Task 1 | plugin/package.json                             | Deviated: Transport class is `StreamableHTTPServerTransport` (not `NodeStreamableHTTPServerTransport`). Import paths: `@modelcontextprotocol/sdk/server/mcp.js` and `@modelcontextprotocol/sdk/server/streamableHttp.js`                          |
 | 2026-03-15 | Task 2 | plugin/src/crypto.ts, plugin/src/crypto.test.ts | Created. No deviations.                                                                                                                                                                                                                           |
 | 2026-03-15 | Task 3 | plugin/src/**mocks**/obsidian.ts                | Added Setting, PluginSettingTab, Modal, TextComponent, ButtonComponent, SecretStorage stubs. All signatures verified against reference/obsidianmd/obsidian-api/obsidian.d.ts. SecretStorage is on App (app.secretStorage), not a separate export. |
+| 2026-03-15 | Task 4 | plugin/src/server.ts, plugin/src/server.test.ts | Created. Used `isInitializeRequest` from SDK types. Socket tracking for clean shutdown (instead of `closeAllConnections` which requires Node 18.2+). Tests use `Connection: close` header to avoid keep-alive interference between test runs.     |
 
 ---
 

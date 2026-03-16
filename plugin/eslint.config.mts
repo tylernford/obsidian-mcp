@@ -19,6 +19,27 @@ export default tseslint.config(
     },
   },
   ...obsidianmd.configs.recommended,
+  // Server code uses Node.js APIs (http, Buffer, etc.)
+  {
+    files: ["src/server.ts"],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+  // Test files run in Node.js via Vitest, not in Obsidian
+  {
+    files: ["src/**/*.test.ts"],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+    rules: {
+      "no-restricted-globals": "off",
+    },
+  },
   globalIgnores([
     "node_modules",
     "dist",
