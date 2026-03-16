@@ -17,7 +17,8 @@
   "packageManager": "pnpm@10.29.3",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
-    "obsidian": "latest"
+    "obsidian": "latest",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",

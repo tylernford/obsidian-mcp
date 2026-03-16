@@ -22,6 +22,9 @@ importers:
       obsidian:
         specifier: latest
         version: 1.12.3(@codemirror/state@6.5.0)(@codemirror/view@6.38.6)
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       "@eslint/js":
         specifier: ^9.30.1

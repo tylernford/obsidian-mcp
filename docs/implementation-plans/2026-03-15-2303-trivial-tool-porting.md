@@ -181,9 +181,10 @@ private createMcpServer(): McpServer {
 
 _Filled in during `/build` phase_
 
-| Date       | Task   | Files                            | Notes                                                                                           |
-| ---------- | ------ | -------------------------------- | ----------------------------------------------------------------------------------------------- |
-| 2026-03-15 | Task 1 | plugin/src/**mocks**/obsidian.ts | Added TFile, TFolder, normalizePath, expanded Vault/Workspace/MetadataCache/Commands interfaces |
+| Date       | Task   | Files                                                                            | Notes                                                                                                                                                                                                                                                      |
+| ---------- | ------ | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-15 | Task 1 | plugin/src/**mocks**/obsidian.ts                                                 | Added TFile, TFolder, normalizePath, expanded Vault/Workspace/MetadataCache/Commands interfaces                                                                                                                                                            |
+| 2026-03-15 | Task 2 | plugin/src/tools/vault.ts, plugin/package.json, plugin/src/**mocks**/obsidian.ts | Created vault tools module. Deviated: (1) added zod as direct dep (pnpm strict hoisting), (2) used `registerTool` instead of deprecated `tool`, (3) used `fileManager.trashFile()` instead of `vault.trash()` per lint rule, (4) added FileManager to mock |
 
 ---
 

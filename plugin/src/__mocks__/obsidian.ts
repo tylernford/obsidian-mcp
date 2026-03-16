@@ -27,6 +27,7 @@ export interface App {
   vault: Vault;
   workspace: Workspace;
   metadataCache: MetadataCache;
+  fileManager: FileManager;
   commands: Commands;
   secretStorage: SecretStorage;
 }
@@ -74,6 +75,10 @@ export interface MetadataCache {
 export interface Command {
   id: string;
   name: string;
+}
+
+export interface FileManager {
+  trashFile(file: TAbstractFile): Promise<void>;
 }
 
 export interface Commands {
