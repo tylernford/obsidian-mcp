@@ -1,7 +1,7 @@
 # Trivial Tool Porting
 
 **Created:** 2026-03-15
-**Implementation Plan:** N/A
+**Implementation Plan:** [Trivial Tool Porting](../implementation-plans/2026-03-15-2303-trivial-tool-porting.md)
 **Parent Spec:** [Plugin Architecture from Scaffold](./2026-03-12-1651-plugin-architecture-from-scaffold.md)
 
 ---
