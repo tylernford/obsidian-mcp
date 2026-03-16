@@ -52,6 +52,8 @@ export default tseslint.config(
     },
     rules: {
       "no-restricted-globals": "off",
+      // vi.fn() mocks are not class methods — unbound-method is a false positive
+      "@typescript-eslint/unbound-method": "off",
     },
   },
   globalIgnores([

@@ -188,6 +188,7 @@ _Filled in during `/build` phase_
 | 2026-03-15 | Task 3 | plugin/src/tools/commands.ts, active-file.ts, navigation.ts                      | Created 3 tool modules (4 tools total). Used `registerTool` and `(app as any).commands` per Task 2 deviations                                                                                                                                              |
 | 2026-03-15 | Task 4 | plugin/src/main.ts, plugin/src/tools/commands.ts                                 | Wired all 4 register functions. Deviated: linter rewrote `as any` → `as unknown` in commands.ts; used local `AppWithCommands` interface instead                                                                                                            |
 | 2026-03-16 | Task 4 | plugin/src/tools/commands.ts, plugin/tsconfig.json, plugin/package.json          | Deviated: adopted `obsidian-typings` for undocumented API types. Removed local `AppWithCommands` — `app.commands` now resolves via module augmentation. Sets up sessions 4+5                                                                               |
+| 2026-03-16 | Task 5 | plugin/src/tools/vault.test.ts, plugin/eslint.config.mts                         | 13 vault tool tests. Deviated: disabled `unbound-method` lint rule for test files (false positive with vi.fn() mocks)                                                                                                                                      |
 
 ---
 
@@ -207,3 +208,4 @@ _Filled in during `/build` phase_
 - `vault_update` and `active_file_update` are explicitly out of scope (session 5)
 - `vault_delete` intentionally uses safe delete (`vault.trash(file, true)`) — deliberate improvement over legacy hard delete
 - `app.commands` is undocumented Obsidian API — accessed via `(app as any).commands`
+- **Bug:** `vault_read` (json format) leaks `position` metadata from `FrontMatterCache` into the frontmatter response. Should strip `position` before returning. Same applies to `active_file_read`. Fix in a future task.
