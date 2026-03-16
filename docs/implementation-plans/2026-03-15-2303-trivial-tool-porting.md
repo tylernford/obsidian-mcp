@@ -189,6 +189,7 @@ _Filled in during `/build` phase_
 | 2026-03-15 | Task 4 | plugin/src/main.ts, plugin/src/tools/commands.ts                                 | Wired all 4 register functions. Deviated: linter rewrote `as any` → `as unknown` in commands.ts; used local `AppWithCommands` interface instead                                                                                                            |
 | 2026-03-16 | Task 4 | plugin/src/tools/commands.ts, plugin/tsconfig.json, plugin/package.json          | Deviated: adopted `obsidian-typings` for undocumented API types. Removed local `AppWithCommands` — `app.commands` now resolves via module augmentation. Sets up sessions 4+5                                                                               |
 | 2026-03-16 | Task 5 | plugin/src/tools/vault.test.ts, plugin/eslint.config.mts                         | 13 vault tool tests. Deviated: disabled `unbound-method` lint rule for test files (false positive with vi.fn() mocks)                                                                                                                                      |
+| 2026-03-16 | Task 6 | plugin/src/tools/commands.test.ts, active-file.test.ts, navigation.test.ts       | 8 tests across 3 files (3 commands, 3 active-file, 2 navigation). All happy path and error cases covered                                                                                                                                                   |
 
 ---
 
