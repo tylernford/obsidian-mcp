@@ -47,7 +47,7 @@ export class MCPToolsSettingTab extends PluginSettingTab {
       {
         mcpServers: {
           "obsidian-mcp": {
-            type: "streamable-http",
+            type: "http",
             url: `http://127.0.0.1:${port}/mcp`,
             headers: {
               Authorization: `Bearer ${apiKey}`,
