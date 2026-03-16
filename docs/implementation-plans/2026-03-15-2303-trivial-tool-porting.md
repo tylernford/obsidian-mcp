@@ -181,8 +181,9 @@ private createMcpServer(): McpServer {
 
 _Filled in during `/build` phase_
 
-| Date | Task | Files | Notes |
-| ---- | ---- | ----- | ----- |
+| Date       | Task   | Files                            | Notes                                                                                           |
+| ---------- | ------ | -------------------------------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-15 | Task 1 | plugin/src/**mocks**/obsidian.ts | Added TFile, TFolder, normalizePath, expanded Vault/Workspace/MetadataCache/Commands interfaces |
 
 ---
 
