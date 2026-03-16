@@ -3,18 +3,21 @@
 Obsidian plugin that runs an MCP server directly inside Obsidian, giving AI assistants native access to the Obsidian API — no HTTP bridge or third-party plugins required.
 
 ```
-Claude Code <--stdio--> Obsidian Plugin (MCP Server) <--> Obsidian API
+Claude Code <--HTTP--> Obsidian Plugin (MCP Server) <--> Obsidian API
 ```
 
-> **Status:** Early development. The plugin scaffold and build toolchain are in place. The MCP server is not yet implemented.
+> **Status:** Early development. The plugin has an HTTP server with Streamable HTTP transport, Bearer token auth, and session management. MCP tools are not yet implemented — the server completes the MCP handshake but exposes zero tools.
 
 ## Project Structure
 
 ```
-plugin/          Obsidian plugin (in development)
-  src/main.ts    Plugin entry point
-legacy/          Original MCP server (standalone Node.js process)
-docs/            Design specs, implementation plans, changelog
+plugin/              Obsidian plugin (in development)
+  src/main.ts        Plugin entry point, lifecycle wiring
+  src/server.ts      HTTP server with auth and session management
+  src/settings.ts    Settings tab with connection info
+  src/crypto.ts      API key generation
+legacy/              Original MCP server (standalone Node.js process)
+docs/                Design specs, implementation plans, changelog
 ```
 
 ## Development
