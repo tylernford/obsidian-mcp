@@ -195,12 +195,18 @@ _Filled in during `/build` phase_
 
 ## Completion
 
-**Completed:** [Date]
-**Final Status:** [Complete | Partial | Abandoned]
+**Completed:** 2026-03-16
+**Final Status:** Complete
 
-**Summary:** [Brief description of what was actually built]
+**Summary:** Ported all 8 MCP tools across 4 modules (vault, commands, active-file, navigation) from HTTP-based REST API calls to direct Obsidian `app` API access. Expanded the obsidian mock to support tool-level unit testing. Added 21 unit tests across 4 test files covering all happy paths and error cases. Adopted `obsidian-typings` for type-safe access to undocumented Obsidian APIs.
 
-**Deviations from Plan:** [Any significant changes from original design]
+**Deviations from Plan:**
+
+- Added `zod` as a direct dependency (pnpm strict hoisting requires it)
+- Used `registerTool` instead of deprecated `tool` method on McpServer
+- Used `app.fileManager.trashFile()` instead of `app.vault.trash()` per obsidian-typings lint rule; added `FileManager` to mock
+- Adopted `obsidian-typings` package for undocumented API types (`app.commands`) instead of `as any` casts
+- Disabled `unbound-method` ESLint rule for test files (false positive with `vi.fn()` mocks)
 
 ---
 
@@ -210,3 +216,4 @@ _Filled in during `/build` phase_
 - `vault_delete` intentionally uses safe delete (`vault.trash(file, true)`) — deliberate improvement over legacy hard delete
 - `app.commands` is undocumented Obsidian API — accessed via `(app as any).commands`
 - **Bug:** `vault_read` (json format) leaks `position` metadata from `FrontMatterCache` into the frontmatter response. Should strip `position` before returning. Same applies to `active_file_read`. Fix in a future task.
+- Created `docs/testing-guidelines.md` during this work — documents mock strategy, obsidian-typings usage, validation layers, and tool test patterns
