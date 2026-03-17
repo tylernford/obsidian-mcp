@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-03-17: Fix vault_create Error Reporting
+
+Fixed `vault_create` swallowing exceptions and always reporting "File already exists" regardless of the actual error. The catch block now extracts the real error message from the thrown exception, so failures like missing parent directories correctly report the underlying cause.
+
+**Key files:** plugin/src/tools/vault.ts
+
 ## 2026-03-17: Structured Updates
 
 Implemented the final 3 of 15 MCP tools — `vault_update`, `active_file_update`, and `periodic_update` — completing full feature parity with the legacy MCP server. These tools perform structured content targeting (heading hierarchy, block references, frontmatter fields) using the `markdown-patch` library with atomic writes via `Vault.process()`. Added a shared `update-utils.ts` helper to avoid duplicating patch instruction construction across tools.

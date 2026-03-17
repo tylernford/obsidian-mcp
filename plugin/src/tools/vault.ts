@@ -119,12 +119,13 @@ export function registerVaultTools(server: McpServer, app: App): void {
 
       try {
         await app.vault.create(normalized, content);
-      } catch {
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
         return {
           content: [
             {
               type: "text" as const,
-              text: `File already exists: ${filename}`,
+              text: `Failed to create ${filename}: ${message}`,
             },
           ],
           isError: true,
