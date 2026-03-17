@@ -17,6 +17,25 @@ vi.mock("@modelcontextprotocol/sdk/server/mcp.js", () => ({
   McpServer: class MockMcpServer {},
 }));
 
+// Mock obsidian-daily-notes-interface — imported transitively via periodic.ts
+vi.mock("obsidian-daily-notes-interface", () => ({
+  appHasDailyNotesPluginLoaded: () => false,
+  appHasWeeklyNotesPluginLoaded: () => false,
+  appHasMonthlyNotesPluginLoaded: () => false,
+  appHasQuarterlyNotesPluginLoaded: () => false,
+  appHasYearlyNotesPluginLoaded: () => false,
+  getDailyNote: () => null,
+  getWeeklyNote: () => null,
+  getMonthlyNote: () => null,
+  getQuarterlyNote: () => null,
+  getYearlyNote: () => null,
+  getAllDailyNotes: () => ({}),
+  getAllWeeklyNotes: () => ({}),
+  getAllMonthlyNotes: () => ({}),
+  getAllQuarterlyNotes: () => ({}),
+  getAllYearlyNotes: () => ({}),
+}));
+
 function createPlugin(): MCPToolsPlugin {
   // Mock Plugin constructor takes no args; cast to bypass TS signature check
   const PluginClass = MCPToolsPlugin as unknown as new () => MCPToolsPlugin;

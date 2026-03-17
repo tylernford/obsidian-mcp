@@ -184,6 +184,7 @@ _Filled in during `/build` phase_
 | 2026-03-16 | Task 5 | `plugin/src/tools/periodic.test.ts`                       | 5 tests: markdown/json format, plugin not enabled, note missing, weekly period                                                                 |
 | 2026-03-16 | Task 6 | `plugin/src/tools/metadata.ts`                            | Needed explicit `Record<string, unknown>` annotation on processFrontMatter callbacks due to obsidian types                                     |
 | 2026-03-16 | Task 7 | `plugin/src/tools/metadata.test.ts`                       | 14 tests: tags list/#-strip/empty/add/dedup/remove/missing-file, frontmatter read/set-string/set-JSON/raw-fallback/missing-file/missing-key    |
+| 2026-03-16 | Task 8 | `plugin/src/main.ts`, `plugin/src/main.test.ts`           | Wired 3 new register functions; added obsidian-daily-notes-interface mock to main.test.ts                                                      |
 
 ---
 
