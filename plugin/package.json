@@ -18,6 +18,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
     "obsidian": "latest",
+    "obsidian-daily-notes-interface": "^0.9.4",
     "zod": "^4.3.6"
   },
   "devDependencies": {

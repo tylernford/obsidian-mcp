@@ -175,8 +175,9 @@ Replace HTTP-based tool implementations that route through the Local REST API pl
 
 _Filled in during `/build` phase_
 
-| Date | Task | Files | Notes |
-| ---- | ---- | ----- | ----- |
+| Date       | Task   | Files                                                     | Notes                                                                                                                                          |
+| ---------- | ------ | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-16 | Task 1 | `plugin/src/__mocks__/obsidian.ts`, `plugin/package.json` | Added `cachedRead`, `getMarkdownFiles`, `processFrontMatter`, `prepareSimpleSearch`, `Plugins` interface, `obsidian-daily-notes-interface` dep |
 
 ---
 
