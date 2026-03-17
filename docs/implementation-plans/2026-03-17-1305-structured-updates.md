@@ -207,12 +207,17 @@ _Filled in during `/build` phase_
 
 ## Completion
 
-**Completed:** [Date]
-**Final Status:** [Complete | Partial | Abandoned]
+**Completed:** 2026-03-17
+**Final Status:** Complete
 
-**Summary:** [Brief description of what was actually built]
+**Summary:** Implemented `vault_update`, `active_file_update`, and `periodic_update` tools with structured content targeting via `markdown-patch` and atomic `Vault.process()` writes. Added shared `update-utils.ts` helper with `buildPatchInstruction()` and `applyUpdate()`. 14 new unit tests across 3 tool files, all 101 tests green. All 17 acceptance criteria verified (10 live via MCP, 7 via unit tests/code inspection).
 
-**Deviations from Plan:** [Any significant changes from original design]
+**Deviations from Plan:**
+
+- Frontmatter patches require `ContentType.json` with parsed content instead of `text/markdown` — `buildPatchInstruction` branches on targetType
+- `periodic_update` uses `create*Note` from `obsidian-daily-notes-interface` instead of `vault.create()` for note creation
+- No `main.ts` changes needed — new tools register via existing `register*Tools()` calls
+- Target param descriptions updated to clarify hierarchical heading paths
 
 ---
 
