@@ -253,7 +253,6 @@ describe("search — dataview", () => {
     const app = createApp();
     const mockApi = {
       tryQuery: vi.fn(async () => ({
-        successful: true,
         type: "table",
         headers: ["File", "rating"],
         values: [
@@ -303,7 +302,6 @@ describe("search — dataview", () => {
     const app = createApp();
     const mockApi = {
       tryQuery: vi.fn(async () => ({
-        successful: true,
         type: "list",
         headers: [],
         values: [],
@@ -331,7 +329,6 @@ describe("search — dataview", () => {
     const app = createApp();
     const mockApi = {
       tryQuery: vi.fn(async () => ({
-        successful: true,
         type: "table",
         headers: ["rating", "author"],
         values: [],
@@ -358,12 +355,9 @@ describe("search — dataview", () => {
   it("returns error when query fails", async () => {
     const app = createApp();
     const mockApi = {
-      tryQuery: vi.fn(async () => ({
-        successful: false,
-        type: "",
-        headers: [],
-        values: [],
-      })),
+      tryQuery: vi.fn(async () => {
+        throw new Error("Expected TABLE, LIST, or TASK");
+      }),
       settings: { tableIdColumnName: "File" },
     };
     vi.mocked(

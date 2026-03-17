@@ -18,7 +18,6 @@ interface SearchResponseItem {
 }
 
 interface DataviewQueryResult {
-  successful: boolean;
   type: string;
   headers: string[];
   values: unknown[][];
@@ -158,14 +157,17 @@ async function dataviewSearch(
   }
 
   const dvApi = dvPlugin.api;
-  const result = await dvApi.tryQuery(query);
 
-  if (!result.successful) {
+  let result: DataviewQueryResult;
+  try {
+    result = await dvApi.tryQuery(query);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
     return {
       content: [
         {
           type: "text" as const,
-          text: `Dataview query failed: ${JSON.stringify(result)}`,
+          text: `Dataview query failed: ${message}`,
         },
       ],
       isError: true,

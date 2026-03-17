@@ -150,24 +150,24 @@ Replace HTTP-based tool implementations that route through the Local REST API pl
 
 ## Acceptance Criteria
 
-- [ ] `search` with `type: "simple"` returns matches across vault markdown files with context snippets
-- [ ] `search` with `type: "simple"` matches against both filename and content
-- [ ] `search` with `type: "dataview"` executes TABLE DQL queries and returns `[{ filename, result }]`
-- [ ] `search` with `type: "dataview"` returns clear error when Dataview plugin is not installed
-- [ ] `search` with `type: "dataview"` rejects non-TABLE queries and TABLE WITHOUT ID queries
-- [ ] `periodic_read` returns current period note content in markdown or json format
-- [ ] `periodic_read` returns clear error when Periodic Notes plugin is not enabled for the requested period
-- [ ] `periodic_read` returns clear error when the current period's note doesn't exist
-- [ ] `tags_manage` with `action: "list"` returns tags array without `#` prefix
-- [ ] `tags_manage` with `action: "add"` adds tags to frontmatter without `#` prefix
-- [ ] `tags_manage` with `action: "remove"` removes tags from frontmatter
-- [ ] `tags_manage` defensively strips `#` from input tags
-- [ ] `frontmatter_manage` with `action: "read"` returns frontmatter object without internal `position` key
-- [ ] `frontmatter_manage` with `action: "set"` sets a field using `processFrontMatter()`
-- [ ] `frontmatter_manage` with `action: "set"` parses JSON string values into native types
-- [ ] All 5 tools register correctly and appear in MCP tool list
-- [ ] All paths normalized via `normalizePath()` before vault API calls
-- [ ] Unit tests cover happy paths and error cases for all tools
+- [x] `search` with `type: "simple"` returns matches across vault markdown files with context snippets
+- [x] `search` with `type: "simple"` matches against both filename and content
+- [x] `search` with `type: "dataview"` executes TABLE DQL queries and returns `[{ filename, result }]`
+- [x] `search` with `type: "dataview"` returns clear error when Dataview plugin is not installed
+- [x] `search` with `type: "dataview"` rejects non-TABLE queries and TABLE WITHOUT ID queries
+- [x] `periodic_read` returns current period note content in markdown or json format
+- [x] `periodic_read` returns clear error when Periodic Notes plugin is not enabled for the requested period
+- [x] `periodic_read` returns clear error when the current period's note doesn't exist
+- [x] `tags_manage` with `action: "list"` returns tags array without `#` prefix
+- [x] `tags_manage` with `action: "add"` adds tags to frontmatter without `#` prefix
+- [x] `tags_manage` with `action: "remove"` removes tags from frontmatter
+- [x] `tags_manage` defensively strips `#` from input tags
+- [x] `frontmatter_manage` with `action: "read"` returns frontmatter object without internal `position` key
+- [x] `frontmatter_manage` with `action: "set"` sets a field using `processFrontMatter()`
+- [x] `frontmatter_manage` with `action: "set"` parses JSON string values into native types
+- [x] All 5 tools register correctly and appear in MCP tool list
+- [x] All paths normalized via `normalizePath()` before vault API calls
+- [x] Unit tests cover happy paths and error cases for all tools
 
 ---
 
@@ -175,16 +175,17 @@ Replace HTTP-based tool implementations that route through the Local REST API pl
 
 _Filled in during `/build` phase_
 
-| Date       | Task   | Files                                                     | Notes                                                                                                                                          |
-| ---------- | ------ | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-03-16 | Task 1 | `plugin/src/__mocks__/obsidian.ts`, `plugin/package.json` | Added `cachedRead`, `getMarkdownFiles`, `processFrontMatter`, `prepareSimpleSearch`, `Plugins` interface, `obsidian-daily-notes-interface` dep |
-| 2026-03-16 | Task 2 | `plugin/src/tools/search.ts`                              | Both simple and dataview search modes implemented; simple search uses cachedRead (async)                                                       |
-| 2026-03-16 | Task 3 | `plugin/src/tools/search.test.ts`                         | 10 tests: content matches, filename matches, boundary skipping, no matches, sort, dataview happy/error/non-TABLE/WITHOUT ID/query failure      |
-| 2026-03-16 | Task 4 | `plugin/src/tools/periodic.ts`                            | Used `ReturnType<typeof window.moment>` for Moment type to avoid direct moment dependency                                                      |
-| 2026-03-16 | Task 5 | `plugin/src/tools/periodic.test.ts`                       | 5 tests: markdown/json format, plugin not enabled, note missing, weekly period                                                                 |
-| 2026-03-16 | Task 6 | `plugin/src/tools/metadata.ts`                            | Needed explicit `Record<string, unknown>` annotation on processFrontMatter callbacks due to obsidian types                                     |
-| 2026-03-16 | Task 7 | `plugin/src/tools/metadata.test.ts`                       | 14 tests: tags list/#-strip/empty/add/dedup/remove/missing-file, frontmatter read/set-string/set-JSON/raw-fallback/missing-file/missing-key    |
-| 2026-03-16 | Task 8 | `plugin/src/main.ts`, `plugin/src/main.test.ts`           | Wired 3 new register functions; added obsidian-daily-notes-interface mock to main.test.ts                                                      |
+| Date       | Task   | Files                                                           | Notes                                                                                                                                                             |
+| ---------- | ------ | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-16 | Task 1 | `plugin/src/__mocks__/obsidian.ts`, `plugin/package.json`       | Added `cachedRead`, `getMarkdownFiles`, `processFrontMatter`, `prepareSimpleSearch`, `Plugins` interface, `obsidian-daily-notes-interface` dep                    |
+| 2026-03-16 | Task 2 | `plugin/src/tools/search.ts`                                    | Both simple and dataview search modes implemented; simple search uses cachedRead (async)                                                                          |
+| 2026-03-16 | Task 3 | `plugin/src/tools/search.test.ts`                               | 10 tests: content matches, filename matches, boundary skipping, no matches, sort, dataview happy/error/non-TABLE/WITHOUT ID/query failure                         |
+| 2026-03-16 | Task 4 | `plugin/src/tools/periodic.ts`                                  | Used `ReturnType<typeof window.moment>` for Moment type to avoid direct moment dependency                                                                         |
+| 2026-03-16 | Task 5 | `plugin/src/tools/periodic.test.ts`                             | 5 tests: markdown/json format, plugin not enabled, note missing, weekly period                                                                                    |
+| 2026-03-16 | Task 6 | `plugin/src/tools/metadata.ts`                                  | Needed explicit `Record<string, unknown>` annotation on processFrontMatter callbacks due to obsidian types                                                        |
+| 2026-03-16 | Task 7 | `plugin/src/tools/metadata.test.ts`                             | 14 tests: tags list/#-strip/empty/add/dedup/remove/missing-file, frontmatter read/set-string/set-JSON/raw-fallback/missing-file/missing-key                       |
+| 2026-03-16 | Task 8 | `plugin/src/main.ts`, `plugin/src/main.test.ts`                 | Wired 3 new register functions; added obsidian-daily-notes-interface mock to main.test.ts                                                                         |
+| 2026-03-17 | AC fix | `plugin/src/tools/search.ts`, `plugin/src/tools/search.test.ts` | Dataview `tryQuery` returns result directly and throws on failure — removed `successful` field check, wrapped in try/catch. Updated test mocks to match real API. |
 
 ---
 
