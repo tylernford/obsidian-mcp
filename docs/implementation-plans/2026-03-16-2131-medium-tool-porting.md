@@ -182,6 +182,7 @@ _Filled in during `/build` phase_
 | 2026-03-16 | Task 3 | `plugin/src/tools/search.test.ts`                         | 10 tests: content matches, filename matches, boundary skipping, no matches, sort, dataview happy/error/non-TABLE/WITHOUT ID/query failure      |
 | 2026-03-16 | Task 4 | `plugin/src/tools/periodic.ts`                            | Used `ReturnType<typeof window.moment>` for Moment type to avoid direct moment dependency                                                      |
 | 2026-03-16 | Task 5 | `plugin/src/tools/periodic.test.ts`                       | 5 tests: markdown/json format, plugin not enabled, note missing, weekly period                                                                 |
+| 2026-03-16 | Task 6 | `plugin/src/tools/metadata.ts`                            | Needed explicit `Record<string, unknown>` annotation on processFrontMatter callbacks due to obsidian types                                     |
 
 ---
 
