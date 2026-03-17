@@ -105,9 +105,10 @@ if (!this.transports.has(sessionId)) {
 
 _Filled in during `/build` phase_
 
-| Date       | Task   | Files                | Notes                                                                                             |
-| ---------- | ------ | -------------------- | ------------------------------------------------------------------------------------------------- |
-| 2026-03-17 | Task 1 | plugin/src/server.ts | Status 400→404 for invalid sessions; GET/DELETE handler split into missing (400) vs invalid (404) |
+| Date       | Task   | Files                     | Notes                                                                                             |
+| ---------- | ------ | ------------------------- | ------------------------------------------------------------------------------------------------- |
+| 2026-03-17 | Task 1 | plugin/src/server.ts      | Status 400→404 for invalid sessions; GET/DELETE handler split into missing (400) vs invalid (404) |
+| 2026-03-17 | Task 2 | plugin/src/server.test.ts | Updated 5 assertions 400→404; added 2 new tests for missing session ID (GET/DELETE → 400)         |
 
 ---
 

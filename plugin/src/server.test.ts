@@ -174,7 +174,7 @@ describe("HttpServer", () => {
       expect(res.status).toBe(400);
     });
 
-    it("returns 400 for invalid session ID on POST", async () => {
+    it("returns 404 for invalid session ID on POST", async () => {
       const res = await fetch(`${BASE_URL}/mcp`, {
         method: "POST",
         headers: authHeaders({
@@ -188,21 +188,37 @@ describe("HttpServer", () => {
           params: {},
         }),
       });
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(404);
     });
 
-    it("returns 400 for GET without valid session ID", async () => {
+    it("returns 404 for GET with invalid session ID", async () => {
       const res = await fetch(`${BASE_URL}/mcp`, {
         method: "GET",
         headers: authHeaders({ "mcp-session-id": "nonexistent-session" }),
       });
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(404);
     });
 
-    it("returns 400 for DELETE without valid session ID", async () => {
+    it("returns 404 for DELETE with invalid session ID", async () => {
       const res = await fetch(`${BASE_URL}/mcp`, {
         method: "DELETE",
         headers: authHeaders({ "mcp-session-id": "nonexistent-session" }),
+      });
+      expect(res.status).toBe(404);
+    });
+
+    it("returns 400 for GET without session ID", async () => {
+      const res = await fetch(`${BASE_URL}/mcp`, {
+        method: "GET",
+        headers: authHeaders(),
+      });
+      expect(res.status).toBe(400);
+    });
+
+    it("returns 400 for DELETE without session ID", async () => {
+      const res = await fetch(`${BASE_URL}/mcp`, {
+        method: "DELETE",
+        headers: authHeaders(),
       });
       expect(res.status).toBe(400);
     });
@@ -241,7 +257,7 @@ describe("HttpServer", () => {
           method: "notifications/initialized",
         }),
       });
-      expect(res2.status).toBe(400);
+      expect(res2.status).toBe(404);
     });
 
     it("returns 400 for invalid JSON body", async () => {
@@ -294,7 +310,7 @@ describe("HttpServer", () => {
           method: "notifications/initialized",
         }),
       });
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(404);
     });
   });
 });
