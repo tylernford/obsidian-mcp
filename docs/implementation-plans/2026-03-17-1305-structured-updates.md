@@ -170,23 +170,23 @@ function buildPatchInstruction(params: UpdateParams): PatchInstruction {
 
 ## Acceptance Criteria
 
-- [ ] `vault_update` appends content after a heading target
-- [ ] `vault_update` prepends content before a block target
-- [ ] `vault_update` replaces a frontmatter field value
-- [ ] `vault_update` with nested heading path (`::` delimiter) targets correctly
-- [ ] `vault_update` with `createIfMissing: true` creates a missing heading
-- [ ] `vault_update` returns `isError: true` when file not found
-- [ ] `vault_update` returns `isError: true` with reason when `PatchFailed` thrown
-- [ ] `active_file_update` applies patch to the active file
-- [ ] `active_file_update` returns `isError: true` when no file is active
-- [ ] `periodic_update` applies patch to existing periodic note
-- [ ] `periodic_update` creates periodic note then patches when note is missing
-- [ ] `periodic_update` returns `isError: true` when Periodic Notes plugin unavailable
-- [ ] All paths normalized via `normalizePath()` before API calls
-- [ ] All writes use `Vault.process()` for atomicity
-- [ ] `markdown-patch` is bundled (not externalized) in esbuild output
-- [ ] Unit tests pass for all three tools covering happy paths and error cases
-- [ ] Existing tests remain green
+- [x] `vault_update` appends content after a heading target
+- [x] `vault_update` prepends content before a block target
+- [x] `vault_update` replaces a frontmatter field value
+- [x] `vault_update` with nested heading path (`::` delimiter) targets correctly
+- [x] `vault_update` with `createIfMissing: true` creates a missing heading
+- [x] `vault_update` returns `isError: true` when file not found
+- [x] `vault_update` returns `isError: true` with reason when `PatchFailed` thrown
+- [x] `active_file_update` applies patch to the active file
+- [x] `active_file_update` returns `isError: true` when no file is active
+- [x] `periodic_update` applies patch to existing periodic note
+- [x] `periodic_update` creates periodic note then patches when note is missing
+- [x] `periodic_update` returns `isError: true` when Periodic Notes plugin unavailable
+- [x] All paths normalized via `normalizePath()` before API calls
+- [x] All writes use `Vault.process()` for atomicity
+- [x] `markdown-patch` is bundled (not externalized) in esbuild output
+- [x] Unit tests pass for all three tools covering happy paths and error cases
+- [x] Existing tests remain green
 
 ---
 
@@ -194,13 +194,14 @@ function buildPatchInstruction(params: UpdateParams): PatchInstruction {
 
 _Filled in during `/build` phase_
 
-| Date       | Task   | Files                                                                                    | Notes                                                                                                                                             |
-| ---------- | ------ | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-03-17 | Task 1 | plugin/package.json, plugin/src/tools/update-utils.ts, plugin/src/**mocks**/obsidian.ts  | Deviated: frontmatter patches require ContentType.json with parsed content, not text/markdown. buildPatchInstruction handles this per targetType. |
-| 2026-03-17 | Task 2 | plugin/src/tools/vault.ts, plugin/src/tools/vault.test.ts                                | 7 new tests: heading/block/frontmatter success, nested heading ::, createIfMissing, file not found, PatchFailed error.                            |
-| 2026-03-17 | Task 3 | plugin/src/tools/active-file.ts, plugin/src/tools/active-file.test.ts                    | 3 new tests: success, no active file, PatchFailed error.                                                                                          |
-| 2026-03-17 | Task 4 | plugin/src/tools/periodic.ts, plugin/src/tools/periodic.test.ts, plugin/src/main.test.ts | 4 new tests. Used create\*Note from obsidian-daily-notes-interface instead of vault.create. Added create exports to main.test.ts mock.            |
-| 2026-03-17 | Task 5 | (none)                                                                                   | No main.ts changes needed — new tools register via existing register\*Tools calls. Build passes, markdown-patch bundled, all 101 tests green.     |
+| Date       | Task   | Files                                                                                    | Notes                                                                                                                                                                                                                                                              |
+| ---------- | ------ | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-03-17 | Task 1 | plugin/package.json, plugin/src/tools/update-utils.ts, plugin/src/**mocks**/obsidian.ts  | Deviated: frontmatter patches require ContentType.json with parsed content, not text/markdown. buildPatchInstruction handles this per targetType.                                                                                                                  |
+| 2026-03-17 | Task 2 | plugin/src/tools/vault.ts, plugin/src/tools/vault.test.ts                                | 7 new tests: heading/block/frontmatter success, nested heading ::, createIfMissing, file not found, PatchFailed error.                                                                                                                                             |
+| 2026-03-17 | Task 3 | plugin/src/tools/active-file.ts, plugin/src/tools/active-file.test.ts                    | 3 new tests: success, no active file, PatchFailed error.                                                                                                                                                                                                           |
+| 2026-03-17 | Task 4 | plugin/src/tools/periodic.ts, plugin/src/tools/periodic.test.ts, plugin/src/main.test.ts | 4 new tests. Used create\*Note from obsidian-daily-notes-interface instead of vault.create. Added create exports to main.test.ts mock.                                                                                                                             |
+| 2026-03-17 | Task 5 | (none)                                                                                   | No main.ts changes needed — new tools register via existing register\*Tools calls. Build passes, markdown-patch bundled, all 101 tests green.                                                                                                                      |
+| 2026-03-17 | AC     | plugin/src/tools/{vault,active-file,periodic}.ts                                         | Acceptance: all 17 criteria pass (10 live-verified via MCP, 7 via unit tests/code). Updated target param descriptions to clarify hierarchical heading paths. Discovery: applyIfContentPreexists=false blocks clearing sections and re-inserting identical content. |
 
 ---
 
@@ -219,3 +220,4 @@ _Filled in during `/build` phase_
 
 - `markdown-patch` types may need a declaration file if the library doesn't ship types. Check during Task 1 and add a `markdown-patch.d.ts` if needed.
 - The `periodic_update` create-then-patch flow uses `vault.create()` then `vault.process()` as separate operations — this is intentional to match legacy behavior, though it's not fully atomic.
+- **Follow-up:** `applyIfContentPreexists` is hardcoded to `false` for heading/block targets. This prevents duplicate content insertion (good) but also blocks clearing a section via replace with empty string and re-inserting identical content. Consider exposing as an optional tool parameter.

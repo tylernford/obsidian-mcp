@@ -158,7 +158,7 @@ export function registerPeriodicTools(server: McpServer, app: App): void {
         target: z
           .string()
           .describe(
-            "Target identifier: heading path with '::' delimiter, block reference ID, or frontmatter field name",
+            "Target identifier: heading text with '::' delimiter for hierarchy (e.g. 'Parent::Child' for a ## Child under # Parent), block reference ID (without ^), or frontmatter field name",
           ),
         content: z.string().describe("Content to insert or replace with"),
         createIfMissing: z
