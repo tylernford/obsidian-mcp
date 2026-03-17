@@ -1,7 +1,7 @@
 # Structured Updates
 
 **Created:** 2026-03-17
-**Implementation Plan:** TBD
+**Implementation Plan:** docs/implementation-plans/2026-03-17-1305-structured-updates.md
 **Parent Spec:** [Plugin Architecture from Scaffold](./2026-03-12-1651-plugin-architecture-from-scaffold.md)
 
 ---
