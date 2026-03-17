@@ -92,12 +92,12 @@ if (!this.transports.has(sessionId)) {
 
 ## Acceptance Criteria
 
-- [ ] POST with a stale/invalid `mcp-session-id` header returns 404
-- [ ] GET with a stale/invalid `mcp-session-id` header returns 404
-- [ ] DELETE with a stale/invalid `mcp-session-id` header returns 404
-- [ ] POST without `mcp-session-id` on a non-initialize request returns 400 (unchanged)
-- [ ] Fresh `InitializeRequest` after restart successfully creates a new session
-- [ ] All existing tests pass with updated assertions
+- [x] POST with a stale/invalid `mcp-session-id` header returns 404
+- [x] GET with a stale/invalid `mcp-session-id` header returns 404
+- [x] DELETE with a stale/invalid `mcp-session-id` header returns 404
+- [x] POST without `mcp-session-id` on a non-initialize request returns 400 (unchanged)
+- [x] Fresh `InitializeRequest` after restart successfully creates a new session
+- [x] All existing tests pass with updated assertions
 
 ---
 
@@ -105,10 +105,11 @@ if (!this.transports.has(sessionId)) {
 
 _Filled in during `/build` phase_
 
-| Date       | Task   | Files                     | Notes                                                                                             |
-| ---------- | ------ | ------------------------- | ------------------------------------------------------------------------------------------------- |
-| 2026-03-17 | Task 1 | plugin/src/server.ts      | Status 400→404 for invalid sessions; GET/DELETE handler split into missing (400) vs invalid (404) |
-| 2026-03-17 | Task 2 | plugin/src/server.test.ts | Updated 5 assertions 400→404; added 2 new tests for missing session ID (GET/DELETE → 400)         |
+| Date       | Task      | Files                     | Notes                                                                                                                                                                                                          |
+| ---------- | --------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-17 | Task 1    | plugin/src/server.ts      | Status 400→404 for invalid sessions; GET/DELETE handler split into missing (400) vs invalid (404)                                                                                                              |
+| 2026-03-17 | Task 2    | plugin/src/server.test.ts | Updated 5 assertions 400→404; added 2 new tests for missing session ID (GET/DELETE → 400)                                                                                                                      |
+| 2026-03-17 | Discovery | —                         | Claude Code's MCP client does not auto-reinitialize on 404; it surfaces the error and retains the stale session ID. Server-side fix is spec-correct but client-side reconnect is not yet implemented upstream. |
 
 ---
 
