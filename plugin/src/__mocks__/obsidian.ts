@@ -72,6 +72,7 @@ export interface Vault {
   cachedRead(file: TFile): Promise<string>;
   getMarkdownFiles(): TFile[];
   create(path: string, content: string): Promise<TFile>;
+  process(file: TFile, fn: (data: string) => string): Promise<string>;
   trash(file: TFile, useSystemTrash: boolean): Promise<void>;
 }
 

@@ -19,6 +19,9 @@ importers:
       "@modelcontextprotocol/sdk":
         specifier: ^1.27.1
         version: 1.27.1(zod@4.3.6)
+      markdown-patch:
+        specifier: ^0.4.3
+        version: 0.4.3
       obsidian:
         specifier: latest
         version: 1.12.3(@codemirror/state@6.5.0)(@codemirror/view@6.38.6)
@@ -1384,6 +1387,12 @@ packages:
       }
     engines: { node: ">=10" }
 
+  "@tsconfig/node16@16.1.8":
+    resolution:
+      {
+        integrity: sha512-T/CfdwFry660WjZor56z0F3pxeCllt8KOxWcHFW6ZEuULKUObTDEMdgtctyuJPxwqyWDsvHRfxHaJ4FIICyoqQ==,
+      }
+
   "@tybys/wasm-util@0.10.1":
     resolution:
       {
@@ -2151,6 +2160,13 @@ packages:
       }
     engines: { node: ">=10" }
 
+  chalk@5.6.2:
+    resolution:
+      {
+        integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==,
+      }
+    engines: { node: ^12.17.0 || ^14.13 || >=16.0.0 }
+
   chevrotain-allstar@0.3.1:
     resolution:
       {
@@ -2189,6 +2205,13 @@ packages:
       {
         integrity: sha512-jeC1axXpnb0/2nn/Y1LPuLdgXBLH7aDcHu4KEKfqw3CUhX7ZpfBSlPKyqXE6btIgEzfWtrX3/tyBCaCvXvMkOw==,
       }
+
+  commander@12.1.0:
+    resolution:
+      {
+        integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==,
+      }
+    engines: { node: ">=18" }
 
   commander@7.2.0:
     resolution:
@@ -4240,12 +4263,27 @@ packages:
       }
     engines: { node: ">=10" }
 
+  markdown-patch@0.4.3:
+    resolution:
+      {
+        integrity: sha512-3wjJaUUSrqmKKWO8LXNSlm192vFuAPo9EdT9sUhoHG7Bxhhb1yFNaxVoDR6dAwhVOSjg4ZJ/Wv+87bafVxj66g==,
+      }
+    hasBin: true
+
   marked@13.0.3:
     resolution:
       {
         integrity: sha512-rqRix3/TWzE9rIoFGIn8JmsVfhiuC8VIQ8IdX5TfzmeBucdY05/0UlzKaw0eVtpcN/OdVFpBk7CjKGo9iHJ/zA==,
       }
     engines: { node: ">= 18" }
+    hasBin: true
+
+  marked@17.0.4:
+    resolution:
+      {
+        integrity: sha512-NOmVMM+KAokHMvjWmC5N/ZOvgmSWuqJB8FoYI019j4ogb/PeRMKoKIjReZ2w3376kkA8dSJIP8uD993Kxc0iRQ==,
+      }
+    engines: { node: ">= 20" }
     hasBin: true
 
   matcher@3.0.0:
@@ -6512,6 +6550,8 @@ snapshots:
     dependencies:
       defer-to-connect: 2.0.1
 
+  "@tsconfig/node16@16.1.8": {}
+
   "@tybys/wasm-util@0.10.1":
     dependencies:
       tslib: 2.4.0
@@ -7067,6 +7107,8 @@ snapshots:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
 
+  chalk@5.6.2: {}
+
   chevrotain-allstar@0.3.1(chevrotain@11.0.3):
     dependencies:
       chevrotain: 11.0.3
@@ -7092,6 +7134,8 @@ snapshots:
   color-name@1.1.4: {}
 
   colord@2.9.3: {}
+
+  commander@12.1.0: {}
 
   commander@7.2.0: {}
 
@@ -8495,7 +8539,17 @@ snapshots:
     dependencies:
       semver: 7.7.4
 
+  markdown-patch@0.4.3:
+    dependencies:
+      "@tsconfig/node16": 16.1.8
+      chalk: 5.6.2
+      commander: 12.1.0
+      marked: 17.0.4
+      yaml: 2.8.2
+
   marked@13.0.3: {}
+
+  marked@17.0.4: {}
 
   matcher@3.0.0:
     dependencies:
