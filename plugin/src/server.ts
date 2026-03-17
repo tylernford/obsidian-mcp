@@ -115,8 +115,12 @@ export class HttpServer {
         }
 
         if (sessionId && !this.transports.has(sessionId)) {
-          res.writeHead(400, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ error: "Invalid or expired session ID" }));
+          res.writeHead(404, { "Content-Type": "application/json" });
+          res.end(
+            JSON.stringify({
+              error: "Session not found — client should reinitialize",
+            }),
+          );
           return;
         }
 
@@ -132,9 +136,18 @@ export class HttpServer {
   private handleGetOrDelete(req: IncomingMessage, res: ServerResponse): void {
     const sessionId = req.headers["mcp-session-id"] as string | undefined;
 
-    if (!sessionId || !this.transports.has(sessionId)) {
+    if (!sessionId) {
       res.writeHead(400, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Invalid or missing session ID" }));
+      res.end(JSON.stringify({ error: "Missing session ID" }));
+      return;
+    }
+    if (!this.transports.has(sessionId)) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          error: "Session not found — client should reinitialize",
+        }),
+      );
       return;
     }
 

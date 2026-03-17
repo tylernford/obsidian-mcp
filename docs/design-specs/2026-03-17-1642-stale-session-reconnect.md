@@ -1,6 +1,6 @@
 # Stale Session Reconnect
 
-**Created:** 2026-03-17 **Implementation Plan:** TBD
+**Created:** 2026-03-17 **Implementation Plan:** docs/implementation-plans/2026-03-17-1701-stale-session-reconnect.md
 
 ---
 

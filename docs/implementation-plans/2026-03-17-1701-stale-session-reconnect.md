@@ -105,8 +105,9 @@ if (!this.transports.has(sessionId)) {
 
 _Filled in during `/build` phase_
 
-| Date | Task | Files | Notes |
-| ---- | ---- | ----- | ----- |
+| Date       | Task   | Files                | Notes                                                                                             |
+| ---------- | ------ | -------------------- | ------------------------------------------------------------------------------------------------- |
+| 2026-03-17 | Task 1 | plugin/src/server.ts | Status 400→404 for invalid sessions; GET/DELETE handler split into missing (400) vs invalid (404) |
 
 ---
 
