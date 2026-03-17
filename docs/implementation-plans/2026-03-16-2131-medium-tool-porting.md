@@ -191,12 +191,12 @@ _Filled in during `/build` phase_
 
 ## Completion
 
-**Completed:** [Date]
-**Final Status:** [Complete | Partial | Abandoned]
+**Completed:** 2026-03-17
+**Final Status:** Complete
 
-**Summary:** [Brief description of what was actually built]
+**Summary:** Ported 5 medium-complexity tools (`search` with simple and dataview modes, `periodic_read`, `tags_manage`, `frontmatter_manage`) from legacy HTTP-based REST API calls to direct Obsidian API access. Created 3 new tool modules (`search.ts`, `periodic.ts`, `metadata.ts`) following the established `registerXTools(server, app)` pattern, extended the obsidian mock for new API surfaces, and added 29 unit tests across 3 test files. All tools wired into `main.ts` and building cleanly.
 
-**Deviations from Plan:** [Any significant changes from original design]
+**Deviations from Plan:** Dataview's `tryQuery` API returns results directly and throws on failure, rather than returning an object with a `successful` field as originally designed. Updated to use try/catch instead of field checking. `periodic_update` was originally classified as medium in the architecture spec but excluded from this design — it requires the same structured content targeting (heading/block/frontmatter) as `vault_update` and `active_file_update`, so it belongs in the hard tier.
 
 ---
 

@@ -37,12 +37,12 @@ Claude Code <--stdio/ws--> Obsidian Plugin <--> Obsidian
 
 **Effort estimate: ~15-20 hours**
 
-| Category                                                      | Hours | Notes                                                                |
-| ------------------------------------------------------------- | ----- | -------------------------------------------------------------------- |
-| Trivial swaps (commands, navigation, vault CRUD)              | 2-3   | Direct `app.vault` / `app.commands` equivalents                      |
-| Medium (search, metadata, periodic notes, plugin scaffolding) | 4-6   | Dataview and Periodic Notes plugin integration needed                |
-| Hard (vault_update, active_file_update targeting)             | 6-8   | Must reimplement heading/block/frontmatter content targeting locally |
-| Testing and edge cases                                        | 3-4   |                                                                      |
+| Category                                                      | Hours | Notes                                                                                                                                    |
+| ------------------------------------------------------------- | ----- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Trivial swaps (commands, navigation, vault CRUD)              | 2-3   | Direct `app.vault` / `app.commands` equivalents                                                                                          |
+| Medium (search, metadata, periodic notes, plugin scaffolding) | 4-6   | Dataview and Periodic Notes plugin integration needed                                                                                    |
+| Hard (vault_update, active_file_update, periodic_update)      | 6-8   | Must reimplement heading/block/frontmatter content targeting locally. periodic_update deferred from medium — needs same targeting logic. |
+| Testing and edge cases                                        | 3-4   |                                                                                                                                          |
 
 **What carries over as-is:** Tool definitions, parameter schemas (Zod), response formatting, error response patterns.
 

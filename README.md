@@ -6,7 +6,7 @@ Obsidian plugin that runs an MCP server directly inside Obsidian, giving AI assi
 Claude Code <--HTTP--> Obsidian Plugin (MCP Server) <--> Obsidian API
 ```
 
-> **Status:** Early development. The plugin has an HTTP server with Streamable HTTP transport, Bearer token auth, and session management. 8 MCP tools are implemented across vault, commands, active-file, and navigation modules.
+> **Status:** Early development. The plugin has an HTTP server with Streamable HTTP transport, Bearer token auth, and session management. 13 MCP tools are implemented across vault, commands, active-file, navigation, search, periodic, and metadata modules.
 
 ## Project Structure
 
@@ -16,7 +16,7 @@ plugin/              Obsidian plugin (in development)
   src/server.ts      HTTP server with auth and session management
   src/settings.ts    Settings tab with connection info
   src/crypto.ts      API key generation
-  src/tools/         MCP tool modules (vault, commands, active-file, navigation)
+  src/tools/         MCP tool modules (vault, commands, active-file, navigation, search, periodic, metadata)
 legacy/              Original MCP server (standalone Node.js process)
 docs/                Design specs, implementation plans, changelog
 ```
@@ -197,7 +197,7 @@ Once the server is connected, you can use natural language in Claude Code:
 
 ### Plugin migration
 
-- ~~Direct access to Obsidian's API instead of HTTP calls through the Local REST API plugin~~ (done — 8 tools ported)
+- ~~Direct access to Obsidian's API instead of HTTP calls through the Local REST API plugin~~ (done — 13 tools ported)
 - ~~`vault_delete` uses Obsidian's trash rather than hard deletion~~ (done)
 - Single plugin instead of two (removes the Local REST API dependency)
 - No HTTP or API key overhead
