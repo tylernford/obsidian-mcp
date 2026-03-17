@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { App, TFile, prepareSimpleSearch } from "obsidian";
+import { App, prepareSimpleSearch } from "obsidian";
 
 interface SearchContext {
   match: {
@@ -198,8 +198,6 @@ async function dataviewSearch(
   }
 
   const idColumnIndex = result.headers.indexOf(idColumnName);
-  const dataHeaders = result.headers.filter((_, i) => i !== idColumnIndex);
-
   const items = result.values.map((row) => {
     const fileLink = row[idColumnIndex] as { path: string };
     const resultObj: Record<string, unknown> = {};
