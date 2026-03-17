@@ -193,21 +193,23 @@ All 15 tools keep identical names, Zod schemas, and response formats. The change
 
 ### Medium (integration work needed)
 
+> **Note (2026-03-17):** `periodic_update` was originally listed here but moved to Hard during medium tool porting. It requires the same heading/block/frontmatter content targeting as `vault_update` and `active_file_update`.
+
 | Tool                 | Notes                                          |
 | -------------------- | ---------------------------------------------- |
 | `search` (simple)    | `prepareSimpleSearch()` from Obsidian API      |
 | `search` (dataview)  | Dataview plugin API (undocumented internal)    |
 | `periodic_read`      | Periodic Notes plugin API for path resolution  |
-| `periodic_update`    | Same path resolution + structured update       |
 | `tags_manage`        | Parse frontmatter, modify tags, write back     |
 | `frontmatter_manage` | `app.fileManager.processFrontMatter(file, fn)` |
 
 ### Hard (must reimplement)
 
-| Tool                 | Notes                                                     |
-| -------------------- | --------------------------------------------------------- |
-| `vault_update`       | Heading/block/frontmatter targeting via `Vault.process()` |
-| `active_file_update` | Same logic, file from `getActiveFile()`                   |
+| Tool                 | Notes                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `vault_update`       | Heading/block/frontmatter targeting via `Vault.process()`                                                     |
+| `active_file_update` | Same logic, file from `getActiveFile()`                                                                       |
+| `periodic_update`    | Same targeting logic + periodic note path resolution (moved from medium — needs structured content targeting) |
 
 ### Convention
 

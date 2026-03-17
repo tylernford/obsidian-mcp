@@ -11,6 +11,9 @@ import { registerVaultTools } from "./tools/vault";
 import { registerCommandTools } from "./tools/commands";
 import { registerActiveFileTools } from "./tools/active-file";
 import { registerNavigationTools } from "./tools/navigation";
+import { registerSearchTools } from "./tools/search";
+import { registerPeriodicTools } from "./tools/periodic";
+import { registerMetadataTools } from "./tools/metadata";
 
 const API_KEY_SECRET_ID = "mcp-api-key";
 
@@ -85,6 +88,9 @@ export default class MCPToolsPlugin extends Plugin {
     registerCommandTools(server, this.app);
     registerActiveFileTools(server, this.app);
     registerNavigationTools(server, this.app);
+    registerSearchTools(server, this.app);
+    registerPeriodicTools(server, this.app);
+    registerMetadataTools(server, this.app);
     return server;
   }
 

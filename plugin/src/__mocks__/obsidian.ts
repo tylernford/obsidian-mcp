@@ -1,3 +1,17 @@
+export type SearchMatchPart = [number, number];
+export type SearchMatches = SearchMatchPart[];
+
+export interface SearchResult {
+  score: number;
+  matches: SearchMatches;
+}
+
+export function prepareSimpleSearch(
+  _query: string,
+): (text: string) => SearchResult | null {
+  return () => null;
+}
+
 export function normalizePath(path: string): string {
   // Strip leading/trailing slashes, collapse consecutive slashes
   return path
@@ -30,6 +44,11 @@ export interface App {
   fileManager: FileManager;
   commands: Commands;
   secretStorage: SecretStorage;
+  plugins: Plugins;
+}
+
+export interface Plugins {
+  getPlugin(id: string): unknown;
 }
 
 export class SecretStorage {
@@ -50,6 +69,8 @@ export interface Vault {
   getAbstractFileByPath(path: string): TAbstractFile | null;
   getRoot(): TFolder;
   read(file: TFile): Promise<string>;
+  cachedRead(file: TFile): Promise<string>;
+  getMarkdownFiles(): TFile[];
   create(path: string, content: string): Promise<TFile>;
   trash(file: TFile, useSystemTrash: boolean): Promise<void>;
 }
@@ -79,6 +100,10 @@ export interface Command {
 
 export interface FileManager {
   trashFile(file: TAbstractFile): Promise<void>;
+  processFrontMatter(
+    file: TFile,
+    fn: (frontmatter: Record<string, unknown>) => void,
+  ): Promise<void>;
 }
 
 export interface Commands {

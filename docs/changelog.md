@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-03-17: Medium Tool Porting
+
+Ported 5 medium-complexity MCP tools (`search` simple + dataview, `periodic_read`, `tags_manage`, `frontmatter_manage`) from legacy HTTP-based REST API calls to direct Obsidian API access. Added 29 unit tests across 3 test files covering happy paths and error cases. `periodic_update` was deferred from medium to hard tier — it requires the same structured content targeting as `vault_update` and `active_file_update`.
+
+**Design:** docs/design-specs/2026-03-16-2125-medium-tool-porting.md
+**Plan:** docs/implementation-plans/2026-03-16-2131-medium-tool-porting.md
+**Key files:** plugin/src/tools/search.ts, plugin/src/tools/periodic.ts, plugin/src/tools/metadata.ts, plugin/src/main.ts, plugin/src/**mocks**/obsidian.ts
+
 ## 2026-03-16: Fix mcp.json Transport Type
 
 Fixed the mcp.json snippet in the settings tab using `"type": "streamable-http"` — Claude Code expects `"type": "http"`. The server wasn't discovered until this was corrected.
