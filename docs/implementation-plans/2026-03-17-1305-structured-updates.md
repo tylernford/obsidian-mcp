@@ -200,6 +200,7 @@ _Filled in during `/build` phase_
 | 2026-03-17 | Task 2 | plugin/src/tools/vault.ts, plugin/src/tools/vault.test.ts                                | 7 new tests: heading/block/frontmatter success, nested heading ::, createIfMissing, file not found, PatchFailed error.                            |
 | 2026-03-17 | Task 3 | plugin/src/tools/active-file.ts, plugin/src/tools/active-file.test.ts                    | 3 new tests: success, no active file, PatchFailed error.                                                                                          |
 | 2026-03-17 | Task 4 | plugin/src/tools/periodic.ts, plugin/src/tools/periodic.test.ts, plugin/src/main.test.ts | 4 new tests. Used create\*Note from obsidian-daily-notes-interface instead of vault.create. Added create exports to main.test.ts mock.            |
+| 2026-03-17 | Task 5 | (none)                                                                                   | No main.ts changes needed — new tools register via existing register\*Tools calls. Build passes, markdown-patch bundled, all 101 tests green.     |
 
 ---
 
