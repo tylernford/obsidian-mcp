@@ -17,6 +17,7 @@
   "packageManager": "pnpm@10.29.3",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
+    "markdown-patch": "^0.4.3",
     "obsidian": "latest",
     "obsidian-daily-notes-interface": "^0.9.4",
     "zod": "^4.3.6"

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-03-17: Structured Updates
+
+Implemented the final 3 of 15 MCP tools — `vault_update`, `active_file_update`, and `periodic_update` — completing full feature parity with the legacy MCP server. These tools perform structured content targeting (heading hierarchy, block references, frontmatter fields) using the `markdown-patch` library with atomic writes via `Vault.process()`. Added a shared `update-utils.ts` helper to avoid duplicating patch instruction construction across tools.
+
+**Design:** docs/design-specs/2026-03-17-1253-structured-updates.md
+**Plan:** docs/implementation-plans/2026-03-17-1305-structured-updates.md
+**Key files:** plugin/src/tools/update-utils.ts, plugin/src/tools/vault.ts, plugin/src/tools/active-file.ts, plugin/src/tools/periodic.ts, plugin/src/**mocks**/obsidian.ts
+
 ## 2026-03-17: Medium Tool Porting
 
 Ported 5 medium-complexity MCP tools (`search` simple + dataview, `periodic_read`, `tags_manage`, `frontmatter_manage`) from legacy HTTP-based REST API calls to direct Obsidian API access. Added 29 unit tests across 3 test files covering happy paths and error cases. `periodic_update` was deferred from medium to hard tier — it requires the same structured content targeting as `vault_update` and `active_file_update`.

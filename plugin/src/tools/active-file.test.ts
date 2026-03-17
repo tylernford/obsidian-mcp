@@ -4,6 +4,17 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { App, TFile, CachedMetadata } from "obsidian";
 import { registerActiveFileTools } from "./active-file";
 
+vi.mock("markdown-patch", async () => {
+  const actual =
+    await vi.importActual<typeof import("markdown-patch")>("markdown-patch");
+  return {
+    ...actual,
+    applyPatch: vi.fn((doc: string) => `patched:${doc}`),
+  };
+});
+
+import { applyPatch, PatchFailed, PatchFailureReason } from "markdown-patch";
+
 interface ToolResult {
   content: Array<{ type: string; text: string }>;
   isError?: boolean;
@@ -48,6 +59,9 @@ function createApp(): App {
       getRoot: vi.fn(),
       read: vi.fn(async () => ""),
       create: vi.fn(),
+      process: vi.fn(async (_file: TFile, fn: (data: string) => string) =>
+        fn("original content"),
+      ),
       trash: vi.fn(),
     },
     workspace: {
@@ -147,5 +161,79 @@ describe("active_file_read", () => {
 
     expect(result.isError).toBe(true);
     expect(result.content[0]!.text).toContain("No active file");
+  });
+});
+
+describe("active_file_update", () => {
+  beforeEach(() => {
+    Object.keys(registeredTools).forEach((k) => delete registeredTools[k]);
+    vi.mocked(applyPatch).mockImplementation((doc: string) => `patched:${doc}`);
+  });
+
+  it("applies patch to the active file", async () => {
+    const file = createTFile("active-note.md");
+    const app = createApp();
+    vi.mocked(app.workspace.getActiveFile).mockReturnValue(file);
+
+    registerActiveFileTools(new McpServer({ name: "t", version: "1" }), app);
+    const result = await callTool("active_file_update", {
+      operation: "append",
+      targetType: "heading",
+      target: "Section",
+      content: "new text",
+    });
+
+    expect(result.isError).toBeUndefined();
+    expect(result.content[0]!.text).toBe("Updated active-note.md");
+    expect(app.vault.process).toHaveBeenCalledWith(file, expect.any(Function));
+    expect(applyPatch).toHaveBeenCalledWith(
+      "original content",
+      expect.objectContaining({
+        operation: "append",
+        targetType: "heading",
+        target: ["Section"],
+      }),
+    );
+  });
+
+  it("returns error when no active file is open", async () => {
+    const app = createApp();
+    vi.mocked(app.workspace.getActiveFile).mockReturnValue(null);
+
+    registerActiveFileTools(new McpServer({ name: "t", version: "1" }), app);
+    const result = await callTool("active_file_update", {
+      operation: "append",
+      targetType: "heading",
+      target: "Section",
+      content: "text",
+    });
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0]!.text).toContain("No active file");
+  });
+
+  it("returns error with reason when PatchFailed is thrown", async () => {
+    const file = createTFile("active-note.md");
+    const app = createApp();
+    vi.mocked(app.workspace.getActiveFile).mockReturnValue(file);
+    vi.mocked(applyPatch).mockImplementation(() => {
+      throw new PatchFailed(
+        PatchFailureReason.InvalidTarget,
+        {} as never,
+        null,
+      );
+    });
+
+    registerActiveFileTools(new McpServer({ name: "t", version: "1" }), app);
+    const result = await callTool("active_file_update", {
+      operation: "append",
+      targetType: "heading",
+      target: "Nonexistent",
+      content: "text",
+    });
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0]!.text).toContain("Patch failed");
+    expect(result.content[0]!.text).toContain("invalid-target");
   });
 });

@@ -34,6 +34,11 @@ vi.mock("obsidian-daily-notes-interface", () => ({
   getAllMonthlyNotes: () => ({}),
   getAllQuarterlyNotes: () => ({}),
   getAllYearlyNotes: () => ({}),
+  createDailyNote: () => Promise.resolve(null),
+  createWeeklyNote: () => Promise.resolve(null),
+  createMonthlyNote: () => Promise.resolve(null),
+  createQuarterlyNote: () => Promise.resolve(null),
+  createYearlyNote: () => Promise.resolve(null),
 }));
 
 function createPlugin(): MCPToolsPlugin {
