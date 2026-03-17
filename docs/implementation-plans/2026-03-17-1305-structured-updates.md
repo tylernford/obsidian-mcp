@@ -197,6 +197,7 @@ _Filled in during `/build` phase_
 | Date       | Task   | Files                                                                                   | Notes                                                                                                                                             |
 | ---------- | ------ | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-03-17 | Task 1 | plugin/package.json, plugin/src/tools/update-utils.ts, plugin/src/**mocks**/obsidian.ts | Deviated: frontmatter patches require ContentType.json with parsed content, not text/markdown. buildPatchInstruction handles this per targetType. |
+| 2026-03-17 | Task 2 | plugin/src/tools/vault.ts, plugin/src/tools/vault.test.ts                               | 7 new tests: heading/block/frontmatter success, nested heading ::, createIfMissing, file not found, PatchFailed error.                            |
 
 ---
 

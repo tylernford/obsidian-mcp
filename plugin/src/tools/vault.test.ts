@@ -4,6 +4,17 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { App, TFile, TFolder, TAbstractFile, CachedMetadata } from "obsidian";
 import { registerVaultTools } from "./vault";
 
+vi.mock("markdown-patch", async () => {
+  const actual =
+    await vi.importActual<typeof import("markdown-patch")>("markdown-patch");
+  return {
+    ...actual,
+    applyPatch: vi.fn((doc: string) => `patched:${doc}`),
+  };
+});
+
+import { applyPatch, PatchFailed, PatchFailureReason } from "markdown-patch";
+
 interface ToolResult {
   content: Array<{ type: string; text: string }>;
   isError?: boolean;
@@ -57,6 +68,9 @@ function createApp(overrides: Partial<App> = {}): App {
       getRoot: vi.fn(() => root),
       read: vi.fn(async () => ""),
       create: vi.fn(async () => createTFile("new.md")),
+      process: vi.fn(async (_file: TFile, fn: (data: string) => string) =>
+        fn("original content"),
+      ),
       trash: vi.fn(async () => {}),
     },
     workspace: {
@@ -317,6 +331,181 @@ describe("vault_delete", () => {
 
     expect(result.isError).toBe(true);
     expect(result.content[0]!.text).toContain("File not found");
+  });
+});
+
+describe("vault_update", () => {
+  beforeEach(() => {
+    Object.keys(registeredTools).forEach((k) => delete registeredTools[k]);
+    vi.mocked(applyPatch).mockImplementation((doc: string) => `patched:${doc}`);
+  });
+
+  it("applies patch to a heading target", async () => {
+    const file = createTFile("note.md");
+    const app = createApp();
+    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
+
+    registerVaultTools(new McpServer({ name: "t", version: "1" }), app);
+    const result = await callTool("vault_update", {
+      filename: "note.md",
+      operation: "append",
+      targetType: "heading",
+      target: "Section",
+      content: "new text",
+      createIfMissing: false,
+    });
+
+    expect(result.isError).toBeUndefined();
+    expect(result.content[0]!.text).toBe("Updated note.md");
+    expect(app.vault.process).toHaveBeenCalledWith(file, expect.any(Function));
+    expect(applyPatch).toHaveBeenCalledWith(
+      "original content",
+      expect.objectContaining({
+        operation: "append",
+        targetType: "heading",
+        target: ["Section"],
+        content: "new text",
+      }),
+    );
+  });
+
+  it("splits nested heading path on ::", async () => {
+    const file = createTFile("note.md");
+    const app = createApp();
+    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
+
+    registerVaultTools(new McpServer({ name: "t", version: "1" }), app);
+    await callTool("vault_update", {
+      filename: "note.md",
+      operation: "append",
+      targetType: "heading",
+      target: "Parent::Child",
+      content: "text",
+    });
+
+    expect(applyPatch).toHaveBeenCalledWith(
+      "original content",
+      expect.objectContaining({
+        target: ["Parent", "Child"],
+      }),
+    );
+  });
+
+  it("applies patch to a block target", async () => {
+    const file = createTFile("note.md");
+    const app = createApp();
+    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
+
+    registerVaultTools(new McpServer({ name: "t", version: "1" }), app);
+    const result = await callTool("vault_update", {
+      filename: "note.md",
+      operation: "prepend",
+      targetType: "block",
+      target: "abc123",
+      content: "before block",
+    });
+
+    expect(result.isError).toBeUndefined();
+    expect(applyPatch).toHaveBeenCalledWith(
+      "original content",
+      expect.objectContaining({
+        operation: "prepend",
+        targetType: "block",
+        target: "abc123",
+      }),
+    );
+  });
+
+  it("applies patch to a frontmatter target", async () => {
+    const file = createTFile("note.md");
+    const app = createApp();
+    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
+
+    registerVaultTools(new McpServer({ name: "t", version: "1" }), app);
+    const result = await callTool("vault_update", {
+      filename: "note.md",
+      operation: "replace",
+      targetType: "frontmatter",
+      target: "title",
+      content: '"New Title"',
+    });
+
+    expect(result.isError).toBeUndefined();
+    expect(applyPatch).toHaveBeenCalledWith(
+      "original content",
+      expect.objectContaining({
+        operation: "replace",
+        targetType: "frontmatter",
+        target: "title",
+        content: "New Title",
+      }),
+    );
+  });
+
+  it("passes createIfMissing through to instruction", async () => {
+    const file = createTFile("note.md");
+    const app = createApp();
+    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
+
+    registerVaultTools(new McpServer({ name: "t", version: "1" }), app);
+    await callTool("vault_update", {
+      filename: "note.md",
+      operation: "append",
+      targetType: "heading",
+      target: "New Section",
+      content: "text",
+      createIfMissing: true,
+    });
+
+    expect(applyPatch).toHaveBeenCalledWith(
+      "original content",
+      expect.objectContaining({
+        createTargetIfMissing: true,
+      }),
+    );
+  });
+
+  it("returns error when file not found", async () => {
+    const app = createApp();
+    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(null);
+
+    registerVaultTools(new McpServer({ name: "t", version: "1" }), app);
+    const result = await callTool("vault_update", {
+      filename: "missing.md",
+      operation: "append",
+      targetType: "heading",
+      target: "Section",
+      content: "text",
+    });
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0]!.text).toContain("File not found");
+  });
+
+  it("returns error with reason when PatchFailed is thrown", async () => {
+    const file = createTFile("note.md");
+    const app = createApp();
+    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
+    vi.mocked(applyPatch).mockImplementation(() => {
+      throw new PatchFailed(
+        PatchFailureReason.InvalidTarget,
+        {} as never,
+        null,
+      );
+    });
+
+    registerVaultTools(new McpServer({ name: "t", version: "1" }), app);
+    const result = await callTool("vault_update", {
+      filename: "note.md",
+      operation: "append",
+      targetType: "heading",
+      target: "Nonexistent",
+      content: "text",
+    });
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0]!.text).toContain("Patch failed");
+    expect(result.content[0]!.text).toContain("invalid-target");
   });
 });
 

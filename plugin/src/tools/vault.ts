@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { App, TFile, TFolder, normalizePath } from "obsidian";
+import { applyUpdate } from "./update-utils";
 
 export function registerVaultTools(server: McpServer, app: App): void {
   server.registerTool(
@@ -161,6 +162,65 @@ export function registerVaultTools(server: McpServer, app: App): void {
       return {
         content: [{ type: "text" as const, text: `Deleted ${filename}` }],
       };
+    },
+  );
+
+  server.registerTool(
+    "vault_update",
+    {
+      description:
+        "Update a note's content by targeting a specific heading, block reference, or frontmatter field",
+      inputSchema: {
+        filename: z
+          .string()
+          .describe(
+            "Path to file relative to vault root (e.g. 'folder/note.md')",
+          ),
+        operation: z
+          .enum(["append", "prepend", "replace"])
+          .describe("How to apply the content relative to the target"),
+        targetType: z
+          .enum(["heading", "block", "frontmatter"])
+          .describe("The type of target to patch"),
+        target: z
+          .string()
+          .describe(
+            "Target identifier: heading path with '::' delimiter, block reference ID, or frontmatter field name",
+          ),
+        content: z.string().describe("Content to insert or replace with"),
+        createIfMissing: z
+          .boolean()
+          .optional()
+          .default(false)
+          .describe("Create the target if it does not exist"),
+      },
+    },
+    async ({
+      filename,
+      operation,
+      targetType,
+      target,
+      content,
+      createIfMissing,
+    }) => {
+      const file = app.vault.getAbstractFileByPath(normalizePath(filename));
+
+      if (!file || !(file instanceof TFile)) {
+        return {
+          content: [
+            { type: "text" as const, text: `File not found: ${filename}` },
+          ],
+          isError: true,
+        };
+      }
+
+      return applyUpdate(app, file, {
+        operation: operation,
+        targetType: targetType,
+        target: target,
+        content: content,
+        createIfMissing: createIfMissing,
+      });
     },
   );
 }
