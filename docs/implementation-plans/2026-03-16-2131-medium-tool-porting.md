@@ -180,6 +180,7 @@ _Filled in during `/build` phase_
 | 2026-03-16 | Task 1 | `plugin/src/__mocks__/obsidian.ts`, `plugin/package.json` | Added `cachedRead`, `getMarkdownFiles`, `processFrontMatter`, `prepareSimpleSearch`, `Plugins` interface, `obsidian-daily-notes-interface` dep |
 | 2026-03-16 | Task 2 | `plugin/src/tools/search.ts`                              | Both simple and dataview search modes implemented; simple search uses cachedRead (async)                                                       |
 | 2026-03-16 | Task 3 | `plugin/src/tools/search.test.ts`                         | 10 tests: content matches, filename matches, boundary skipping, no matches, sort, dataview happy/error/non-TABLE/WITHOUT ID/query failure      |
+| 2026-03-16 | Task 4 | `plugin/src/tools/periodic.ts`                            | Used `ReturnType<typeof window.moment>` for Moment type to avoid direct moment dependency                                                      |
 
 ---
 
