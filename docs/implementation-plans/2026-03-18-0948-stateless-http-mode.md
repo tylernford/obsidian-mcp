@@ -108,8 +108,9 @@ _Confirmed 2026-03-18 — all design spec assumptions match the actual codebase.
 
 _Filled in during `/build` phase_
 
-| Date | Task | Files | Notes |
-| ---- | ---- | ----- | ----- |
+| Date       | Task   | Files                | Notes                                                                                                                                       |
+| ---------- | ------ | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-18 | Task 1 | plugin/src/server.ts | Deviated: wrapped async logic in `handlePost` with `void (async () => ...)()` to satisfy `@typescript-eslint/no-misused-promises` lint rule |
 
 ---
 
