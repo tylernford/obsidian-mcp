@@ -115,11 +115,11 @@ _Filled in during `/build` phase_
 
 ## Completion
 
-**Completed:** [Date] **Final Status:** [Complete | Partial | Abandoned]
+**Completed:** 2026-03-17 **Final Status:** Complete
 
-**Summary:** [Brief description of what was actually built]
+**Summary:** Server now returns HTTP 404 for invalid/expired session IDs on POST, GET, and DELETE handlers. GET/DELETE handler was split to distinguish missing session ID (400) from invalid session ID (404). All tests updated and passing.
 
-**Deviations from Plan:** [Any significant changes from original design]
+**Deviations from Plan:** The GET/DELETE handler split (missing vs invalid session) was not in the original design spec but was identified during codebase verification as necessary for correct behavior. Additionally, discovered that the MCP TypeScript SDK does not implement spec-required 404 auto-reinitialize behavior — documented in `docs/research/mcp-sdk-404-reconnect-gap.md`.
 
 ---
 
