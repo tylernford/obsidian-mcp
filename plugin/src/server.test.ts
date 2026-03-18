@@ -35,19 +35,6 @@ function initializeBody() {
   });
 }
 
-async function initializeSession(): Promise<string> {
-  const res = await fetch(`${BASE_URL}/mcp`, {
-    method: "POST",
-    headers: authHeaders({ "Content-Type": "application/json" }),
-    body: initializeBody(),
-  });
-  // Consume the SSE response body to release the connection
-  await res.text();
-  const sessionId = res.headers.get("mcp-session-id");
-  if (!sessionId) throw new Error("No session ID returned from initialize");
-  return sessionId;
-}
-
 describe("HttpServer", () => {
   let httpServer: HttpServer;
 
@@ -112,8 +99,8 @@ describe("HttpServer", () => {
     });
   });
 
-  describe("session management", () => {
-    it("creates a session on initialize request with valid MCP response", async () => {
+  describe("stateless POST", () => {
+    it("returns successful MCP response with no mcp-session-id header", async () => {
       const res = await fetch(`${BASE_URL}/mcp`, {
         method: "POST",
         headers: authHeaders({ "Content-Type": "application/json" }),
@@ -121,10 +108,8 @@ describe("HttpServer", () => {
       });
       const text = await res.text();
       expect(res.ok).toBe(true);
-      expect(res.headers.get("mcp-session-id")).toBeTruthy();
+      expect(res.headers.get("mcp-session-id")).toBeNull();
 
-      // Verify the response contains a valid MCP initialize result
-      // SSE format: lines prefixed with "data: "
       const dataLines = text
         .split("\n")
         .filter((line) => line.startsWith("data: "))
@@ -135,129 +120,7 @@ describe("HttpServer", () => {
       };
       expect(mcpResponse.result).toBeDefined();
       expect(mcpResponse.result.protocolVersion).toBeDefined();
-      expect(mcpResponse.result.serverInfo).toBeDefined();
       expect(mcpResponse.result.serverInfo.name).toBe("test-server");
-    });
-
-    it("reuses existing session on subsequent requests", async () => {
-      const sessionId = await initializeSession();
-
-      // Send initialized notification to complete handshake
-      const res = await fetch(`${BASE_URL}/mcp`, {
-        method: "POST",
-        headers: authHeaders({
-          "Content-Type": "application/json",
-          "mcp-session-id": sessionId,
-        }),
-        body: JSON.stringify({
-          jsonrpc: "2.0",
-          method: "notifications/initialized",
-        }),
-      });
-      await res.text();
-      expect(res.ok).toBe(true);
-      // No new session ID should be issued — the existing one is reused
-      expect(res.headers.get("mcp-session-id")).toBeNull();
-    });
-
-    it("returns 400 for non-initialize POST without session ID", async () => {
-      const res = await fetch(`${BASE_URL}/mcp`, {
-        method: "POST",
-        headers: authHeaders({ "Content-Type": "application/json" }),
-        body: JSON.stringify({
-          jsonrpc: "2.0",
-          id: 1,
-          method: "tools/list",
-          params: {},
-        }),
-      });
-      expect(res.status).toBe(400);
-    });
-
-    it("returns 404 for invalid session ID on POST", async () => {
-      const res = await fetch(`${BASE_URL}/mcp`, {
-        method: "POST",
-        headers: authHeaders({
-          "Content-Type": "application/json",
-          "mcp-session-id": "nonexistent-session",
-        }),
-        body: JSON.stringify({
-          jsonrpc: "2.0",
-          id: 1,
-          method: "tools/list",
-          params: {},
-        }),
-      });
-      expect(res.status).toBe(404);
-    });
-
-    it("returns 404 for GET with invalid session ID", async () => {
-      const res = await fetch(`${BASE_URL}/mcp`, {
-        method: "GET",
-        headers: authHeaders({ "mcp-session-id": "nonexistent-session" }),
-      });
-      expect(res.status).toBe(404);
-    });
-
-    it("returns 404 for DELETE with invalid session ID", async () => {
-      const res = await fetch(`${BASE_URL}/mcp`, {
-        method: "DELETE",
-        headers: authHeaders({ "mcp-session-id": "nonexistent-session" }),
-      });
-      expect(res.status).toBe(404);
-    });
-
-    it("returns 400 for GET without session ID", async () => {
-      const res = await fetch(`${BASE_URL}/mcp`, {
-        method: "GET",
-        headers: authHeaders(),
-      });
-      expect(res.status).toBe(400);
-    });
-
-    it("returns 400 for DELETE without session ID", async () => {
-      const res = await fetch(`${BASE_URL}/mcp`, {
-        method: "DELETE",
-        headers: authHeaders(),
-      });
-      expect(res.status).toBe(400);
-    });
-
-    it("handles GET with valid session ID", async () => {
-      const sessionId = await initializeSession();
-
-      const res = await fetch(`${BASE_URL}/mcp`, {
-        method: "GET",
-        headers: authHeaders({ "mcp-session-id": sessionId }),
-      });
-      // GET on a valid session opens an SSE stream (200) — the transport handles it
-      expect(res.ok).toBe(true);
-      expect(res.headers.get("content-type")).toContain("text/event-stream");
-    });
-
-    it("handles DELETE with valid session ID", async () => {
-      const sessionId = await initializeSession();
-
-      const res = await fetch(`${BASE_URL}/mcp`, {
-        method: "DELETE",
-        headers: authHeaders({ "mcp-session-id": sessionId }),
-      });
-      await res.text();
-      expect(res.ok).toBe(true);
-
-      // Session should be invalidated after DELETE
-      const res2 = await fetch(`${BASE_URL}/mcp`, {
-        method: "POST",
-        headers: authHeaders({
-          "Content-Type": "application/json",
-          "mcp-session-id": sessionId,
-        }),
-        body: JSON.stringify({
-          jsonrpc: "2.0",
-          method: "notifications/initialized",
-        }),
-      });
-      expect(res2.status).toBe(404);
     });
 
     it("returns 400 for invalid JSON body", async () => {
@@ -270,6 +133,75 @@ describe("HttpServer", () => {
       const body = (await res.json()) as { error: string };
       expect(body.error).toBe("Invalid request body");
     });
+
+    it("handles two sequential POSTs independently", async () => {
+      const res1 = await fetch(`${BASE_URL}/mcp`, {
+        method: "POST",
+        headers: authHeaders({ "Content-Type": "application/json" }),
+        body: initializeBody(),
+      });
+      const text1 = await res1.text();
+      expect(res1.ok).toBe(true);
+
+      const res2 = await fetch(`${BASE_URL}/mcp`, {
+        method: "POST",
+        headers: authHeaders({ "Content-Type": "application/json" }),
+        body: initializeBody(),
+      });
+      const text2 = await res2.text();
+      expect(res2.ok).toBe(true);
+
+      // Both should succeed independently — no shared state
+      const parse = (text: string) => {
+        const line = text
+          .split("\n")
+          .find((l) => l.startsWith("data: "))!
+          .slice(6);
+        return JSON.parse(line) as {
+          result: { serverInfo: { name: string } };
+        };
+      };
+      expect(parse(text1).result.serverInfo.name).toBe("test-server");
+      expect(parse(text2).result.serverInfo.name).toBe("test-server");
+    });
+  });
+
+  describe("GET and DELETE", () => {
+    it("returns 405 with JSON-RPC error for GET to /mcp", async () => {
+      const res = await fetch(`${BASE_URL}/mcp`, {
+        method: "GET",
+        headers: authHeaders(),
+      });
+      expect(res.status).toBe(405);
+      const body = (await res.json()) as {
+        jsonrpc: string;
+        error: { code: number; message: string };
+        id: null;
+      };
+      expect(body).toEqual({
+        jsonrpc: "2.0",
+        error: { code: -32000, message: "Method not allowed." },
+        id: null,
+      });
+    });
+
+    it("returns 405 with JSON-RPC error for DELETE to /mcp", async () => {
+      const res = await fetch(`${BASE_URL}/mcp`, {
+        method: "DELETE",
+        headers: authHeaders(),
+      });
+      expect(res.status).toBe(405);
+      const body = (await res.json()) as {
+        jsonrpc: string;
+        error: { code: number; message: string };
+        id: null;
+      };
+      expect(body).toEqual({
+        jsonrpc: "2.0",
+        error: { code: -32000, message: "Method not allowed." },
+        id: null,
+      });
+    });
   });
 
   describe("lifecycle", () => {
@@ -279,6 +211,7 @@ describe("HttpServer", () => {
         headers: authHeaders({ "Content-Type": "application/json" }),
         body: initializeBody(),
       });
+      await res.text();
       expect(res.ok).toBe(true);
 
       // Stop and verify port is released by starting again
@@ -290,27 +223,8 @@ describe("HttpServer", () => {
         headers: authHeaders({ "Content-Type": "application/json" }),
         body: initializeBody(),
       });
+      await res2.text();
       expect(res2.ok).toBe(true);
-    });
-
-    it("cleans up sessions on stop", async () => {
-      const sessionId = await initializeSession();
-      await httpServer.stop();
-      await httpServer.start();
-
-      // Old session ID should no longer be valid after restart
-      const res = await fetch(`${BASE_URL}/mcp`, {
-        method: "POST",
-        headers: authHeaders({
-          "Content-Type": "application/json",
-          "mcp-session-id": sessionId,
-        }),
-        body: JSON.stringify({
-          jsonrpc: "2.0",
-          method: "notifications/initialized",
-        }),
-      });
-      expect(res.status).toBe(404);
     });
   });
 });
