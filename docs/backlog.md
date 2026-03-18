@@ -84,6 +84,27 @@ Claude Code <--stdio/ws--> Obsidian Plugin <--> Obsidian
 
 ---
 
+## Refactor to StreamableHTTPSessionManager
+
+**Source:** Stateless mode research (2026-03-18)
+
+**Idea:** Replace our manual HTTP routing and transport management in `server.ts` with the SDK's higher-level `StreamableHTTPSessionManager`. Currently we use `StreamableHTTPServerTransport` directly and handle session routing, method dispatch, and transport lifecycle ourselves. `StreamableHTTPSessionManager` encapsulates all of this — you pass it a config and call `session_manager.handle_request()`. FastMCP uses this approach.
+
+**Benefits:**
+
+- Less custom code to maintain
+- SDK handles edge cases in routing/lifecycle
+- Easier to toggle between stateful and stateless modes
+
+**Trade-offs:**
+
+- Larger diff for no immediate behavioral change
+- Less visibility into request handling
+
+**Decision:** Not worth doing alongside the stateless mode conversion. Revisit if `server.ts` routing logic grows more complex.
+
+---
+
 ## CLAUDE.md MCP Conventions
 
 **Source:** Design doc follow-up (2026-02-13)
