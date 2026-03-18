@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-03-17: Stale Session Reconnect
+
+Fixed the MCP server returning HTTP 400 instead of 404 for invalid/expired session IDs. The MCP spec requires 404 so compliant clients can auto-reinitialize. Split the GET/DELETE handler to distinguish missing session ID (400) from invalid session ID (404). Discovered and documented an upstream SDK gap where the TypeScript SDK does not implement the spec-required auto-reconnect behavior.
+
+**Design:** docs/design-specs/2026-03-17-1642-stale-session-reconnect.md
+**Plan:** docs/implementation-plans/2026-03-17-1701-stale-session-reconnect.md
+**Key files:** plugin/src/server.ts, plugin/src/server.test.ts, docs/research/mcp-sdk-404-reconnect-gap.md
+
 ## 2026-03-17: Fix vault_create Error Reporting
 
 Fixed `vault_create` swallowing exceptions and always reporting "File already exists" regardless of the actual error. The catch block now extracts the real error message from the thrown exception, so failures like missing parent directories correctly report the underlying cause.
