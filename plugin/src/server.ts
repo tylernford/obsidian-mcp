@@ -1,8 +1,6 @@
 import { createServer, IncomingMessage, ServerResponse, Server } from "http";
-import { randomUUID } from "crypto";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 
 export interface HttpServerConfig {
   port: number;
@@ -11,9 +9,14 @@ export interface HttpServerConfig {
   createMcpServer: () => McpServer;
 }
 
+const METHOD_NOT_ALLOWED_RESPONSE = JSON.stringify({
+  jsonrpc: "2.0",
+  error: { code: -32000, message: "Method not allowed." },
+  id: null,
+});
+
 export class HttpServer {
   private server: Server | null = null;
-  private transports = new Map<string, StreamableHTTPServerTransport>();
   private connections = new Set<import("net").Socket>();
   private config: HttpServerConfig;
 
@@ -37,12 +40,6 @@ export class HttpServer {
   }
 
   async stop(): Promise<void> {
-    const closePromises = Array.from(this.transports.values()).map((t) =>
-      t.close(),
-    );
-    await Promise.all(closePromises);
-    this.transports.clear();
-
     for (const socket of this.connections) {
       socket.destroy();
     }
@@ -72,17 +69,19 @@ export class HttpServer {
     }
 
     const method = req.method?.toUpperCase();
-    if (method !== "POST" && method !== "GET" && method !== "DELETE") {
-      res.writeHead(405, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Method Not Allowed" }));
+    if (method === "POST") {
+      this.handlePost(req, res);
       return;
     }
 
-    if (method === "POST") {
-      this.handlePost(req, res);
-    } else {
-      this.handleGetOrDelete(req, res);
+    if (method === "GET" || method === "DELETE") {
+      res.writeHead(405, { "Content-Type": "application/json" });
+      res.end(METHOD_NOT_ALLOWED_RESPONSE);
+      return;
     }
+
+    res.writeHead(405, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Method Not Allowed" }));
   }
 
   private authenticate(req: IncomingMessage, res: ServerResponse): boolean {
@@ -99,81 +98,22 @@ export class HttpServer {
     const chunks: Buffer[] = [];
     req.on("data", (chunk: Buffer) => chunks.push(chunk));
     req.on("end", () => {
-      try {
-        const body: unknown = JSON.parse(Buffer.concat(chunks).toString());
-        const sessionId = req.headers["mcp-session-id"] as string | undefined;
-
-        if (sessionId && this.transports.has(sessionId)) {
-          const transport = this.transports.get(sessionId)!;
-          void transport.handleRequest(req, res, body);
-          return;
+      const transport = new StreamableHTTPServerTransport({
+        sessionIdGenerator: undefined,
+      });
+      void (async () => {
+        try {
+          const body: unknown = JSON.parse(Buffer.concat(chunks).toString());
+          const mcpServer = this.config.createMcpServer();
+          await mcpServer.connect(transport);
+          await transport.handleRequest(req, res, body);
+        } catch {
+          res.writeHead(400, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: "Invalid request body" }));
+        } finally {
+          await transport.close();
         }
-
-        if (!sessionId && isInitializeRequest(body)) {
-          void this.createSession(req, res, body);
-          return;
-        }
-
-        if (sessionId && !this.transports.has(sessionId)) {
-          res.writeHead(404, { "Content-Type": "application/json" });
-          res.end(
-            JSON.stringify({
-              error: "Session not found — client should reinitialize",
-            }),
-          );
-          return;
-        }
-
-        res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ error: "Missing session ID" }));
-      } catch {
-        res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ error: "Invalid request body" }));
-      }
+      })();
     });
-  }
-
-  private handleGetOrDelete(req: IncomingMessage, res: ServerResponse): void {
-    const sessionId = req.headers["mcp-session-id"] as string | undefined;
-
-    if (!sessionId) {
-      res.writeHead(400, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Missing session ID" }));
-      return;
-    }
-    if (!this.transports.has(sessionId)) {
-      res.writeHead(404, { "Content-Type": "application/json" });
-      res.end(
-        JSON.stringify({
-          error: "Session not found — client should reinitialize",
-        }),
-      );
-      return;
-    }
-
-    const transport = this.transports.get(sessionId)!;
-    void transport.handleRequest(req, res);
-  }
-
-  private async createSession(
-    req: IncomingMessage,
-    res: ServerResponse,
-    body: unknown,
-  ): Promise<void> {
-    const transport = new StreamableHTTPServerTransport({
-      sessionIdGenerator: () => randomUUID(),
-      onsessioninitialized: (sessionId: string) => {
-        this.transports.set(sessionId, transport);
-      },
-    });
-
-    transport.onclose = () => {
-      const sid = transport.sessionId;
-      if (sid) this.transports.delete(sid);
-    };
-
-    const mcpServer = this.config.createMcpServer();
-    await mcpServer.connect(transport);
-    await transport.handleRequest(req, res, body);
   }
 }
