@@ -105,6 +105,14 @@ Claude Code <--stdio/ws--> Obsidian Plugin <--> Obsidian
 
 ---
 
+## Tool Handler Integration Tests
+
+**Source:** Stateless HTTP mode build (2026-03-18)
+
+**Idea:** Add a test that registers a tool on the `McpServer`, sends a `tools/list` and `tools/call` request, and verifies the response. Currently the test suite covers auth, routing, stateless POST behavior, and lifecycle — but never exercises an actual tool round-trip. This gap predates the stateless conversion.
+
+---
+
 ## CLAUDE.md MCP Conventions
 
 **Source:** Design doc follow-up (2026-02-13)
