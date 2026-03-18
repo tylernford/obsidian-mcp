@@ -1,6 +1,6 @@
 # Stateless HTTP Mode
 
-**Created:** 2026-03-18 **Implementation Plan:** TBD
+**Created:** 2026-03-18 **Implementation Plan:** docs/implementation-plans/2026-03-18-0948-stateless-http-mode.md
 
 ---
 
