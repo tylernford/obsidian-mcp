@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-03-18: Stateless HTTP Mode
+
+Converted the MCP server from session-based to stateless HTTP mode. Each POST to `/mcp` now creates a fresh transport and McpServer per request — no session state is retained between requests. GET and DELETE return 405 with a JSON-RPC error body. Test suite rewritten for stateless behavior.
+
+**Design:** docs/design-specs/2026-03-18-0905-stateless-http-mode.md
+**Plan:** docs/implementation-plans/2026-03-18-0948-stateless-http-mode.md
+**Key files:** plugin/src/server.ts, plugin/src/server.test.ts
+
 ## 2026-03-17: Stale Session Reconnect
 
 Fixed the MCP server returning HTTP 400 instead of 404 for invalid/expired session IDs. The MCP spec requires 404 so compliant clients can auto-reinitialize. Split the GET/DELETE handler to distinguish missing session ID (400) from invalid session ID (404). Discovered and documented an upstream SDK gap where the TypeScript SDK does not implement the spec-required auto-reconnect behavior.

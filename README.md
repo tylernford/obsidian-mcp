@@ -6,14 +6,14 @@ Obsidian plugin that runs an MCP server directly inside Obsidian, giving AI assi
 Claude Code <--HTTP--> Obsidian Plugin (MCP Server) <--> Obsidian API
 ```
 
-> **Status:** Early development. The plugin has an HTTP server with Streamable HTTP transport, Bearer token auth, and session management. All 15 MCP tools are implemented across vault, commands, active-file, navigation, search, periodic, and metadata modules.
+> **Status:** Early development. The plugin has an HTTP server with Streamable HTTP transport (stateless mode) and Bearer token auth. All 15 MCP tools are implemented across vault, commands, active-file, navigation, search, periodic, and metadata modules.
 
 ## Project Structure
 
 ```
 plugin/              Obsidian plugin (in development)
   src/main.ts        Plugin entry point, lifecycle wiring
-  src/server.ts      HTTP server with auth and session management
+  src/server.ts      HTTP server with auth (stateless mode)
   src/settings.ts    Settings tab with connection info
   src/crypto.ts      API key generation
   src/tools/         MCP tool modules (vault, commands, active-file, navigation, search, periodic, metadata)
