@@ -93,14 +93,14 @@ _Confirmed 2026-03-18 — all design spec assumptions match the actual codebase.
 
 ## Acceptance Criteria
 
-- [ ] POST to `/mcp` with valid auth and a valid MCP request returns a successful MCP response with no `mcp-session-id` in response headers
-- [ ] GET to `/mcp` returns 405 with JSON-RPC error body: `{"jsonrpc":"2.0","error":{"code":-32000,"message":"Method not allowed."},"id":null}`
-- [ ] DELETE to `/mcp` returns 405 with the same JSON-RPC error body
-- [ ] POST with missing or invalid Bearer token returns 401
-- [ ] Two sequential POST requests are completely independent — no shared state
-- [ ] Server stops cleanly — sockets destroyed, HTTP server closed, no hanging connections
-- [ ] All tool handlers work unchanged (no regression)
-- [ ] All tests pass
+- [x] POST to `/mcp` with valid auth and a valid MCP request returns a successful MCP response with no `mcp-session-id` in response headers
+- [x] GET to `/mcp` returns 405 with JSON-RPC error body: `{"jsonrpc":"2.0","error":{"code":-32000,"message":"Method not allowed."},"id":null}`
+- [x] DELETE to `/mcp` returns 405 with the same JSON-RPC error body
+- [x] POST with missing or invalid Bearer token returns 401
+- [x] Two sequential POST requests are completely independent — no shared state
+- [x] Server stops cleanly — sockets destroyed, HTTP server closed, no hanging connections
+- [x] All tool handlers work unchanged (no regression)
+- [x] All tests pass
 
 ---
 
@@ -117,11 +117,11 @@ _Filled in during `/build` phase_
 
 ## Completion
 
-**Completed:** [Date] **Final Status:** [Complete | Partial | Abandoned]
+**Completed:** 2026-03-18 **Final Status:** Complete
 
-**Summary:** [Brief description of what was actually built]
+**Summary:** Converted HttpServer from session-based to stateless HTTP mode. Each POST creates a fresh transport and McpServer, handles the request, and closes. GET/DELETE return 405 with JSON-RPC error. Test suite rewritten for stateless behavior (11 tests).
 
-**Deviations from Plan:** [Any significant changes from original design]
+**Deviations from Plan:** Wrapped async logic in `handlePost` with `void (async () => ...)()` to satisfy `@typescript-eslint/no-misused-promises` lint rule.
 
 ---
 
