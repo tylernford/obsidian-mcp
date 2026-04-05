@@ -166,9 +166,10 @@ _Confirmed 2026-04-04 — all design spec assumptions match actual codebase._
 
 _Filled in during `/build` phase_
 
-| Date       | Task   | Files                                   | Notes                                             |
-| ---------- | ------ | --------------------------------------- | ------------------------------------------------- |
-| 2026-04-04 | Task 1 | 11 test files + `__mocks__/obsidian.ts` | Deleted all existing tests and mock. Clean slate. |
+| Date       | Task   | Files                                           | Notes                                                                                                                                                                                                                |
+| ---------- | ------ | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-04 | Task 1 | 11 test files + `__mocks__/obsidian.ts`         | Deleted all existing tests and mock. Clean slate.                                                                                                                                                                    |
+| 2026-04-04 | Task 2 | `__mocks__/obsidian.ts`, `update-utils.test.ts` | Created obsidian mock with TFile, 12 test cases all passing. Cut empty-segment `::` split test (tested `String.split`, not our logic), rewrote success test to verify patched content flows back to `vault.process`. |
 
 ---
 
