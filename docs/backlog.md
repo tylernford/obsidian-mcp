@@ -118,3 +118,11 @@ Claude Code <--stdio/ws--> Obsidian Plugin <--> Obsidian
 **Source:** Design doc follow-up (2026-02-13)
 
 **Idea:** Add MCP tool usage conventions to CLAUDE.md once workflows are established. This would guide Claude Code on when to prefer MCP tools over direct file access (e.g., always use `search` instead of grepping the vault, use `vault_update` for targeted edits instead of rewriting files).
+
+---
+
+## `frontmatter_manage` Missing Value Validation
+
+**Source:** Test spec review (2026-04-04)
+
+**Idea:** The `frontmatter_manage` set action doesn't validate that `value` is provided. The Zod schema marks `value` as `.optional()` and the description says "Required for 'set' action," but nothing enforces it. When `value` is omitted, the key is silently set to `undefined`. Add a guard matching the existing `key` validation pattern — return an error like "Value is required for set action" when `value` is `undefined` and `action` is `"set"`.
