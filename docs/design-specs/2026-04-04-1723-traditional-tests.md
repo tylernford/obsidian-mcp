@@ -1,6 +1,8 @@
 # Traditional Tests
 
-**Created:** 2026-04-04 **Parent spec:** [Testing Refactor](2026-04-03-1550-testing-refactor.md)
+**Created:** 2026-04-04
+**Parent spec:** [Testing Refactor](2026-04-03-1550-testing-refactor.md)
+**Implementation Plan:** `docs/implementation-plans/2026-04-04-2144-traditional-tests.md`
 
 ---
 
