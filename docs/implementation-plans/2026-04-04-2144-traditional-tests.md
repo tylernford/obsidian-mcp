@@ -166,8 +166,9 @@ _Confirmed 2026-04-04 — all design spec assumptions match actual codebase._
 
 _Filled in during `/build` phase_
 
-| Date | Task | Files | Notes |
-| ---- | ---- | ----- | ----- |
+| Date       | Task   | Files                                   | Notes                                             |
+| ---------- | ------ | --------------------------------------- | ------------------------------------------------- |
+| 2026-04-04 | Task 1 | 11 test files + `__mocks__/obsidian.ts` | Deleted all existing tests and mock. Clean slate. |
 
 ---
 
