@@ -12,6 +12,8 @@ import {
   type UpdateParams,
 } from "./update-utils";
 
+// Mock only applyPatch — returns a fixed string so we can verify it flows
+// through vault.process without testing markdown-patch internals.
 vi.mock("markdown-patch", async (importOriginal) => {
   const actual = await importOriginal<typeof import("markdown-patch")>();
   return {
@@ -109,6 +111,8 @@ describe("buildPatchInstruction", () => {
     expect(result.target).toEqual(["TopLevel"]);
   });
 
+  // Cast through Record because these properties are set by our code but
+  // aren't exposed on every variant of the PatchInstruction union type.
   it("sets trimTargetWhitespace and applyIfContentPreexists to false for headings", () => {
     const result = buildPatchInstruction({
       operation: "append",
@@ -167,6 +171,8 @@ describe("buildPatchInstruction", () => {
 describe("applyUpdate", () => {
   const file = Object.assign(new TFile(), { path: "notes/test.md" });
 
+  // Simulates vault.process: reads file content ("original") and passes it
+  // to the callback, whose return value becomes the new file content.
   function makeApp() {
     return {
       vault: {
