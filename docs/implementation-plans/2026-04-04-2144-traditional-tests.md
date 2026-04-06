@@ -151,14 +151,14 @@ _Confirmed 2026-04-04 — all design spec assumptions match actual codebase._
 
 ## Acceptance Criteria
 
-- [ ] All existing `.test.ts` files are deleted from `plugin/src/`
-- [ ] Existing `__mocks__/obsidian.ts` is replaced with a minimal version exporting only `TFile` (real class), `normalizePath` (real implementation), and `prepareSimpleSearch` (stub)
-- [ ] `update-utils.test.ts` passes — covers `buildPatchInstruction` (3 target type branches, JSON parse fallback, `::` splitting edge cases, `createIfMissing` default) and `applyUpdate` (success, `PatchFailed`, unknown error)
-- [ ] `search.test.ts` passes — covers `simpleSearch` (filename match, exact boundary match, content match, boundary-spanning skip, all-filtered-out, no match, context clamping, sorting, custom context length) and `dataviewSearch` (plugin missing, query error, non-TABLE, TABLE WITHOUT ID, successful transform, multi-column)
-- [ ] `server.test.ts` passes as integration tests — covers auth (missing, wrong, valid), routing (POST, GET, DELETE, other method, unknown path with correct response format distinctions), request handling (error, valid), lifecycle (start/stop, null server stop)
-- [ ] `metadata.test.ts` passes — covers `tags_manage` (list with/without `#`, empty, non-array, add dedup, add strip `#`, add append, remove, remove missing, missing tags param, file not found) and `frontmatter_manage` (read, read strips position, read empty, set JSON parse, set string fallback, set undefined value, missing key, file not found)
-- [ ] `docs/testing-guidelines.md` reflects: testing philosophy, modules under test with rationale, mock strategy (minimal stubs, callback pattern, `TFile` must be real class), mock boundary table, three-layer validation model, integration test pattern for `server.ts`, exclusion rationale
-- [ ] All tests run via `pnpm test` with no failures
+- [x] All existing `.test.ts` files are deleted from `plugin/src/`
+- [x] Existing `__mocks__/obsidian.ts` is replaced with a minimal version exporting only `TFile` (real class), `normalizePath` (real implementation), and `prepareSimpleSearch` (stub)
+- [x] `update-utils.test.ts` passes — covers `buildPatchInstruction` (3 target type branches, JSON parse fallback, `::` splitting edge cases, `createIfMissing` default) and `applyUpdate` (success, `PatchFailed`, unknown error)
+- [x] `search.test.ts` passes — covers `simpleSearch` (filename match, exact boundary match, content match, boundary-spanning skip, all-filtered-out, no match, context clamping, sorting, custom context length) and `dataviewSearch` (plugin missing, query error, non-TABLE, TABLE WITHOUT ID, successful transform, multi-column)
+- [x] `server.test.ts` passes as integration tests — covers auth (missing, wrong, valid), routing (POST, GET, DELETE, other method, unknown path with correct response format distinctions), request handling (error, valid), lifecycle (start/stop, null server stop)
+- [x] `metadata.test.ts` passes — covers `tags_manage` (list with/without `#`, empty, non-array, add dedup, add strip `#`, add append, remove, remove missing, missing tags param, file not found) and `frontmatter_manage` (read, read strips position, read empty, set JSON parse, set string fallback, set undefined value, missing key, file not found)
+- [x] `docs/testing-guidelines.md` reflects: testing philosophy, modules under test with rationale, mock strategy (minimal stubs, callback pattern, `TFile` must be real class), mock boundary table, three-layer validation model, integration test pattern for `server.ts`, exclusion rationale
+- [x] All tests run via `pnpm test` with no failures
 
 ---
 
