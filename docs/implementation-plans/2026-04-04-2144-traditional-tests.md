@@ -180,11 +180,15 @@ _Filled in during `/build` phase_
 
 ## Completion
 
-**Completed:** [Date] **Final Status:** [Complete | Partial | Abandoned]
+**Completed:** 2026-04-06 **Final Status:** Complete
 
-**Summary:** [Brief description of what was actually built]
+**Summary:** Deleted all 11 existing test files and the obsidian mock, then rebuilt a focused test suite with 54 tests across 4 files (`update-utils.test.ts`, `search.test.ts`, `server.test.ts`, `metadata.test.ts`). The obsidian mock was rebuilt incrementally to contain exactly 3 exports (`TFile`, `prepareSimpleSearch`, `normalizePath`). Server tests run against a real HTTP server. `docs/testing-guidelines.md` was rewritten from scratch to reflect the new strategy.
 
-**Deviations from Plan:** [Any significant changes from original design]
+**Deviations from Plan:**
+
+- Final test count is 54 vs planned 57 — accounted for by targeted cuts of redundant/trivial tests across Tasks 2–5 (documented in Build Log)
+- `prepareSimpleSearch` in mock is a `vi.fn()` rather than a plain stub, because vitest aliases obsidian directly to the mock file — calling `vi.mock("obsidian")` would auto-mock TFile's constructor
+- Testing guidelines required 3 post-review rounds to fix inaccuracies (mock boundary descriptions, test pattern code samples, validation table details)
 
 ---
 
