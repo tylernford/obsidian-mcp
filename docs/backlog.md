@@ -121,6 +121,14 @@ Claude Code <--stdio/ws--> Obsidian Plugin <--> Obsidian
 
 ---
 
+## Inconsistent 405 Error Format in `server.ts`
+
+**Source:** Server test review (2026-04-05)
+
+**Idea:** When a client hits `/mcp` with the wrong HTTP method, they get two different error formats depending on which wrong method they used. GET/DELETE return a JSON-RPC shape (`{ jsonrpc: "2.0", error: { code: -32000, message: "Method not allowed." }, id: null }`), while PUT and other methods return a generic shape (`{ error: "Method Not Allowed" }`). Pick one format for all 405s — probably the JSON-RPC shape since this is a JSON-RPC endpoint. See `server.ts` `handleRequest`, the split between the GET/DELETE branch and the fallback. If fixed, update the GET and PUT routing tests in `server.test.ts` to assert the same response shape.
+
+---
+
 ## `frontmatter_manage` Missing Value Validation
 
 **Source:** Test spec review (2026-04-04)
