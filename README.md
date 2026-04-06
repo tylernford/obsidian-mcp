@@ -184,6 +184,25 @@ Once the server is connected, you can use natural language in Claude Code:
 | `periodic_read`   | Read a periodic note (daily, weekly, monthly, quarterly, yearly) |
 | `periodic_update` | Update a periodic note (creates from template if needed)         |
 
+## Testing
+
+Tests target modules with meaningful logic — branching, parsing, transformation. Thin wrappers around Obsidian APIs are excluded; they're validated at runtime against a real Obsidian instance.
+
+| Module         | Tests | What's covered                                                   |
+| -------------- | ----- | ---------------------------------------------------------------- |
+| `update-utils` | 12    | Heading/block/frontmatter targeting, JSON parse fallback, errors |
+| `search`       | 13    | Offset math, match categorization, Dataview query transform      |
+| `server`       | 10    | Auth (real HTTP), routing, request handling, lifecycle           |
+| `metadata`     | 19    | Tag normalization/dedup, frontmatter read/set, edge cases        |
+
+```bash
+pnpm test              # Run all 54 tests
+pnpm test:watch        # Watch mode
+pnpm test:coverage     # With v8 coverage
+```
+
+See [docs/testing-guidelines.md](docs/testing-guidelines.md) for the full testing philosophy, mock strategy, and module selection rationale.
+
 ## Built With
 
 - TypeScript

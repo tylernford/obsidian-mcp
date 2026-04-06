@@ -153,8 +153,8 @@ A maintained snapshot of currently known issues, organized by tool or category. 
 
 ### Must Have
 
-- [ ] All existing tests removed
-- [ ] Traditional test suite covering `update-utils.ts`, `search.ts`, `server.ts`, `metadata.ts`
+- [x] All existing tests removed
+- [x] Traditional test suite covering `update-utils.ts`, `search.ts`, `server.ts`, `metadata.ts`
 - [ ] Live tool validation protocol defined and usable
 - [ ] Agent user testing protocol defined and usable
 - [ ] Findings capture structure (reports + structured log) in place
@@ -235,9 +235,9 @@ Evaluation criteria, session protocol, report format, how findings translate int
 
 ## Acceptance Criteria
 
-- [ ] All existing test files are removed from the codebase
-- [ ] This root design spec is reviewed and approved
-- [ ] Child design spec for traditional tests is created and results in a working test suite where every test targets logic-heavy code and catches meaningful edge cases or failure modes
+- [x] All existing test files are removed from the codebase
+- [x] This root design spec is reviewed and approved
+- [x] Child design spec for traditional tests is created and results in a working test suite where every test targets logic-heavy code and catches meaningful edge cases or failure modes
 - [ ] Child design spec for live tool validation is created and results in a usable protocol that can be run in a Claude Code session against the test vault
 - [ ] Child design spec for agent user testing is created and results in a usable protocol that produces actionable UX findings
 - [ ] Findings capture structure (reports directory + structured log) exists and is documented

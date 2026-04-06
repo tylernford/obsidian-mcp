@@ -129,6 +129,28 @@ Claude Code <--stdio/ws--> Obsidian Plugin <--> Obsidian
 
 ---
 
+## Live Tool Validation
+
+**Source:** Testing refactor design spec (2026-04-03)
+
+**Idea:** Define a structured protocol for verifying MCP tools work correctly against a real Obsidian instance. A Claude Code session connected to a test vault follows a checklist covering full CRUD lifecycle, targeting mechanics (headings, blocks, frontmatter), error handling, and cross-cutting concerns (metadata cache timing, large content). Produces session reports and a maintained structured log of known issues.
+
+**Design spec:** `docs/design-specs/2026-04-03-1550-testing-refactor.md` (child spec #2)
+**Research:** `docs/research/live-tool-validation.md`
+
+---
+
+## Agent User Testing
+
+**Source:** Testing refactor design spec (2026-04-03)
+
+**Idea:** Evaluate MCP tools from an agent consumer's perspective — not "does it work?" but "does it make sense to use?" A Claude Code session uses the tools to accomplish real tasks and assesses description accuracy, parameter intuitiveness, error helpfulness, missing tools, composition, and consistency. Exploratory rather than scripted. Produces session reports and feeds findings back into tool improvements.
+
+**Design spec:** `docs/design-specs/2026-04-03-1550-testing-refactor.md` (child spec #3)
+**Research:** `docs/research/llm-as-mcp-tool-tester.md`
+
+---
+
 ## `frontmatter_manage` Missing Value Validation
 
 **Source:** Test spec review (2026-04-04)
