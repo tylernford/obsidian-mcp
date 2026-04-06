@@ -1,3 +1,18 @@
+import { vi } from "vitest";
+
+// Stub — tests wire up return values via vi.mocked(prepareSimpleSearch).
+// The real Obsidian prepareSimpleSearch returns a function that scores text.
+export const prepareSimpleSearch =
+  vi.fn<
+    (
+      query: string,
+    ) =>
+      | ((
+          text: string,
+        ) => { score: number; matches: [number, number][] } | null)
+      | null
+  >();
+
 export class TFile {
   vault: unknown;
   path: string;
