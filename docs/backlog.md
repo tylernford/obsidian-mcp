@@ -129,9 +129,17 @@ Claude Code <--stdio/ws--> Obsidian Plugin <--> Obsidian
 
 ---
 
+## `frontmatter_manage` Missing Value Validation
+
+**Source:** Test spec review (2026-04-04)
+
+**Idea:** The `frontmatter_manage` set action doesn't validate that `value` is provided. The Zod schema marks `value` as `.optional()` and the description says "Required for 'set' action," but nothing enforces it. When `value` is omitted, the key is silently set to `undefined`. Add a guard matching the existing `key` validation pattern — return an error like "Value is required for set action" when `value` is `undefined` and `action` is `"set"`.
+
+---
+
 ## Live Tool Validation
 
-**Source:** Testing refactor design spec (2026-04-03)
+**Source:** Testing refactor design spec (2026-04-06)
 
 **Idea:** Define a structured protocol for verifying MCP tools work correctly against a real Obsidian instance. A Claude Code session connected to a test vault follows a checklist covering full CRUD lifecycle, targeting mechanics (headings, blocks, frontmatter), error handling, and cross-cutting concerns (metadata cache timing, large content). Produces session reports and a maintained structured log of known issues.
 
@@ -142,17 +150,9 @@ Claude Code <--stdio/ws--> Obsidian Plugin <--> Obsidian
 
 ## Agent User Testing
 
-**Source:** Testing refactor design spec (2026-04-03)
+**Source:** Testing refactor design spec (2026-04-06)
 
 **Idea:** Evaluate MCP tools from an agent consumer's perspective — not "does it work?" but "does it make sense to use?" A Claude Code session uses the tools to accomplish real tasks and assesses description accuracy, parameter intuitiveness, error helpfulness, missing tools, composition, and consistency. Exploratory rather than scripted. Produces session reports and feeds findings back into tool improvements.
 
 **Design spec:** `docs/design-specs/2026-04-03-1550-testing-refactor.md` (child spec #3)
 **Research:** `docs/research/llm-as-mcp-tool-tester.md`
-
----
-
-## `frontmatter_manage` Missing Value Validation
-
-**Source:** Test spec review (2026-04-04)
-
-**Idea:** The `frontmatter_manage` set action doesn't validate that `value` is provided. The Zod schema marks `value` as `.optional()` and the description says "Required for 'set' action," but nothing enforces it. When `value` is omitted, the key is silently set to `undefined`. Add a guard matching the existing `key` validation pattern — return an error like "Value is required for set action" when `value` is `undefined` and `action` is `"set"`.
