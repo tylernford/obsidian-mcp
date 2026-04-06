@@ -1,251 +1,260 @@
-// @vitest-environment jsdom
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { App, TFile, TFolder, CachedMetadata } from "obsidian";
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+   -- Tests validate JSON.parse output via assertions; any-typed access is intentional. */
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { TFile } from "obsidian";
 import { registerMetadataTools } from "./metadata";
 
-interface ToolResult {
-  content: Array<{ type: string; text: string }>;
+// ---------------------------------------------------------------------------
+// Capture handlers registered by registerMetadataTools
+// ---------------------------------------------------------------------------
+
+type TagsHandler = (args: {
+  filename: string;
+  action: "list" | "add" | "remove";
+  tags?: string[];
+}) => Promise<{
+  content: Array<{ type: "text"; text: string }>;
   isError?: boolean;
+}>;
+
+type FrontmatterHandler = (args: {
+  filename: string;
+  action: "read" | "set";
+  key?: string;
+  value?: string;
+}) => Promise<{
+  content: Array<{ type: "text"; text: string }>;
+  isError?: boolean;
+}>;
+
+let tagsHandler: TagsHandler;
+let frontmatterHandler: FrontmatterHandler;
+
+const fakeMcpServer = {
+  registerTool: vi.fn(
+    (_name: string, _schema: unknown, fn: TagsHandler | FrontmatterHandler) => {
+      if (_name === "tags_manage") tagsHandler = fn as TagsHandler;
+      else if (_name === "frontmatter_manage")
+        frontmatterHandler = fn as FrontmatterHandler;
+    },
+  ),
+};
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function makeFile(path: string) {
+  return new (TFile as new (p: string) => TFile)(path);
 }
 
-type ToolHandler = (args: Record<string, unknown>) => Promise<ToolResult>;
+function makeApp(opts: {
+  file?: TFile;
+  frontmatter?: Record<string, unknown>;
+  processFrontMatter?: (
+    file: TFile,
+    fn: (fm: Record<string, unknown>) => void,
+  ) => Promise<void>;
+}) {
+  const { file, frontmatter } = opts;
+  const processFrontMatter =
+    opts.processFrontMatter ??
+    vi.fn(async (_f: TFile, fn: (fm: Record<string, unknown>) => void) => {
+      fn(frontmatter ?? {});
+    });
 
-const registeredTools: Record<
-  string,
-  { config: Record<string, unknown>; handler: ToolHandler }
-> = {};
-
-vi.mock("@modelcontextprotocol/sdk/server/mcp.js", () => ({
-  McpServer: class MockMcpServer {
-    registerTool(
-      name: string,
-      config: Record<string, unknown>,
-      handler: ToolHandler,
-    ): void {
-      registeredTools[name] = { config, handler };
-    }
-  },
-}));
-
-function createTFile(
-  path: string,
-  stat = { ctime: 1000, mtime: 2000, size: 100 },
-): TFile {
-  const file = new TFile();
-  file.path = path;
-  file.name = path.split("/").pop()!;
-  file.basename = file.name.replace(/\.[^.]+$/, "");
-  file.extension = file.name.split(".").pop()!;
-  file.stat = stat;
-  return file;
-}
-
-function createApp(overrides: Partial<App> = {}): App {
-  const root = new TFolder();
-  root.path = "";
-  root.name = "";
-  root.children = [];
   return {
     vault: {
-      getAbstractFileByPath: vi.fn(() => null),
-      getRoot: vi.fn(() => root),
-      read: vi.fn(async () => ""),
-      cachedRead: vi.fn(async () => ""),
-      getMarkdownFiles: vi.fn(() => []),
-      create: vi.fn(async () => createTFile("new.md")),
-      trash: vi.fn(async () => {}),
-    },
-    workspace: {
-      getActiveFile: vi.fn(() => null),
-      openLinkText: vi.fn(async () => {}),
+      getAbstractFileByPath: vi.fn((path: string) =>
+        file && file.path === path ? file : undefined,
+      ),
     },
     metadataCache: {
-      getFileCache: vi.fn(() => null),
+      getFileCache: vi.fn((f: TFile) =>
+        file && f.path === file.path && frontmatter ? { frontmatter } : null,
+      ),
     },
-    fileManager: {
-      trashFile: vi.fn(async () => {}),
-      processFrontMatter: vi.fn(async () => {}),
-    },
-    commands: {
-      commands: {},
-      executeCommandById: vi.fn(() => true),
-    },
-    secretStorage: {
-      getSecret: vi.fn(() => null),
-      setSecret: vi.fn(),
-      listSecrets: vi.fn(() => []),
-    },
-    plugins: {
-      getPlugin: vi.fn(() => null),
-    },
-    ...overrides,
-  } as unknown as App;
+    fileManager: { processFrontMatter },
+  } as unknown as import("obsidian").App;
 }
 
-function callTool(
-  name: string,
-  args: Record<string, unknown>,
-): Promise<ToolResult> {
-  return registeredTools[name]!.handler(args);
-}
+// ---------------------------------------------------------------------------
+// Setup
+// ---------------------------------------------------------------------------
+
+let app: ReturnType<typeof makeApp>;
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
+// Register once — app is swapped per test via the closure reference
+registerMetadataTools(
+  fakeMcpServer as unknown as import("@modelcontextprotocol/sdk/server/mcp.js").McpServer,
+  // Proxy so each test can reassign `app`
+  new Proxy({} as import("obsidian").App, {
+    get: (_target, prop) =>
+      (app as unknown as Record<string | symbol, unknown>)[prop],
+  }),
+);
+
+// ===========================================================================
+// tags_manage
+// ===========================================================================
 
 describe("tags_manage", () => {
-  beforeEach(() => {
-    Object.keys(registeredTools).forEach((k) => delete registeredTools[k]);
-  });
+  // --- list ---
 
-  it("lists tags without # prefix", async () => {
-    const file = createTFile("note.md");
-    const app = createApp();
-    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
-    vi.mocked(app.metadataCache.getFileCache).mockReturnValue({
-      frontmatter: { tags: ["journal", "daily"] },
-    } as unknown as CachedMetadata);
+  it("lists tags stripping # prefix", async () => {
+    const file = makeFile("note.md");
+    app = makeApp({ file, frontmatter: { tags: ["#foo", "#bar"] } });
 
-    registerMetadataTools(new McpServer({ name: "t", version: "1" }), app);
-    const result = await callTool("tags_manage", {
+    const result = await tagsHandler({
       filename: "note.md",
       action: "list",
     });
 
-    const parsed = JSON.parse(result.content[0]!.text) as {
-      tags: string[];
-    };
-    expect(parsed.tags).toEqual(["journal", "daily"]);
+    const parsed = JSON.parse(result.content[0]!.text);
+    expect(parsed.tags).toEqual(["foo", "bar"]);
     expect(result.isError).toBeUndefined();
   });
 
-  it("strips # prefix when listing tags", async () => {
-    const file = createTFile("note.md");
-    const app = createApp();
-    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
-    vi.mocked(app.metadataCache.getFileCache).mockReturnValue({
-      frontmatter: { tags: ["#prefixed", "clean"] },
-    } as unknown as CachedMetadata);
+  it("returns empty array when tags is not an array", async () => {
+    const file = makeFile("note.md");
+    app = makeApp({ file, frontmatter: { tags: "not-an-array" } });
 
-    registerMetadataTools(new McpServer({ name: "t", version: "1" }), app);
-    const result = await callTool("tags_manage", {
+    const result = await tagsHandler({
       filename: "note.md",
       action: "list",
     });
 
-    const parsed = JSON.parse(result.content[0]!.text) as {
-      tags: string[];
-    };
-    expect(parsed.tags).toEqual(["prefixed", "clean"]);
-  });
-
-  it("returns empty tags when no frontmatter", async () => {
-    const file = createTFile("note.md");
-    const app = createApp();
-    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
-
-    registerMetadataTools(new McpServer({ name: "t", version: "1" }), app);
-    const result = await callTool("tags_manage", {
-      filename: "note.md",
-      action: "list",
-    });
-
-    const parsed = JSON.parse(result.content[0]!.text) as {
-      tags: string[];
-    };
+    const parsed = JSON.parse(result.content[0]!.text);
     expect(parsed.tags).toEqual([]);
   });
 
-  it("adds tags via processFrontMatter", async () => {
-    const file = createTFile("note.md");
-    const app = createApp();
-    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
-    vi.mocked(app.fileManager.processFrontMatter).mockImplementation(
-      async (_file, fn) => {
-        const fm: Record<string, unknown> = { tags: ["existing"] };
-        fn(fm);
-        expect(fm.tags).toEqual(["existing", "new-tag"]);
-      },
-    );
+  // --- add ---
 
-    registerMetadataTools(new McpServer({ name: "t", version: "1" }), app);
-    const result = await callTool("tags_manage", {
+  it("add deduplicates tags already present", async () => {
+    const fm: Record<string, unknown> = { tags: ["existing"] };
+    const file = makeFile("note.md");
+    app = makeApp({ file, frontmatter: fm });
+
+    const result = await tagsHandler({
       filename: "note.md",
       action: "add",
-      tags: ["new-tag"],
+      tags: ["existing", "new-tag"],
     });
 
-    expect(result.isError).toBeUndefined();
+    expect(fm.tags).toEqual(["existing", "new-tag"]);
     expect(result.content[0]!.text).toContain("added");
-    expect(app.fileManager.processFrontMatter).toHaveBeenCalled();
   });
 
-  it("strips # from input tags on add", async () => {
-    const file = createTFile("note.md");
-    const app = createApp();
-    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
-    vi.mocked(app.fileManager.processFrontMatter).mockImplementation(
-      async (_file, fn) => {
-        const fm: Record<string, unknown> = { tags: [] };
-        fn(fm);
-        expect(fm.tags).toEqual(["stripped"]);
-      },
-    );
+  it("add strips # prefix from input tags", async () => {
+    const fm: Record<string, unknown> = { tags: [] };
+    const file = makeFile("note.md");
+    app = makeApp({ file, frontmatter: fm });
 
-    registerMetadataTools(new McpServer({ name: "t", version: "1" }), app);
-    await callTool("tags_manage", {
+    await tagsHandler({
       filename: "note.md",
       action: "add",
-      tags: ["#stripped"],
+      tags: ["#prefixed"],
     });
 
-    expect(app.fileManager.processFrontMatter).toHaveBeenCalled();
+    expect(fm.tags).toEqual(["prefixed"]);
   });
 
-  it("removes tags via processFrontMatter", async () => {
-    const file = createTFile("note.md");
-    const app = createApp();
-    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
-    vi.mocked(app.fileManager.processFrontMatter).mockImplementation(
-      async (_file, fn) => {
-        const fm: Record<string, unknown> = { tags: ["keep", "remove-me"] };
-        fn(fm);
-        expect(fm.tags).toEqual(["keep"]);
-      },
-    );
+  // --- remove ---
 
-    registerMetadataTools(new McpServer({ name: "t", version: "1" }), app);
-    const result = await callTool("tags_manage", {
+  it("remove filters out specified tags", async () => {
+    const fm: Record<string, unknown> = { tags: ["keep", "drop"] };
+    const file = makeFile("note.md");
+    app = makeApp({ file, frontmatter: fm });
+
+    await tagsHandler({
       filename: "note.md",
       action: "remove",
-      tags: ["remove-me"],
+      tags: ["drop"],
     });
 
-    expect(result.isError).toBeUndefined();
+    expect(fm.tags).toEqual(["keep"]);
+  });
+
+  it("remove with missing tag is a no-op", async () => {
+    const fm: Record<string, unknown> = { tags: ["keep"] };
+    const file = makeFile("note.md");
+    app = makeApp({ file, frontmatter: fm });
+
+    const result = await tagsHandler({
+      filename: "note.md",
+      action: "remove",
+      tags: ["nonexistent"],
+    });
+
+    expect(fm.tags).toEqual(["keep"]);
     expect(result.content[0]!.text).toContain("removed");
   });
 
-  it("does not duplicate existing tags on add", async () => {
-    const file = createTFile("note.md");
-    const app = createApp();
-    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
-    vi.mocked(app.fileManager.processFrontMatter).mockImplementation(
-      async (_file, fn) => {
-        const fm: Record<string, unknown> = { tags: ["already"] };
-        fn(fm);
-        expect(fm.tags).toEqual(["already"]);
-      },
-    );
+  it("remove strips # prefix from input tags", async () => {
+    const fm: Record<string, unknown> = { tags: ["prefixed", "keep"] };
+    const file = makeFile("note.md");
+    app = makeApp({ file, frontmatter: fm });
 
-    registerMetadataTools(new McpServer({ name: "t", version: "1" }), app);
-    await callTool("tags_manage", {
+    await tagsHandler({
       filename: "note.md",
-      action: "add",
-      tags: ["already"],
+      action: "remove",
+      tags: ["#prefixed"],
     });
+
+    expect(fm.tags).toEqual(["keep"]);
   });
 
-  it("returns error for non-existent file", async () => {
-    const app = createApp();
-    registerMetadataTools(new McpServer({ name: "t", version: "1" }), app);
-    const result = await callTool("tags_manage", {
+  // --- error cases ---
+
+  it("returns error when tags is an empty array", async () => {
+    const file = makeFile("note.md");
+    app = makeApp({ file, frontmatter: {} });
+
+    const result = await tagsHandler({
+      filename: "note.md",
+      action: "add",
+      tags: [],
+    });
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0]!.text).toContain("required");
+  });
+
+  it("returns error when tags param missing for add/remove", async () => {
+    const file = makeFile("note.md");
+    app = makeApp({ file, frontmatter: {} });
+
+    const result = await tagsHandler({
+      filename: "note.md",
+      action: "add",
+    });
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0]!.text).toContain("required");
+  });
+
+  it("looks up file through normalizePath", async () => {
+    const file = makeFile("foo/bar.md");
+    app = makeApp({ file, frontmatter: { tags: ["t"] } });
+
+    const result = await tagsHandler({
+      filename: "/foo//bar.md",
+      action: "list",
+    });
+
+    const parsed = JSON.parse(result.content[0]!.text);
+    expect(parsed.tags).toEqual(["t"]);
+    expect(app.vault.getAbstractFileByPath).toHaveBeenCalledWith("foo/bar.md");
+  });
+
+  it("returns error when file not found", async () => {
+    app = makeApp({});
+
+    const result = await tagsHandler({
       filename: "missing.md",
       action: "list",
     });
@@ -255,129 +264,132 @@ describe("tags_manage", () => {
   });
 });
 
+// ===========================================================================
+// frontmatter_manage
+// ===========================================================================
+
 describe("frontmatter_manage", () => {
-  beforeEach(() => {
-    Object.keys(registeredTools).forEach((k) => delete registeredTools[k]);
-  });
+  // --- read ---
 
-  it("reads frontmatter without position key", async () => {
-    const file = createTFile("note.md");
-    const app = createApp();
-    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
-    vi.mocked(app.metadataCache.getFileCache).mockReturnValue({
-      frontmatter: {
-        title: "My Note",
-        rating: 5,
-        position: { start: { line: 0 }, end: { line: 2 } },
-      },
-    } as unknown as CachedMetadata);
+  it("read returns frontmatter as JSON", async () => {
+    const file = makeFile("note.md");
+    app = makeApp({ file, frontmatter: { title: "Hello", draft: true } });
 
-    registerMetadataTools(new McpServer({ name: "t", version: "1" }), app);
-    const result = await callTool("frontmatter_manage", {
+    const result = await frontmatterHandler({
       filename: "note.md",
       action: "read",
     });
 
-    const parsed = JSON.parse(result.content[0]!.text) as Record<
-      string,
-      unknown
-    >;
-    expect(parsed).toEqual({ title: "My Note", rating: 5 });
-    expect(parsed).not.toHaveProperty("position");
+    const parsed = JSON.parse(result.content[0]!.text);
+    expect(parsed.title).toBe("Hello");
+    expect(parsed.draft).toBe(true);
   });
 
-  it("sets a string value via processFrontMatter", async () => {
-    const file = createTFile("note.md");
-    const app = createApp();
-    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
-    vi.mocked(app.fileManager.processFrontMatter).mockImplementation(
-      async (_file, fn) => {
-        const fm: Record<string, unknown> = {};
-        fn(fm);
-        expect(fm.status).toBe("draft");
+  it("read strips position field", async () => {
+    const file = makeFile("note.md");
+    app = makeApp({
+      file,
+      frontmatter: {
+        title: "Hello",
+        position: { start: { line: 0 }, end: { line: 3 } },
       },
-    );
-
-    registerMetadataTools(new McpServer({ name: "t", version: "1" }), app);
-    const result = await callTool("frontmatter_manage", {
-      filename: "note.md",
-      action: "set",
-      key: "status",
-      value: "draft",
     });
 
-    expect(result.isError).toBeUndefined();
-    expect(result.content[0]!.text).toBe("Set status in note.md");
-  });
-
-  it("parses JSON string values into native types", async () => {
-    const file = createTFile("note.md");
-    const app = createApp();
-    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
-    vi.mocked(app.fileManager.processFrontMatter).mockImplementation(
-      async (_file, fn) => {
-        const fm: Record<string, unknown> = {};
-        fn(fm);
-        expect(fm.aliases).toEqual(["one", "two"]);
-      },
-    );
-
-    registerMetadataTools(new McpServer({ name: "t", version: "1" }), app);
-    await callTool("frontmatter_manage", {
+    const result = await frontmatterHandler({
       filename: "note.md",
-      action: "set",
-      key: "aliases",
-      value: '["one", "two"]',
+      action: "read",
     });
 
-    expect(app.fileManager.processFrontMatter).toHaveBeenCalled();
+    const parsed = JSON.parse(result.content[0]!.text);
+    expect(parsed.position).toBeUndefined();
+    expect(parsed.title).toBe("Hello");
   });
 
-  it("keeps raw string when JSON.parse fails", async () => {
-    const file = createTFile("note.md");
-    const app = createApp();
-    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
-    vi.mocked(app.fileManager.processFrontMatter).mockImplementation(
-      async (_file, fn) => {
-        const fm: Record<string, unknown> = {};
-        fn(fm);
-        expect(fm.description).toBe("just a plain string");
-      },
-    );
+  it("read returns empty object when no cache", async () => {
+    const file = makeFile("note.md");
+    app = makeApp({ file }); // no frontmatter → getFileCache returns null
 
-    registerMetadataTools(new McpServer({ name: "t", version: "1" }), app);
-    await callTool("frontmatter_manage", {
+    const result = await frontmatterHandler({
+      filename: "note.md",
+      action: "read",
+    });
+
+    const parsed = JSON.parse(result.content[0]!.text);
+    expect(parsed).toEqual({});
+  });
+
+  // --- set ---
+
+  it("set parses JSON string into native value", async () => {
+    const fm: Record<string, unknown> = {};
+    const file = makeFile("note.md");
+    app = makeApp({ file, frontmatter: fm });
+
+    await frontmatterHandler({
       filename: "note.md",
       action: "set",
-      key: "description",
-      value: "just a plain string",
+      key: "count",
+      value: "42",
     });
+
+    expect(fm.count).toBe(42);
   });
 
-  it("returns error for non-existent file", async () => {
-    const app = createApp();
-    registerMetadataTools(new McpServer({ name: "t", version: "1" }), app);
-    const result = await callTool("frontmatter_manage", {
+  it("set keeps non-JSON string as-is", async () => {
+    const fm: Record<string, unknown> = {};
+    const file = makeFile("note.md");
+    app = makeApp({ file, frontmatter: fm });
+
+    await frontmatterHandler({
+      filename: "note.md",
+      action: "set",
+      key: "title",
+      value: "plain text",
+    });
+
+    expect(fm.title).toBe("plain text");
+  });
+
+  it("set without value deletes the key", async () => {
+    const fm: Record<string, unknown> = { existing: "val" };
+    const file = makeFile("note.md");
+    app = makeApp({ file, frontmatter: fm });
+
+    await frontmatterHandler({
+      filename: "note.md",
+      action: "set",
+      key: "existing",
+      // value omitted → undefined
+    });
+
+    expect(fm.existing).toBeUndefined();
+  });
+
+  // --- error cases ---
+
+  it("returns error when key missing for set action", async () => {
+    const file = makeFile("note.md");
+    app = makeApp({ file, frontmatter: {} });
+
+    const result = await frontmatterHandler({
+      filename: "note.md",
+      action: "set",
+      value: "something",
+    });
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0]!.text).toContain("Key is required");
+  });
+
+  it("returns error when file not found", async () => {
+    app = makeApp({});
+
+    const result = await frontmatterHandler({
       filename: "missing.md",
       action: "read",
     });
 
     expect(result.isError).toBe(true);
     expect(result.content[0]!.text).toContain("File not found");
-  });
-
-  it("returns error when key is missing for set action", async () => {
-    const file = createTFile("note.md");
-    const app = createApp();
-    vi.mocked(app.vault.getAbstractFileByPath).mockReturnValue(file);
-
-    registerMetadataTools(new McpServer({ name: "t", version: "1" }), app);
-    const result = await callTool("frontmatter_manage", {
-      filename: "note.md",
-      action: "set",
-    });
-
-    expect(result.isError).toBe(true);
-    expect(result.content[0]!.text).toContain("Key is required");
   });
 });

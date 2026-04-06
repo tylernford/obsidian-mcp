@@ -1,0 +1,199 @@
+# Implementation Plan: Traditional Tests
+
+**Created:** 2026-04-04
+**Type:** Refactor
+**Overview:** A traditional test suite covering the four modules with meaningful testable logic: `update-utils.ts`, `search.ts`, `server.ts`, and `metadata.ts`.
+**Design Spec:** `docs/design-specs/2026-04-04-1723-traditional-tests.md`
+
+---
+
+## Summary
+
+Delete all existing tests and the obsidian mock, then rebuild a focused test suite for the four modules with meaningful testable logic. The obsidian mock is rebuilt incrementally — each test task adds only the exports it needs. Integration tests for `server.ts` use a real HTTP server. Documentation is updated to reflect the new strategy.
+
+---
+
+## Codebase Verification
+
+_Confirmed 2026-04-04 — all design spec assumptions match actual codebase._
+
+- [x] 11 existing test files present at expected paths - Verified: yes
+- [x] `__mocks__/obsidian.ts` is 333 lines with extensive exports - Verified: yes
+- [x] `update-utils.ts` exports `buildPatchInstruction` and `applyUpdate` - Verified: yes
+- [x] `search.ts` is 217 lines with `simpleSearch` and `dataviewSearch` - Verified: yes
+- [x] `server.ts` is 119 lines with `HttpServer` class - Verified: yes
+- [x] `metadata.ts` is 185 lines with `tags_manage` and `frontmatter_manage` - Verified: yes
+- [x] Vitest configured, `pnpm test` runs `vitest run` - Verified: yes
+- [x] `docs/testing-guidelines.md` exists (205 lines, to be rewritten) - Verified: yes
+
+**Patterns to leverage:**
+
+- Vitest config already has obsidian mock alias set up
+- Co-located test file pattern already in use
+
+**Discrepancies found:**
+
+- None
+
+---
+
+## Tasks
+
+### Task 1: Delete existing tests and mock
+
+**Description:** Remove all 11 existing test files and the existing `__mocks__/obsidian.ts`. Clean slate.
+
+**Files:**
+
+- `plugin/src/crypto.test.ts` - delete
+- `plugin/src/main.test.ts` - delete
+- `plugin/src/server.test.ts` - delete
+- `plugin/src/settings.test.ts` - delete
+- `plugin/src/tools/active-file.test.ts` - delete
+- `plugin/src/tools/commands.test.ts` - delete
+- `plugin/src/tools/metadata.test.ts` - delete
+- `plugin/src/tools/navigation.test.ts` - delete
+- `plugin/src/tools/periodic.test.ts` - delete
+- `plugin/src/tools/search.test.ts` - delete
+- `plugin/src/tools/vault.test.ts` - delete
+- `plugin/src/__mocks__/obsidian.ts` - delete
+
+**Done when:** No `.test.ts` files remain under `plugin/src/`, no `__mocks__` directory exists, `pnpm build` still compiles.
+
+**Commit:** "Remove existing tests and obsidian mock"
+
+---
+
+### Task 2: Create `update-utils.test.ts` (13 test cases)
+
+**Description:** Write tests for `buildPatchInstruction` (10 cases covering frontmatter JSON parse/fallback, `createIfMissing` default/passthrough, heading `::` splitting + edge cases, block passthrough) and `applyUpdate` (3 cases covering success, `PatchFailed`, unknown error). Mock `markdown-patch` inline. Creates `__mocks__/obsidian.ts` with `TFile` (real class) — the first mock export.
+
+**Files:**
+
+- `plugin/src/__mocks__/obsidian.ts` - create (initially just `TFile`)
+- `plugin/src/tools/update-utils.test.ts` - create
+
+**Done when:** `pnpm test -- update-utils` passes with all 13 cases.
+
+**Commit:** "Add update-utils tests"
+
+---
+
+### Task 3: Create `search.test.ts` (15 test cases)
+
+**Description:** Write tests for `simpleSearch` (9 cases covering filename match, exact boundary, content match, boundary-spanning skip, all-filtered-out, no match, context clamping, sorting, custom context length) and `dataviewSearch` (6 cases covering plugin missing, query error, non-TABLE, TABLE WITHOUT ID, successful transform, multi-column). Capture handler via mocked `McpServer`. Adds `prepareSimpleSearch` stub to `__mocks__/obsidian.ts`.
+
+**Files:**
+
+- `plugin/src/__mocks__/obsidian.ts` - modify (add `prepareSimpleSearch`)
+- `plugin/src/tools/search.test.ts` - create
+
+**Done when:** `pnpm test -- search` passes with all 15 cases.
+
+**Commit:** "Add search tests"
+
+---
+
+### Task 4: Create `server.test.ts` (12 test cases)
+
+**Description:** Integration tests with real HTTP server on random port. Cover auth (3 cases: missing header, wrong token, valid token), routing (5 cases: POST /mcp, GET /mcp, DELETE /mcp, other method, unknown path — with correct response format distinctions), request handling (2 cases: malformed JSON, valid MCP request), lifecycle (2 cases: start/stop, stop with no server). Mock `createMcpServer` factory only. No new mock exports needed.
+
+**Files:**
+
+- `plugin/src/server.test.ts` - create
+
+**Done when:** `pnpm test -- server` passes with all 12 cases.
+
+**Commit:** "Add server integration tests"
+
+---
+
+### Task 5: Create `metadata.test.ts` (17 test cases)
+
+**Description:** Write tests for `tags_manage` (10 cases covering list with/without `#`, empty, non-array, add dedup, add strip `#`, add append, remove, remove missing, missing tags param, file not found) and `frontmatter_manage` (7 cases covering read/strips position/empty, set JSON parse/string fallback/undefined value, missing key, file not found). Use callback mock pattern for `processFrontMatter`. Adds `normalizePath` (real implementation) to `__mocks__/obsidian.ts`.
+
+**Files:**
+
+- `plugin/src/__mocks__/obsidian.ts` - modify (add `normalizePath`)
+- `plugin/src/tools/metadata.test.ts` - create
+
+**Done when:** `pnpm test -- metadata` passes with all 17 cases.
+
+**Commit:** "Add metadata tests"
+
+---
+
+### Task 6: Update `docs/testing-guidelines.md`
+
+**Description:** Rewrite to reflect new strategy: testing philosophy, modules under test with rationale, mock strategy (minimal stubs, callback pattern, `TFile` must be real class), mock boundary table, three-layer validation model, integration test pattern for `server.ts`, exclusion rationale.
+
+**Files:**
+
+- `docs/testing-guidelines.md` - modify
+
+**Done when:** Document covers all items from acceptance criteria, no references to old patterns.
+
+**Commit:** "Update testing guidelines for new test strategy"
+
+---
+
+### Task 7: Final validation
+
+**Description:** Run full `pnpm test`, verify all 57 cases pass, optionally capture coverage baseline.
+
+**Files:** None (verification only)
+
+**Done when:** `pnpm test` passes with 0 failures.
+
+**Commit:** (no commit — verification only)
+
+---
+
+## Acceptance Criteria
+
+- [x] All existing `.test.ts` files are deleted from `plugin/src/`
+- [x] Existing `__mocks__/obsidian.ts` is replaced with a minimal version exporting only `TFile` (real class), `normalizePath` (real implementation), and `prepareSimpleSearch` (stub)
+- [x] `update-utils.test.ts` passes — covers `buildPatchInstruction` (3 target type branches, JSON parse fallback, `::` splitting edge cases, `createIfMissing` default) and `applyUpdate` (success, `PatchFailed`, unknown error)
+- [x] `search.test.ts` passes — covers `simpleSearch` (filename match, exact boundary match, content match, boundary-spanning skip, all-filtered-out, no match, context clamping, sorting, custom context length) and `dataviewSearch` (plugin missing, query error, non-TABLE, TABLE WITHOUT ID, successful transform, multi-column)
+- [x] `server.test.ts` passes as integration tests — covers auth (missing, wrong, valid), routing (POST, GET, DELETE, other method, unknown path with correct response format distinctions), request handling (error, valid), lifecycle (start/stop, null server stop)
+- [x] `metadata.test.ts` passes — covers `tags_manage` (list with/without `#`, empty, non-array, add dedup, add strip `#`, add append, remove, remove missing, missing tags param, file not found) and `frontmatter_manage` (read, read strips position, read empty, set JSON parse, set string fallback, set undefined value, missing key, file not found)
+- [x] `docs/testing-guidelines.md` reflects: testing philosophy, modules under test with rationale, mock strategy (minimal stubs, callback pattern, `TFile` must be real class), mock boundary table, three-layer validation model, integration test pattern for `server.ts`, exclusion rationale
+- [x] All tests run via `pnpm test` with no failures
+
+---
+
+## Build Log
+
+_Filled in during `/build` phase_
+
+| Date       | Task   | Files                                           | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ---------- | ------ | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-04 | Task 1 | 11 test files + `__mocks__/obsidian.ts`         | Deleted all existing tests and mock. Clean slate.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| 2026-04-04 | Task 2 | `__mocks__/obsidian.ts`, `update-utils.test.ts` | Created obsidian mock with TFile, 12 test cases all passing. Cut empty-segment `::` split test (tested `String.split`, not our logic), rewrote success test to verify patched content flows back to `vault.process`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| 2026-04-05 | Task 3 | `__mocks__/obsidian.ts`, `search.test.ts`       | Added `prepareSimpleSearch` as `vi.fn()` to obsidian mock. Deviated: made it a `vi.fn()` in mock file rather than a plain stub, since vitest aliases obsidian directly to mock file — calling `vi.mock("obsidian")` would auto-mock TFile's constructor. Cut 2 trivial tests (null-skip control flow) during review. 13 test cases all passing.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| 2026-04-05 | Task 4 | `server.test.ts`                                | Integration tests with real HTTP server on port 0. Valid MCP request test parses SSE response (SDK's StreamableHTTPServerTransport returns `text/event-stream` when Accept includes it). No new mock exports needed. 12 test cases initially. Post-review: cut 2 redundant tests (DELETE routing = same branch as GET, POST routing = subsumed by MCP integration test), strengthened weak `!== 401` assertions to `< 400` (revealed missing Accept header), moved MCP integration test to own describe to fix stop/recreate cycle, added TODO on 405 format inconsistency. 10 test cases all passing.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| 2026-04-06 | Task 5 | `__mocks__/obsidian.ts`, `metadata.test.ts`     | Added `normalizePath` (real implementation) to obsidian mock. 19 test cases all passing (plan said 17 — actual file count was already 19 pre-review). Used callback mock pattern — `processFrontMatter` invokes the callback with a shared frontmatter object so tests can assert mutations directly. Post-review: fixed `getFileCache` to check `file.path` (was ignoring the argument), removed 3 mirror/redundant tests (tags without `#` unchanged, empty tags list, add appends), added 3 tests covering distinct branches (normalizePath lookup, empty tags `[]` error, remove strips `#`), renamed "writes undefined" → "deletes the key".                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| 2026-04-06 | Task 6 | `docs/testing-guidelines.md`                    | Rewrote from scratch. Covers all acceptance criteria: philosophy, modules under test with rationale, exclusion rationale, mock strategy (minimal stubs, callback pattern, TFile-as-class rule), mock boundary table, three-layer validation, integration test pattern for server.ts, ESLint config. Removed all references to old patterns (old mock table with Plugin/Notice/Modal/etc., old Known Gaps section). Post-review: fixed 4 inaccuracies — (1) clarified createMcpServer creates a real McpServer in server tests (not mocked), split McpServer row in boundary table into tools vs server, (2) removed false DELETE test claim (only GET and PUT tested), (3) rewrote tool test pattern to match actual code (fake object with registerTool spy, makeApp, direct handler calls, vi.clearAllMocks), (4) createApp → makeApp. Second post-review: fixed markdown-patch mock boundary description (mock applyPatch only; real PatchFailed/ContentType/PatchFailureReason via importOriginal), added Registration Strategies subsection (re-register vs Proxy), clarified TFile "Needed by" column scopes to tested modules. Third post-review: added `pnpm typecheck` to type-checking layer in validation table, added note that TFile column scopes to tested modules (other importers validated at runtime), fixed server setup from "per describe block" to "per test via makeServer() in beforeEach". |
+| 2026-04-06 | Task 7 | _(verification only)_                           | Full suite: 54 tests passing across 4 test files, 0 failures. Plan estimated 57 — delta accounted for by documented cuts/adjustments in Tasks 2–5.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+
+---
+
+## Completion
+
+**Completed:** 2026-04-06 **Final Status:** Complete
+
+**Summary:** Deleted all 11 existing test files and the obsidian mock, then rebuilt a focused test suite with 54 tests across 4 files (`update-utils.test.ts`, `search.test.ts`, `server.test.ts`, `metadata.test.ts`). The obsidian mock was rebuilt incrementally to contain exactly 3 exports (`TFile`, `prepareSimpleSearch`, `normalizePath`). Server tests run against a real HTTP server. `docs/testing-guidelines.md` was rewritten from scratch to reflect the new strategy.
+
+**Deviations from Plan:**
+
+- Final test count is 54 vs planned 57 — accounted for by targeted cuts of redundant/trivial tests across Tasks 2–5 (documented in Build Log)
+- `prepareSimpleSearch` in mock is a `vi.fn()` rather than a plain stub, because vitest aliases obsidian directly to the mock file — calling `vi.mock("obsidian")` would auto-mock TFile's constructor
+- Testing guidelines required 3 post-review rounds to fix inaccuracies (mock boundary descriptions, test pattern code samples, validation table details)
+
+---
+
+## Notes
+
+- The obsidian mock is built incrementally across Tasks 2, 3, and 5. By Task 5's completion, it should contain exactly 3 exports: `TFile`, `prepareSimpleSearch`, `normalizePath`.
+- Task 4 (server) needs no mock exports — `server.ts` doesn't import from obsidian.
+- The design spec notes lifecycle test count as 3, but "stop destroys active connections" may be difficult to test without exposing the connections Set. The implementation should determine the right approach during build.

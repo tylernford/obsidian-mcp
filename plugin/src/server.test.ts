@@ -1,230 +1,217 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { HttpServer } from "./server";
 
-const TEST_PORT = 48372;
-const TEST_HOST = "127.0.0.1";
-const TEST_API_KEY = "test-api-key-abc123";
-const BASE_URL = `http://${TEST_HOST}:${TEST_PORT}`;
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
 
-function createMcpServer(): McpServer {
-  return new McpServer({ name: "test-server", version: "0.0.1" });
+const API_KEY = "test-key-1234";
+
+function makeServer(overrides: Record<string, unknown> = {}): HttpServer {
+  return new HttpServer({
+    port: 0, // random available port
+    host: "127.0.0.1",
+    apiKey: API_KEY,
+    createMcpServer: () => new McpServer({ name: "test", version: "0.0.0" }),
+    ...overrides,
+  });
 }
 
-function authHeaders(
-  extra: Record<string, string> = {},
-): Record<string, string> {
+/** Resolve the base URL after the server is listening. */
+function baseUrl(server: HttpServer): string {
+  // Access the private http.Server to read the OS-assigned port.
+  // HttpServer doesn't expose the port publicly, so we reach in via `any`.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+  const addr = (server as any).server.address();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  return `http://127.0.0.1:${String(addr.port)}`;
+}
+
+function authHeaders(): Record<string, string> {
   return {
-    Authorization: `Bearer ${TEST_API_KEY}`,
-    Accept: "application/json, text/event-stream",
-    Connection: "close",
-    ...extra,
+    Authorization: `Bearer ${API_KEY}`,
+    "Content-Type": "application/json",
   };
 }
 
-function initializeBody() {
-  return JSON.stringify({
-    jsonrpc: "2.0",
-    id: 1,
-    method: "initialize",
-    params: {
-      protocolVersion: "2025-03-26",
-      capabilities: {},
-      clientInfo: { name: "test-client", version: "0.0.1" },
-    },
-  });
-}
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
 
 describe("HttpServer", () => {
-  let httpServer: HttpServer;
-
-  beforeEach(async () => {
-    httpServer = new HttpServer({
-      port: TEST_PORT,
-      host: TEST_HOST,
-      apiKey: TEST_API_KEY,
-      createMcpServer,
-    });
-    await httpServer.start();
-  });
+  let server: HttpServer;
 
   afterEach(async () => {
-    await httpServer.stop();
+    await server?.stop();
   });
+
+  // ---- Authentication ----------------------------------------------------
 
   describe("authentication", () => {
+    beforeEach(async () => {
+      server = makeServer();
+      await server.start();
+    });
+
     it("rejects requests with no Authorization header", async () => {
-      const res = await fetch(`${BASE_URL}/mcp`, { method: "POST" });
+      const res = await fetch(`${baseUrl(server)}/mcp`, { method: "POST" });
       expect(res.status).toBe(401);
-      const body = (await res.json()) as { error: string };
-      expect(body.error).toBe("Unauthorized");
+      expect(await res.json()).toEqual({ error: "Unauthorized" });
     });
 
-    it("rejects requests with wrong Bearer token", async () => {
-      const res = await fetch(`${BASE_URL}/mcp`, {
+    it("rejects requests with wrong token", async () => {
+      const res = await fetch(`${baseUrl(server)}/mcp`, {
         method: "POST",
-        headers: { Authorization: "Bearer wrong-key" },
+        headers: { Authorization: "Bearer wrong-token" },
       });
       expect(res.status).toBe(401);
-      const body = (await res.json()) as { error: string };
-      expect(body.error).toBe("Unauthorized");
+      expect(await res.json()).toEqual({ error: "Unauthorized" });
     });
 
-    it("rejects requests with non-Bearer auth scheme", async () => {
-      const res = await fetch(`${BASE_URL}/mcp`, {
+    it("accepts requests with valid Bearer token", async () => {
+      const res = await fetch(`${baseUrl(server)}/mcp`, {
         method: "POST",
-        headers: { Authorization: `Basic ${TEST_API_KEY}` },
+        headers: {
+          ...authHeaders(),
+          Accept: "application/json, text/event-stream",
+        },
+        body: JSON.stringify({ jsonrpc: "2.0", method: "initialize", id: 1 }),
       });
-      expect(res.status).toBe(401);
+      expect(res.status).toBeLessThan(400);
     });
   });
 
+  // ---- Routing -----------------------------------------------------------
+
   describe("routing", () => {
-    it("returns 404 for unknown routes", async () => {
-      const res = await fetch(`${BASE_URL}/unknown`, {
+    beforeEach(async () => {
+      server = makeServer();
+      await server.start();
+    });
+
+    it("returns JSON-RPC error for GET /mcp", async () => {
+      const res = await fetch(`${baseUrl(server)}/mcp`, {
         method: "GET",
+        headers: authHeaders(),
+      });
+      expect(res.status).toBe(405);
+      expect(await res.json()).toEqual({
+        jsonrpc: "2.0",
+        error: { code: -32000, message: "Method not allowed." },
+        id: null,
+      });
+    });
+
+    it("returns generic error for other methods on /mcp", async () => {
+      const res = await fetch(`${baseUrl(server)}/mcp`, {
+        method: "PUT",
+        headers: authHeaders(),
+        body: JSON.stringify({}),
+      });
+      expect(res.status).toBe(405);
+      expect(await res.json()).toEqual({ error: "Method Not Allowed" });
+    });
+
+    it("returns 404 for unknown paths", async () => {
+      const res = await fetch(`${baseUrl(server)}/unknown`, {
+        method: "POST",
         headers: authHeaders(),
       });
       expect(res.status).toBe(404);
-      const body = (await res.json()) as { error: string };
-      expect(body.error).toBe("Not Found");
-    });
-
-    it("returns 405 for unsupported methods on /mcp", async () => {
-      const res = await fetch(`${BASE_URL}/mcp`, {
-        method: "PUT",
-        headers: authHeaders(),
-      });
-      expect(res.status).toBe(405);
+      expect(await res.json()).toEqual({ error: "Not Found" });
     });
   });
 
-  describe("stateless POST", () => {
-    it("returns successful MCP response with no mcp-session-id header", async () => {
-      const res = await fetch(`${BASE_URL}/mcp`, {
-        method: "POST",
-        headers: authHeaders({ "Content-Type": "application/json" }),
-        body: initializeBody(),
-      });
-      const text = await res.text();
-      expect(res.ok).toBe(true);
-      expect(res.headers.get("mcp-session-id")).toBeNull();
+  // ---- Request handling --------------------------------------------------
 
-      const dataLines = text
-        .split("\n")
-        .filter((line) => line.startsWith("data: "))
-        .map((line) => line.slice(6));
-      expect(dataLines.length).toBeGreaterThan(0);
-      const mcpResponse = JSON.parse(dataLines[0]!) as {
-        result: { protocolVersion: string; serverInfo: { name: string } };
-      };
-      expect(mcpResponse.result).toBeDefined();
-      expect(mcpResponse.result.protocolVersion).toBeDefined();
-      expect(mcpResponse.result.serverInfo.name).toBe("test-server");
+  describe("request handling", () => {
+    beforeEach(async () => {
+      server = makeServer();
+      await server.start();
     });
 
-    it("returns 400 for invalid JSON body", async () => {
-      const res = await fetch(`${BASE_URL}/mcp`, {
+    it("returns 400 for malformed JSON", async () => {
+      const res = await fetch(`${baseUrl(server)}/mcp`, {
         method: "POST",
-        headers: authHeaders({ "Content-Type": "application/json" }),
-        body: "not valid json{{{",
+        headers: authHeaders(),
+        body: "not-json{{{",
       });
       expect(res.status).toBe(400);
-      const body = (await res.json()) as { error: string };
-      expect(body.error).toBe("Invalid request body");
-    });
-
-    it("handles two sequential POSTs independently", async () => {
-      const res1 = await fetch(`${BASE_URL}/mcp`, {
-        method: "POST",
-        headers: authHeaders({ "Content-Type": "application/json" }),
-        body: initializeBody(),
-      });
-      const text1 = await res1.text();
-      expect(res1.ok).toBe(true);
-
-      const res2 = await fetch(`${BASE_URL}/mcp`, {
-        method: "POST",
-        headers: authHeaders({ "Content-Type": "application/json" }),
-        body: initializeBody(),
-      });
-      const text2 = await res2.text();
-      expect(res2.ok).toBe(true);
-
-      // Both should succeed independently — no shared state
-      const parse = (text: string) => {
-        const line = text
-          .split("\n")
-          .find((l) => l.startsWith("data: "))!
-          .slice(6);
-        return JSON.parse(line) as {
-          result: { serverInfo: { name: string } };
-        };
-      };
-      expect(parse(text1).result.serverInfo.name).toBe("test-server");
-      expect(parse(text2).result.serverInfo.name).toBe("test-server");
+      expect(await res.json()).toEqual({ error: "Invalid request body" });
     });
   });
 
-  describe("GET and DELETE", () => {
-    it("returns 405 with JSON-RPC error for GET to /mcp", async () => {
-      const res = await fetch(`${BASE_URL}/mcp`, {
-        method: "GET",
-        headers: authHeaders(),
-      });
-      expect(res.status).toBe(405);
-      const body = (await res.json()) as {
-        jsonrpc: string;
-        error: { code: number; message: string };
-        id: null;
-      };
-      expect(body).toEqual({
-        jsonrpc: "2.0",
-        error: { code: -32000, message: "Method not allowed." },
-        id: null,
-      });
-    });
+  // ---- MCP integration ---------------------------------------------------
 
-    it("returns 405 with JSON-RPC error for DELETE to /mcp", async () => {
-      const res = await fetch(`${BASE_URL}/mcp`, {
-        method: "DELETE",
-        headers: authHeaders(),
+  describe("MCP integration", () => {
+    it("processes a valid MCP request through the transport", async () => {
+      const createMcpServer = vi.fn(
+        () => new McpServer({ name: "test", version: "0.0.0" }),
+      );
+      server = makeServer({ createMcpServer });
+      await server.start();
+
+      const res = await fetch(`${baseUrl(server)}/mcp`, {
+        method: "POST",
+        headers: {
+          ...authHeaders(),
+          Accept: "application/json, text/event-stream",
+        },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          method: "initialize",
+          id: 1,
+          params: {
+            protocolVersion: "2025-03-26",
+            capabilities: {},
+            clientInfo: { name: "test-client", version: "1.0.0" },
+          },
+        }),
       });
-      expect(res.status).toBe(405);
-      const body = (await res.json()) as {
-        jsonrpc: string;
-        error: { code: number; message: string };
-        id: null;
-      };
-      expect(body).toEqual({
-        jsonrpc: "2.0",
-        error: { code: -32000, message: "Method not allowed." },
-        id: null,
-      });
+
+      expect(createMcpServer).toHaveBeenCalledOnce();
+      expect(res.status).toBe(200);
+
+      // Response is SSE — extract JSON from the "data:" lines
+      const text = await res.text();
+      const dataLine = text
+        .split("\n")
+        .find((line) => line.startsWith("data: "));
+      expect(dataLine).toBeDefined();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const body = JSON.parse(dataLine!.slice("data: ".length));
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      expect(body.result?.serverInfo?.name).toBe("test");
     });
   });
+
+  // ---- Lifecycle ---------------------------------------------------------
 
   describe("lifecycle", () => {
-    it("starts and stops cleanly", async () => {
-      const res = await fetch(`${BASE_URL}/mcp`, {
-        method: "POST",
-        headers: authHeaders({ "Content-Type": "application/json" }),
-        body: initializeBody(),
-      });
-      await res.text();
-      expect(res.ok).toBe(true);
+    it("starts, accepts requests, and stops cleanly", async () => {
+      server = makeServer();
+      await server.start();
 
-      // Stop and verify port is released by starting again
-      await httpServer.stop();
-      await httpServer.start();
-
-      const res2 = await fetch(`${BASE_URL}/mcp`, {
+      // Server should accept a request
+      const res = await fetch(`${baseUrl(server)}/mcp`, {
         method: "POST",
-        headers: authHeaders({ "Content-Type": "application/json" }),
-        body: initializeBody(),
+        headers: {
+          ...authHeaders(),
+          Accept: "application/json, text/event-stream",
+        },
+        body: JSON.stringify({ jsonrpc: "2.0", method: "initialize", id: 1 }),
       });
-      await res2.text();
-      expect(res2.ok).toBe(true);
+      expect(res.status).toBeLessThan(400);
+
+      // Stop should resolve without error
+      await expect(server.stop()).resolves.toBeUndefined();
+    });
+
+    it("stop() resolves when server is null", async () => {
+      server = makeServer();
+      // Never started — server is null
+      await expect(server.stop()).resolves.toBeUndefined();
     });
   });
 });

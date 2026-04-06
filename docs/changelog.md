@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-04-06: Traditional Tests
+
+Deleted all existing tests and the obsidian mock, then rebuilt a focused test suite with 54 tests across 4 modules (`update-utils`, `search`, `server`, `metadata`). The obsidian mock was rebuilt incrementally with only 3 exports. Server tests use a real HTTP server. Testing guidelines rewritten from scratch.
+
+**Design:** docs/design-specs/2026-04-04-1723-traditional-tests.md
+**Plan:** docs/implementation-plans/2026-04-04-2144-traditional-tests.md
+**Key files:** plugin/src/tools/update-utils.test.ts, plugin/src/tools/search.test.ts, plugin/src/server.test.ts, plugin/src/tools/metadata.test.ts, plugin/src/**mocks**/obsidian.ts, docs/testing-guidelines.md
+
 ## 2026-03-18: Stateless HTTP Mode
 
 Converted the MCP server from session-based to stateless HTTP mode. Each POST to `/mcp` now creates a fresh transport and McpServer per request — no session state is retained between requests. GET and DELETE return 405 with a JSON-RPC error body. Test suite rewritten for stateless behavior.
