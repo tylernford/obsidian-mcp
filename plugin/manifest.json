@@ -1,0 +1,9 @@
+{
+  "id": "mcp-tools",
+  "name": "MCP Tools",
+  "version": "1.0.0",
+  "minAppVersion": "1.12.0",
+  "description": "MCP server for AI-assisted vault interaction",
+  "author": "Tyler Ford",
+  "isDesktopOnly": true
+}
