@@ -91,21 +91,21 @@ src/
 
 ### Must Have
 
-- [ ] Plugin loads/unloads cleanly following scaffold lifecycle patterns
-- [ ] HTTP server starts on `onload()`, stops on `onunload()`
-- [ ] Streamable HTTP transport serving MCP on configurable port
-- [ ] API key auth — auto-generated on first load, persisted in `data.json`, displayed in settings with copy and regenerate
-- [ ] All 15 existing MCP tools with identical names, Zod parameter schemas, and response formats
-- [ ] Direct `app` API access replacing all HTTP-to-REST-API calls
-- [ ] All user-provided vault paths normalized via `normalizePath()` before API calls
-- [ ] esbuild bundling into single `main.js` (CJS, ES2018 target)
-- [ ] `manifest.json` with required fields, `isDesktopOnly: true`
-- [ ] pnpm as package manager
-- [ ] ESLint with `typescript-eslint` + `eslint-plugin-obsidianmd`
+- [x] Plugin loads/unloads cleanly following scaffold lifecycle patterns
+- [x] HTTP server starts on `onload()`, stops on `onunload()`
+- [x] Streamable HTTP transport serving MCP on configurable port
+- [x] API key auth — auto-generated on first load, persisted in `data.json`, displayed in settings with copy and regenerate
+- [x] All 15 existing MCP tools with identical names, Zod parameter schemas, and response formats
+- [x] Direct `app` API access replacing all HTTP-to-REST-API calls
+- [x] All user-provided vault paths normalized via `normalizePath()` before API calls
+- [x] esbuild bundling into single `main.js` (CJS, ES2018 target)
+- [x] `manifest.json` with required fields, `isDesktopOnly: true`
+- [x] pnpm as package manager
+- [x] ESLint with `typescript-eslint` + `eslint-plugin-obsidianmd`
 
 ### Nice to Have
 
-- [ ] Configurable port in settings (with sensible default)
+- [x] Configurable port in settings (with sensible default)
 
 ### Out of Scope
 
@@ -219,20 +219,20 @@ All user-provided vault paths must be normalized via `normalizePath()` before an
 
 ## Acceptance Criteria
 
-- [ ] Plugin loads in Obsidian without errors, unloads cleanly
-- [ ] HTTP server starts on enable, stops on disable, no orphaned listeners
-- [ ] API key auto-generated on first load, visible in settings, copyable, regenerable
-- [ ] Claude Code connects via `claude mcp add --transport http`
-- [ ] All 15 tools register with identical names and schemas
-- [ ] File operations work (list, read, create, update, delete)
-- [ ] Search works (simple text + Dataview DQL)
-- [ ] Commands work (list + execute)
-- [ ] Active file works (read + update)
-- [ ] Navigation works (file_open)
-- [ ] Periodic notes work (read + update)
-- [ ] Structured updates work (heading, block, frontmatter targeting)
-- [ ] Auth works (missing/invalid Bearer token → 401)
-- [ ] Builds to single `main.js` via esbuild
+- [x] Plugin loads in Obsidian without errors, unloads cleanly
+- [x] HTTP server starts on enable, stops on disable, no orphaned listeners
+- [x] API key auto-generated on first load, visible in settings, copyable, regenerable
+- [x] Claude Code connects via `claude mcp add --transport http`
+- [x] All 15 tools register with identical names and schemas
+- [x] File operations work (list, read, create, update, delete)
+- [x] Search works (simple text + Dataview DQL)
+- [x] Commands work (list + execute)
+- [x] Active file works (read + update)
+- [x] Navigation works (file_open)
+- [x] Periodic notes work (read + update)
+- [x] Structured updates work (heading, block, frontmatter targeting)
+- [x] Auth works (missing/invalid Bearer token → 401)
+- [x] Builds to single `main.js` via esbuild
 
 ---
 

@@ -1,7 +1,7 @@
 # Convert to Obsidian Plugin
 
 **Created:** 2026-03-12
-**Implementation Plan:** TBD
+**Implementation Plan:** Decomposed into 9 downstream plans (see Suggested Decomposition below)
 
 ---
 
@@ -37,20 +37,20 @@ The plugin runs an HTTP server inside Obsidian's Electron process, serving MCP v
 
 ### Must Have
 
-- [ ] Obsidian plugin that loads/unloads cleanly
-- [ ] HTTP server with Streamable HTTP transport serving MCP on a configurable port
-- [ ] API key authentication — auto-generated on first load, displayed in settings, with copy and regenerate
-- [ ] All 15 existing MCP tools ported with identical names, parameter schemas, and response formats
-- [ ] Direct `app` API access replacing all HTTP-to-REST-API calls
-- [ ] Structured update logic (heading/block/frontmatter targeting) reimplemented locally
-- [ ] esbuild bundling into single `main.js`
-- [ ] `manifest.json` with all required fields (`id`, `name`, `version`, `minAppVersion`, `author`, `description`, `isDesktopOnly`) targeting current stable Obsidian
-- [ ] `isDesktopOnly: true` in manifest (required — plugin uses Node.js `http` module)
-- [ ] All user-provided vault paths normalized via `normalizePath()` before API calls
+- [x] Obsidian plugin that loads/unloads cleanly
+- [x] HTTP server with Streamable HTTP transport serving MCP on a configurable port
+- [x] API key authentication — auto-generated on first load, displayed in settings, with copy and regenerate
+- [x] All 15 existing MCP tools ported with identical names, parameter schemas, and response formats
+- [x] Direct `app` API access replacing all HTTP-to-REST-API calls
+- [x] Structured update logic (heading/block/frontmatter targeting) reimplemented locally
+- [x] esbuild bundling into single `main.js`
+- [x] `manifest.json` with all required fields (`id`, `name`, `version`, `minAppVersion`, `author`, `description`, `isDesktopOnly`) targeting current stable Obsidian
+- [x] `isDesktopOnly: true` in manifest (required — plugin uses Node.js `http` module)
+- [x] All user-provided vault paths normalized via `normalizePath()` before API calls
 
 ### Nice to Have
 
-- [ ] Configurable port in plugin settings (with sensible default)
+- [x] Configurable port in plugin settings (with sensible default)
 
 ### Out of Scope
 
@@ -142,19 +142,19 @@ Per Obsidian's submission requirements, the plugin ID cannot include the string 
 
 ## Acceptance Criteria
 
-- [ ] Plugin loads in Obsidian — enabling starts the HTTP server without errors
-- [ ] API key generated on first load, persisted, and visible in settings tab
-- [ ] Claude Code connects via `claude mcp add --transport http` — `/mcp` shows connected status
-- [ ] All 15 tools register with identical names and schemas
-- [ ] File operations work — vault_list, vault_read, vault_create, vault_update, vault_delete
-- [ ] Search works — both simple text search and Dataview DQL queries
-- [ ] Commands work — list and execute Obsidian commands
-- [ ] Active file works — read and update the currently open note
-- [ ] Navigation works — file_open opens a note in the UI
-- [ ] Periodic notes work — read/write daily notes by date reference
-- [ ] Structured updates work — heading, block reference, and frontmatter targeting produce correct results
-- [ ] Auth works — requests without valid Bearer token rejected with 401
-- [ ] Plugin unload is clean — disabling stops the HTTP server, no orphaned listeners
+- [x] Plugin loads in Obsidian — enabling starts the HTTP server without errors
+- [x] API key generated on first load, persisted, and visible in settings tab
+- [x] Claude Code connects via `claude mcp add --transport http` — `/mcp` shows connected status
+- [x] All 15 tools register with identical names and schemas
+- [x] File operations work — vault_list, vault_read, vault_create, vault_update, vault_delete
+- [x] Search works — both simple text search and Dataview DQL queries
+- [x] Commands work — list and execute Obsidian commands
+- [x] Active file works — read and update the currently open note
+- [x] Navigation works — file_open opens a note in the UI
+- [x] Periodic notes work — read/write daily notes by date reference
+- [x] Structured updates work — heading, block reference, and frontmatter targeting produce correct results
+- [x] Auth works — requests without valid Bearer token rejected with 401
+- [x] Plugin unload is clean — disabling stops the HTTP server, no orphaned listeners
 
 ---
 

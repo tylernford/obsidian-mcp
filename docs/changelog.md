@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-04-06: Remove Legacy Server
+
+Removed the `legacy/` directory containing the original standalone Node.js MCP server. The native Obsidian plugin now fully replaces it.
+
 ## 2026-04-06: Traditional Tests
 
 Deleted all existing tests and the obsidian mock, then rebuilt a focused test suite with 54 tests across 4 modules (`update-utils`, `search`, `server`, `metadata`). The obsidian mock was rebuilt incrementally with only 3 exports. Server tests use a real HTTP server. Testing guidelines rewritten from scratch.

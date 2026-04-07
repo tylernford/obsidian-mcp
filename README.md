@@ -6,18 +6,17 @@ Obsidian plugin that runs an MCP server directly inside Obsidian, giving AI assi
 Claude Code <--HTTP--> Obsidian Plugin (MCP Server) <--> Obsidian API
 ```
 
-> **Status:** Early development. The plugin has an HTTP server with Streamable HTTP transport (stateless mode) and Bearer token auth. All 15 MCP tools are implemented across vault, commands, active-file, navigation, search, periodic, and metadata modules.
+> **Status:** Functional. All 15 MCP tools are implemented with direct Obsidian API access, stateless HTTP transport, and Bearer token auth. Not yet published to the community plugin registry.
 
 ## Project Structure
 
 ```
-plugin/              Obsidian plugin (in development)
+plugin/              Obsidian plugin
   src/main.ts        Plugin entry point, lifecycle wiring
   src/server.ts      HTTP server with auth (stateless mode)
   src/settings.ts    Settings tab with connection info
   src/crypto.ts      API key generation
   src/tools/         MCP tool modules (vault, commands, active-file, navigation, search, periodic, metadata)
-legacy/              Original MCP server (standalone Node.js process)
 docs/                Design specs, implementation plans, changelog
 ```
 
@@ -47,82 +46,56 @@ pnpm test:watch
 pnpm test:coverage
 ```
 
----
-
-# Legacy
-
-> The original MCP server, located in `legacy/`. It connects to Obsidian over HTTP via the Local REST API community plugin. This will be replaced once the native plugin is complete.
-
 ## Prerequisites
 
-- **Node.js** 24+
+- **Obsidian** 1.12.0+
 - **pnpm** (`npm install -g pnpm` or see [pnpm.io](https://pnpm.io/installation))
-- **Obsidian** with the following community plugins installed and enabled:
-  - [Local REST API](https://github.com/coddingtonbear/obsidian-local-rest-api) (required)
-  - [Dataview](https://github.com/blacksmithgu/obsidian-dataview) (required for DQL queries via the `search` tool)
-  - [Periodic Notes](https://github.com/liamcain/obsidian-periodic-notes) (required for the `periodic_read` and `periodic_update` tools)
+- Optional community plugins for extended functionality:
+  - [Dataview](https://github.com/blacksmithgu/obsidian-dataview) (for DQL queries via the `search` tool)
+  - [Periodic Notes](https://github.com/liamcain/obsidian-periodic-notes) (for the `periodic_read` and `periodic_update` tools)
 
 ## Setup
 
-### 1. Configure the Local REST API plugin
+### 1. Install the plugin
 
-1. In Obsidian, go to **Settings > Community Plugins > Local REST API** (gear icon)
-2. Enable **"Enable Non-encrypted (HTTP) Server"**. The MCP server connects over HTTP on localhost
-3. Note the **API key** shown in the plugin settings. You'll need it in step 3
-
-### 2. Clone and install
+Clone the repo, build, and symlink into your vault:
 
 ```bash
 git clone https://github.com/tylernford/obsidian-mcp.git
 cd obsidian-mcp
 pnpm install
+cd plugin
+pnpm install
 pnpm build
+
+# Symlink into your vault's plugins directory
+ln -s "$(pwd)" "/path/to/vault/.obsidian/plugins/mcp-tools"
 ```
 
-### 3. Register with Claude Code
+Then in Obsidian: **Settings > Community Plugins > MCP Tools** — enable the plugin.
 
-**Option A: `~/.mcp.json`** (recommended: available in all projects)
+### 2. Register with Claude Code
 
-Create or edit `~/.mcp.json`:
+The plugin's settings tab shows connection snippets with the correct port and API key. Use either:
 
-```json
-{
-  "mcpServers": {
-    "obsidian": {
-      "command": "node",
-      "args": ["/absolute/path/to/obsidian-mcp/dist/index.js"],
-      "env": {
-        "OBSIDIAN_API_KEY": "<key-from-step-1>"
-      }
-    }
-  }
-}
-```
+**Option A: `mcp.json`** (recommended)
 
-Replace `/absolute/path/to/obsidian-mcp/dist/index.js` with the actual path and paste your API key.
+Copy the `mcp.json` snippet from the settings tab into `~/.claude/mcp.json` (global) or `.claude/mcp.json` (project).
 
 **Option B: `claude mcp add`**
 
-```bash
-claude mcp add \
-  --transport stdio \
-  --scope user \
-  --env OBSIDIAN_API_KEY=<key-from-step-1> \
-  obsidian \
-  -- node /absolute/path/to/obsidian-mcp/dist/index.js
-```
+Copy the `claude mcp add` command from the settings tab and run it in your terminal.
 
-### 4. Verify
+### 3. Verify
 
 Start a new Claude Code session and run `/mcp` to confirm the obsidian server shows as connected.
 
-### Environment Variables
+### Configuration
 
-| Variable            | Required | Default     | Description                                                           |
-| ------------------- | -------- | ----------- | --------------------------------------------------------------------- |
-| `OBSIDIAN_API_KEY`  | Yes      | —           | Bearer token from Local REST API plugin settings                      |
-| `OBSIDIAN_API_HOST` | No       | `localhost` | REST API host — only change if you modified the plugin's bind address |
-| `OBSIDIAN_API_PORT` | No       | `27123`     | REST API port — only change if you modified the plugin's HTTP port    |
+The plugin settings tab provides:
+
+- **API key** — auto-generated on first load, displayed read-only with copy and regenerate buttons
+- **Port** — configurable (default: 28080), requires confirmation and server restart on change
 
 ## Usage Examples
 
@@ -214,18 +187,23 @@ See [docs/testing-guidelines.md](docs/testing-guidelines.md) for the full testin
 
 ## Roadmap
 
-### Plugin migration
-
-- ~~Direct access to Obsidian's API instead of HTTP calls through the Local REST API plugin~~ (done — all 15 tools ported)
-- ~~`vault_delete` uses Obsidian's trash rather than hard deletion~~ (done)
-- Single plugin instead of two (removes the Local REST API dependency)
-- No HTTP or API key overhead
-
 ### Tool redesign
 
 - Every tool is strictly read or write with no mixed operations (split `tags_manage`, `frontmatter_manage`)
 - `vault_create` accepts frontmatter as a validated object, not embedded in raw markdown
 - Remove `commands_execute`. If a capability matters, it gets a dedicated tool with named parameters
 - Write operations return human-readable receipts that echo what changed
+
+### Infrastructure
+
+- Refactor `server.ts` to use SDK's `StreamableHTTPSessionManager`
+- Fix inconsistent 405 error format (JSON-RPC vs generic shape)
+- Add `frontmatter_manage` set action value validation
+- Tool handler integration tests (end-to-end MCP round-trip)
+
+### Validation
+
+- Live tool validation protocol against a real Obsidian instance
+- Agent user testing — evaluate tools from a consumer perspective
 
 See [docs/backlog.md](docs/backlog.md).
