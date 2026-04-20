@@ -216,9 +216,10 @@ Build the `docs/live-validation/` package defined by the design spec: a protocol
 
 _Filled in during `/build` phase_
 
-| Date       | Task   | Files                                                                          | Notes                       |
-| ---------- | ------ | ------------------------------------------------------------------------------ | --------------------------- |
-| 2026-04-19 | Task 1 | docs/live-validation/reports/.gitkeep, docs/live-validation/log-diffs/.gitkeep | Created directory skeleton. |
+| Date       | Task   | Files                                                                          | Notes                                                                                                                 |
+| ---------- | ------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-19 | Task 1 | docs/live-validation/reports/.gitkeep, docs/live-validation/log-diffs/.gitkeep | Created directory skeleton.                                                                                           |
+| 2026-04-19 | Task 2 | docs/live-validation/README.md                                                 | Wrote protocol README covering prerequisites, session flow, all five formats, log-diff rules, and failure categories. |
 
 ---
 
