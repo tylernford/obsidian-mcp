@@ -225,6 +225,7 @@ _Filled in during `/build` phase_
 | 2026-04-19 | Task 5 | docs/live-validation/checklists/02-headings.md                                 | Migrated research §2 into 8 sub-areas; open-ended bracket/colon items resolved to concrete Expected.                  |
 | 2026-04-19 | Task 6 | docs/live-validation/checklists/03-blocks.md                                   | Migrated research §3 into 4 sub-areas; §3.3 placement question captured as Result note on a concrete assert.          |
 | 2026-04-19 | Task 7 | docs/live-validation/checklists/04-frontmatter.md                              | Merged research §4 + §5 into 9 sub-areas; parity section preserved (§6).                                              |
+| 2026-04-19 | Task 8 | docs/live-validation/checklists/05-tags.md                                     | Migrated research §6 into 7 sub-areas; scalar/empty edge cases resolved into concrete Expected.                       |
 
 ---
 
