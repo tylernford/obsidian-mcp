@@ -201,14 +201,14 @@ Build the `docs/live-validation/` package defined by the design spec: a protocol
 
 ## Acceptance Criteria
 
-- [ ] `docs/live-validation/README.md` exists, defines prerequisites, session flow, and inlines all four formats plus the failure-category reference.
-- [ ] `docs/live-validation/checklists/` contains 10 area files matching the Grouping X layout.
-- [ ] Every MCP tool exposed by the plugin (all 15) is exercised by at least one item across the 10 checklists.
-- [ ] Every item has a concrete, verifiable Expected outcome. No "what happens?" or "document behavior" items remain.
-- [ ] `docs/live-validation/log.md` exists (initially empty, with the documented structure).
-- [ ] `docs/live-validation/reports/` and `docs/live-validation/log-diffs/` directories exist as tracked empty directories.
-- [ ] `docs/research/live-tool-validation.md` is preserved in place as archived research (not touched by any task).
-- [ ] A trial session (any one checklist) can be completed end-to-end following only the README, producing a valid report and — if applicable — a valid log-diff.
+- [x] `docs/live-validation/README.md` exists, defines prerequisites, session flow, and inlines all four formats plus the failure-category reference.
+- [x] `docs/live-validation/checklists/` contains 10 area files matching the Grouping X layout.
+- [x] Every MCP tool exposed by the plugin (all 15) is exercised by at least one item across the 10 checklists.
+- [x] Every item has a concrete, verifiable Expected outcome. No "what happens?" or "document behavior" items remain.
+- [x] `docs/live-validation/log.md` exists (initially empty, with the documented structure).
+- [x] `docs/live-validation/reports/` and `docs/live-validation/log-diffs/` directories exist as tracked empty directories.
+- [x] `docs/research/live-tool-validation.md` is preserved in place as archived research (not touched by any task).
+- [x] A trial session (any one checklist) can be completed end-to-end following only the README, producing a valid report and — if applicable — a valid log-diff.
 
 ---
 
@@ -231,6 +231,7 @@ _Filled in during `/build` phase_
 | 2026-04-19 | Task 11 | docs/live-validation/checklists/08-navigation-commands.md                      | Merged research §9 + §10 into 4 sub-areas; response-shape questions captured as Result-note fields.                    |
 | 2026-04-19 | Task 12 | docs/live-validation/checklists/09-periodic.md                                 | Migrated research §11 into 4 sub-areas; plugin-config prerequisite noted; per-period Configured/Unconfigured variants. |
 | 2026-04-19 | Task 13 | docs/live-validation/checklists/10-cross-cutting.md                            | Migrated research §12 into 5 sub-areas; §12.5 split into 5 discrete items, one per PatchFailureReason.                 |
+| 2026-04-19 | Task 14 | (audit only)                                                                   | All 15 tools appear in ≥1 Action; no residual open-ended items; all items use four-field format. No fixes needed.      |
 
 ---
 
