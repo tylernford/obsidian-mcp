@@ -222,6 +222,7 @@ _Filled in during `/build` phase_
 | 2026-04-19 | Task 2 | docs/live-validation/README.md                                                 | Wrote protocol README covering prerequisites, session flow, all five formats, log-diff rules, and failure categories. |
 | 2026-04-19 | Task 3 | docs/live-validation/log.md                                                    | Created empty known-issues log with header, `_Last updated:_`, and `## Setup/environment issues` placeholder.         |
 | 2026-04-19 | Task 4 | docs/live-validation/checklists/01-vault.md                                    | Migrated research §1 into 6 sub-areas covering all 5 vault tools with four-field items.                               |
+| 2026-04-19 | Task 5 | docs/live-validation/checklists/02-headings.md                                 | Migrated research §2 into 8 sub-areas; open-ended bracket/colon items resolved to concrete Expected.                  |
 
 ---
 
