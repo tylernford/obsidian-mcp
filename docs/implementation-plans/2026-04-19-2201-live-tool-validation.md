@@ -228,6 +228,7 @@ _Filled in during `/build` phase_
 | 2026-04-19 | Task 8  | docs/live-validation/checklists/05-tags.md                                     | Migrated research §6 into 7 sub-areas; scalar/empty edge cases resolved into concrete Expected.                       |
 | 2026-04-19 | Task 9  | docs/live-validation/checklists/06-search.md                                   | Migrated research §7 into 5 sub-areas; simple + dataview + edge cases all concrete.                                   |
 | 2026-04-19 | Task 10 | docs/live-validation/checklists/07-active-file.md                              | Migrated research §8 into 5 sub-areas; `file_open` used in setup as only path to establish active-file state.         |
+| 2026-04-19 | Task 11 | docs/live-validation/checklists/08-navigation-commands.md                      | Merged research §9 + §10 into 4 sub-areas; response-shape questions captured as Result-note fields.                   |
 
 ---
 
