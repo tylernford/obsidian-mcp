@@ -223,6 +223,7 @@ _Filled in during `/build` phase_
 | 2026-04-19 | Task 3 | docs/live-validation/log.md                                                    | Created empty known-issues log with header, `_Last updated:_`, and `## Setup/environment issues` placeholder.         |
 | 2026-04-19 | Task 4 | docs/live-validation/checklists/01-vault.md                                    | Migrated research §1 into 6 sub-areas covering all 5 vault tools with four-field items.                               |
 | 2026-04-19 | Task 5 | docs/live-validation/checklists/02-headings.md                                 | Migrated research §2 into 8 sub-areas; open-ended bracket/colon items resolved to concrete Expected.                  |
+| 2026-04-19 | Task 6 | docs/live-validation/checklists/03-blocks.md                                   | Migrated research §3 into 4 sub-areas; §3.3 placement question captured as Result note on a concrete assert.          |
 
 ---
 
