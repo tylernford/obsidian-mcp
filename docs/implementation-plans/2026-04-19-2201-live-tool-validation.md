@@ -230,6 +230,7 @@ _Filled in during `/build` phase_
 | 2026-04-19 | Task 10 | docs/live-validation/checklists/07-active-file.md                              | Migrated research §8 into 5 sub-areas; `file_open` used in setup as only path to establish active-file state.          |
 | 2026-04-19 | Task 11 | docs/live-validation/checklists/08-navigation-commands.md                      | Merged research §9 + §10 into 4 sub-areas; response-shape questions captured as Result-note fields.                    |
 | 2026-04-19 | Task 12 | docs/live-validation/checklists/09-periodic.md                                 | Migrated research §11 into 4 sub-areas; plugin-config prerequisite noted; per-period Configured/Unconfigured variants. |
+| 2026-04-19 | Task 13 | docs/live-validation/checklists/10-cross-cutting.md                            | Migrated research §12 into 5 sub-areas; §12.5 split into 5 discrete items, one per PatchFailureReason.                 |
 
 ---
 
