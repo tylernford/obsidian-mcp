@@ -216,17 +216,18 @@ Build the `docs/live-validation/` package defined by the design spec: a protocol
 
 _Filled in during `/build` phase_
 
-| Date       | Task   | Files                                                                          | Notes                                                                                                                 |
-| ---------- | ------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| 2026-04-19 | Task 1 | docs/live-validation/reports/.gitkeep, docs/live-validation/log-diffs/.gitkeep | Created directory skeleton.                                                                                           |
-| 2026-04-19 | Task 2 | docs/live-validation/README.md                                                 | Wrote protocol README covering prerequisites, session flow, all five formats, log-diff rules, and failure categories. |
-| 2026-04-19 | Task 3 | docs/live-validation/log.md                                                    | Created empty known-issues log with header, `_Last updated:_`, and `## Setup/environment issues` placeholder.         |
-| 2026-04-19 | Task 4 | docs/live-validation/checklists/01-vault.md                                    | Migrated research §1 into 6 sub-areas covering all 5 vault tools with four-field items.                               |
-| 2026-04-19 | Task 5 | docs/live-validation/checklists/02-headings.md                                 | Migrated research §2 into 8 sub-areas; open-ended bracket/colon items resolved to concrete Expected.                  |
-| 2026-04-19 | Task 6 | docs/live-validation/checklists/03-blocks.md                                   | Migrated research §3 into 4 sub-areas; §3.3 placement question captured as Result note on a concrete assert.          |
-| 2026-04-19 | Task 7 | docs/live-validation/checklists/04-frontmatter.md                              | Merged research §4 + §5 into 9 sub-areas; parity section preserved (§6).                                              |
-| 2026-04-19 | Task 8 | docs/live-validation/checklists/05-tags.md                                     | Migrated research §6 into 7 sub-areas; scalar/empty edge cases resolved into concrete Expected.                       |
-| 2026-04-19 | Task 9 | docs/live-validation/checklists/06-search.md                                   | Migrated research §7 into 5 sub-areas; simple + dataview + edge cases all concrete.                                   |
+| Date       | Task    | Files                                                                          | Notes                                                                                                                 |
+| ---------- | ------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-19 | Task 1  | docs/live-validation/reports/.gitkeep, docs/live-validation/log-diffs/.gitkeep | Created directory skeleton.                                                                                           |
+| 2026-04-19 | Task 2  | docs/live-validation/README.md                                                 | Wrote protocol README covering prerequisites, session flow, all five formats, log-diff rules, and failure categories. |
+| 2026-04-19 | Task 3  | docs/live-validation/log.md                                                    | Created empty known-issues log with header, `_Last updated:_`, and `## Setup/environment issues` placeholder.         |
+| 2026-04-19 | Task 4  | docs/live-validation/checklists/01-vault.md                                    | Migrated research §1 into 6 sub-areas covering all 5 vault tools with four-field items.                               |
+| 2026-04-19 | Task 5  | docs/live-validation/checklists/02-headings.md                                 | Migrated research §2 into 8 sub-areas; open-ended bracket/colon items resolved to concrete Expected.                  |
+| 2026-04-19 | Task 6  | docs/live-validation/checklists/03-blocks.md                                   | Migrated research §3 into 4 sub-areas; §3.3 placement question captured as Result note on a concrete assert.          |
+| 2026-04-19 | Task 7  | docs/live-validation/checklists/04-frontmatter.md                              | Merged research §4 + §5 into 9 sub-areas; parity section preserved (§6).                                              |
+| 2026-04-19 | Task 8  | docs/live-validation/checklists/05-tags.md                                     | Migrated research §6 into 7 sub-areas; scalar/empty edge cases resolved into concrete Expected.                       |
+| 2026-04-19 | Task 9  | docs/live-validation/checklists/06-search.md                                   | Migrated research §7 into 5 sub-areas; simple + dataview + edge cases all concrete.                                   |
+| 2026-04-19 | Task 10 | docs/live-validation/checklists/07-active-file.md                              | Migrated research §8 into 5 sub-areas; `file_open` used in setup as only path to establish active-file state.         |
 
 ---
 
