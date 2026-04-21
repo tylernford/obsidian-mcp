@@ -176,7 +176,7 @@ pnpm test:coverage     # With v8 coverage
 
 See [docs/testing-guidelines.md](docs/testing-guidelines.md) for the full testing philosophy, mock strategy, and module selection rationale.
 
-Thin wrappers and integration behavior are validated manually against a real Obsidian instance using the checklists in [docs/live-validation/](docs/live-validation/README.md).
+Thin wrappers and integration behavior are validated manually against a real Obsidian instance using the checklists in [testing/live-validation/](testing/live-validation/README.md).
 
 ## Built With
 

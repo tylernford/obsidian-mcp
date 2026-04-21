@@ -232,6 +232,7 @@ _Filled in during `/build` phase_
 | 2026-04-19 | Task 12 | docs/live-validation/checklists/09-periodic.md                                 | Migrated research §11 into 4 sub-areas; plugin-config prerequisite noted; per-period Configured/Unconfigured variants. |
 | 2026-04-19 | Task 13 | docs/live-validation/checklists/10-cross-cutting.md                            | Migrated research §12 into 5 sub-areas; §12.5 split into 5 discrete items, one per PatchFailureReason.                 |
 | 2026-04-19 | Task 14 | (audit only)                                                                   | All 15 tools appear in ≥1 Action; no residual open-ended items; all items use four-field format. No fixes needed.      |
+| 2026-04-20 | Post    | `docs/live-validation/` → `testing/live-validation/`                           | Post-completion relocation out of `docs/`. README and changelog updated to new paths. Plan paths remain as-originally-written per the "never edit original plan text" rule. |
 
 ---
 

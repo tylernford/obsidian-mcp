@@ -21,7 +21,7 @@ Before starting a session:
 
 Operator tells Claude:
 
-> Run live validation checklist `docs/live-validation/checklists/<file>`. Follow the protocol in `docs/live-validation/README.md`.
+> Run live validation checklist `testing/live-validation/checklists/<file>`. Follow the protocol in `testing/live-validation/README.md`.
 
 Claude acknowledges by:
 
@@ -51,8 +51,8 @@ Failures in one section do not abort other sections. A full session runs all sec
 
 Claude writes two artifacts:
 
-1. **Report** — always. Path: `docs/live-validation/reports/YYYY-MM-DD-<area>.md`. Immutable once written.
-2. **Log-diff** — only if the session proposes Add, Update, or Remove changes to `log.md`. Path: `docs/live-validation/log-diffs/YYYY-MM-DD-<area>.md`. If there are no proposed changes, skip this file entirely.
+1. **Report** — always. Path: `testing/live-validation/reports/YYYY-MM-DD-<area>.md`. Immutable once written.
+2. **Log-diff** — only if the session proposes Add, Update, or Remove changes to `log.md`. Path: `testing/live-validation/log-diffs/YYYY-MM-DD-<area>.md`. If there are no proposed changes, skip this file entirely.
 
 Claude never edits `log.md` directly. The log-diff is a proposal for human review; the operator applies it manually and deletes the diff file.
 
@@ -123,7 +123,7 @@ Claude never edits `log.md` directly. The log-diff is a proposal for human revie
 # Live Validation Report: <Area Name>
 
 - **Date:** YYYY-MM-DD
-- **Checklist:** docs/live-validation/checklists/<file>
+- **Checklist:** testing/live-validation/checklists/<file>
 - **Operator:** Claude Code
 
 ## Summary
@@ -136,7 +136,7 @@ Claude never edits `log.md` directly. The log-diff is a proposal for human revie
 
 ### <section>.<item> <Title>
 
-- **Checklist item:** docs/live-validation/checklists/<file> §<section>.<item>
+- **Checklist item:** testing/live-validation/checklists/<file> §<section>.<item>
 - **Action run:** <tool + inputs>
 - **Expected:** <one line>
 - **Observed:** <one line>
