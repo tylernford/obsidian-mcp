@@ -176,6 +176,8 @@ pnpm test:coverage     # With v8 coverage
 
 See [docs/testing-guidelines.md](docs/testing-guidelines.md) for the full testing philosophy, mock strategy, and module selection rationale.
 
+Thin wrappers and integration behavior are validated manually against a real Obsidian instance using the checklists in [testing/live-validation/](testing/live-validation/README.md).
+
 ## Built With
 
 - TypeScript
@@ -203,7 +205,6 @@ See [docs/testing-guidelines.md](docs/testing-guidelines.md) for the full testin
 
 ### Validation
 
-- Live tool validation protocol against a real Obsidian instance
 - Agent user testing — evaluate tools from a consumer perspective
 
 See [docs/backlog.md](docs/backlog.md).

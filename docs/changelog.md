@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-04-19: Live Tool Validation
+
+Added a manual live-validation protocol for exercising obsidian-mcp tools against a real Obsidian instance. Claude Code runs structured single-tool checklists against a test vault and produces immutable reports plus proposed diffs to a human-curated known-issues log. No code changes — documentation and process artifacts only.
+
+**Design:** docs/design-specs/2026-04-19-2145-live-tool-validation.md
+**Plan:** docs/implementation-plans/2026-04-19-2201-live-tool-validation.md
+**Key files:** testing/live-validation/README.md, testing/live-validation/log.md, testing/live-validation/checklists/01-vault.md through 10-cross-cutting.md, testing/live-validation/reports/, testing/live-validation/log-diffs/
+
 ## 2026-04-06: Remove Legacy Server
 
 Removed the `legacy/` directory containing the original standalone Node.js MCP server. The native Obsidian plugin now fully replaces it.
