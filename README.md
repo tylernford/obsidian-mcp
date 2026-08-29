@@ -21,6 +21,18 @@ docs/                Current architecture, testing guidance, design history, and
   architecture.md   Canonical current-state technical architecture
 ```
 
+## Documentation
+
+For current guidance and repository status:
+
+- [`README.md`](README.md) — setup, configuration, features, and known limitations
+- [`docs/architecture.md`](docs/architecture.md) — current implementation architecture and trust model
+- [`docs/testing-guidelines.md`](docs/testing-guidelines.md) — automated testing and live-validation strategy
+- [`testing/live-validation/log.md`](testing/live-validation/log.md) — currently observed runtime issues
+- [`docs/backlog.md`](docs/backlog.md) — deferred work
+
+The dated documents in [`docs/design-specs/`](docs/design-specs/) and [`docs/implementation-plans/`](docs/implementation-plans/) preserve historical design decisions and execution plans; they may not describe the current implementation. Files in [`docs/notes/`](docs/notes/) are working notes and observations rather than canonical guidance.
+
 ## Development
 
 ```bash
