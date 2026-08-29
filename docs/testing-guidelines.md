@@ -14,19 +14,20 @@ Every test must catch something that would otherwise go undetected. This means:
 
 Our code passes through three separate validation stages, each catching different classes of problems:
 
-| Layer             | Tool                                          | What it checks                                             | What it misses                                  |
-| ----------------- | --------------------------------------------- | ---------------------------------------------------------- | ----------------------------------------------- |
-| **Type checking** | `pnpm typecheck` (`tsc` + `obsidian-typings`) | Correct usage of documented and undocumented Obsidian APIs | Whether the types match runtime behavior        |
-| **Unit tests**    | vitest + obsidian mock                        | Our logic (branching, error handling, response formatting) | Whether the mock accurately represents Obsidian |
-| **Runtime**       | Obsidian app                                  | Everything actually works                                  | Nothing (this is ground truth)                  |
+| Layer               | Tool                                                                      | What it checks                                              | What it misses                                              |
+| ------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------- |
+| **Type checking**   | `pnpm typecheck` (`tsc` + `obsidian-typings`)                             | Correct usage of documented and undocumented Obsidian APIs  | Whether the types match runtime behavior                    |
+| **Automated tests** | Vitest unit tests and localhost HTTP integration tests                    | Selected logic, error handling, routing, auth, and MCP init | Uncovered wrappers and some SDK dispatch/validation seams   |
+| **Live validation** | [Structured checklists in Obsidian](../testing/live-validation/README.md) | Actual behavior against a real Obsidian instance            | It is manual/operator-mediated, not an automated merge gate |
 
-Each layer operates on different type information:
+Each layer operates on different type information and execution boundaries:
 
 - **`tsc`** resolves `"obsidian"` to the real `obsidian.d.ts` from `node_modules/obsidian`, augmented by `obsidian-typings` (configured in `tsconfig.json` `types` array). This is how undocumented APIs like `app.commands` get type coverage during builds.
-- **vitest** resolves `"obsidian"` to our manual mock at `plugin/src/__mocks__/obsidian.ts` (via the alias in `vitest.config.ts`). Tests run against these mock types.
-- **Obsidian runtime** uses the real API. This is the only place where behavior is guaranteed to be correct.
+- **Vitest tool tests** resolve `"obsidian"` to our manual mock at `plugin/src/__mocks__/obsidian.ts` (via the alias in `vitest.config.ts`). Tests run against these mock types and invoke selected handlers directly.
+- **HTTP integration tests** run a real loopback listener and MCP transport, but still execute outside Obsidian.
+- **Live validation** uses the real Obsidian API and installed integrations. It supplies runtime ground truth, but only for the checklist items actually run and recorded.
 
-The mock and `obsidian-typings` can diverge from reality independently. A test can pass (mock is happy) and the build can succeed (`obsidian-typings` is happy) while the actual Obsidian API behaves differently. This is inherent to mocking a closed-source host application. Runtime testing in Obsidian is the final validation before release.
+The mock and `obsidian-typings` can diverge from reality independently. An automated test can pass (the mock is happy) and the build can succeed (`obsidian-typings` is happy) while the actual Obsidian API behaves differently. This is inherent to mocking a closed-source host application. Live validation in Obsidian complements automated checks; it is not interchangeable with them or currently enforced as an automated release gate.
 
 ---
 
@@ -223,6 +224,33 @@ beforeEach(() => {
 ### Why integration over unit
 
 The individual methods (`authenticate`, `handleRequest`) are small and tightly coupled. Testing them in isolation would require mocking `http.IncomingMessage` and `http.ServerResponse` — more complex than just hitting localhost with `fetch`. Localhost HTTP is fast and deterministic.
+
+---
+
+## Coverage boundaries and gaps
+
+The current automated suite contains 54 cases across four files:
+
+- `update-utils` (12) covers structured-update instruction building and error handling.
+- `search` (13) covers simple-search calculations and Dataview result transformation.
+- `server` (10) provides real localhost HTTP coverage for authentication, routing, malformed requests, lifecycle, and MCP initialization.
+- `metadata` (19) covers tag and frontmatter handler logic.
+
+The tool tests for `search` and `metadata` register against a fake `McpServer`, capture the handlers, and call those handlers directly. This deliberately isolates application logic, but it bypasses MCP JSON-RPC dispatch and the SDK's Zod input validation. A handler test therefore cannot prove that an equivalent `tools/call` request reaches the handler with the same validated arguments.
+
+The `server` HTTP integration suite uses a real `McpServer` and `StreamableHTTPServerTransport` for initialization. It verifies the listener/auth/routing boundary and MCP initialization, but it does not register the production tool catalog or perform end-to-end `tools/list` and `tools/call` requests.
+
+There are no dedicated automated suites for `main.ts`, settings UI/restart behavior, cryptographic key generation and SecretStorage lifecycle, or the vault, commands, navigation, active-file, and periodic wrapper modules. Their host-dependent behavior is addressed through live validation rather than mocks that would primarily restate Obsidian behavior.
+
+The repository currently has no repository-owned CI workflow and no enforced coverage threshold. Automated checks run only when a developer or local hook invokes them; live validation also requires an operator to initiate and supervise it.
+
+## Live validation
+
+The [live-validation protocol](../testing/live-validation/README.md) runs structured, single-tool checklists against an open Obsidian desktop instance and a reset test vault. Optional areas require their runtime integrations, such as Dataview or Periodic Notes/core Daily Notes, to be installed and configured.
+
+Each run produces an immutable dated report. When observations imply a known-issue change, the run produces a proposed log diff rather than editing the [human-curated known-issues log](../testing/live-validation/log.md) directly. A human reviews and applies or rejects that proposal.
+
+Live validation catches differences between mocks/types and the real closed-source host, including UI effects and optional-plugin behavior. It complements the automated unit and HTTP integration suites; it cannot replace their fast deterministic feedback, and those suites cannot replace runtime evidence from Obsidian.
 
 ---
 

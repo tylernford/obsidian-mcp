@@ -17,7 +17,8 @@ plugin/              Obsidian plugin
   src/settings.ts    Settings tab with connection info
   src/crypto.ts      API key generation
   src/tools/         MCP tool modules (vault, commands, active-file, navigation, search, periodic, metadata)
-docs/                Design specs, implementation plans, changelog
+docs/                Current architecture, testing guidance, design history, and changelog
+  architecture.md   Canonical current-state technical architecture
 ```
 
 ## Development
@@ -56,9 +57,9 @@ pnpm test:coverage
 
 ## Setup
 
-### 1. Install the plugin
+### 1. Install from source for local development
 
-Clone the repo, build, and symlink into your vault:
+This plugin is not published in the Obsidian Community Plugins registry, and this repository has no automated release workflow. The supported repository workflow is therefore a local source build symlinked into a vault:
 
 ```bash
 git clone https://github.com/tylernford/obsidian-mcp.git
@@ -68,9 +69,15 @@ cd plugin
 pnpm install
 pnpm build
 
-# Symlink into your vault's plugins directory
+# Symlink into your vault's plugins directory. The destination must NOT
+# already exist as a directory — if it does, `ln` will place the link
+# *inside* it and Obsidian won't find manifest.json. Remove it first if so.
 ln -s "$(pwd)" "/path/to/vault/.obsidian/plugins/mcp-tools"
 ```
+
+Verify with `ls -l /path/to/vault/.obsidian/plugins/mcp-tools` — it should show `mcp-tools -> .../obsidian-mcp/plugin`, not a regular directory.
+
+After the build-plus-symlink flow, that local plugin directory contains the generated `main.js`, the required `manifest.json`, and this repository's empty `styles.css` placeholder. `styles.css` is an optional, conventional Obsidian plugin artifact; it is not universally required.
 
 Then in Obsidian: **Settings > Community Plugins > MCP Tools** — enable the plugin.
 
@@ -90,12 +97,22 @@ Copy the `claude mcp add` command from the settings tab and run it in your termi
 
 Start a new Claude Code session and run `/mcp` to confirm the obsidian server shows as connected.
 
-### Configuration
+### Configuration, restart, and recovery
 
 The plugin settings tab provides:
 
-- **API key** — auto-generated on first load, displayed read-only with copy and regenerate buttons
-- **Port** — configurable (default: 28080), requires confirmation and server restart on change
+- **API key** — auto-generated on first load, stored in Obsidian SecretStorage rather than `data.json`, and displayed read-only with copy and regenerate buttons
+- **Port** — configurable (default: 28080), with confirmation before a change
+
+Changing the port or regenerating the API key reconstructs and restarts the embedded server, dropping active MCP connections. Update the client URL after a port change or its `Authorization` header after a key change, then reconnect or start a new client session.
+
+An initial bind failure is shown as an Obsidian Notice. During a settings-driven restart, a port conflict can leave the server unavailable on the selected port; there is no automatic rollback to the previous listener. To recover, choose an unused valid port in the plugin settings, apply the change/restart, update the MCP client URL and Bearer header, and verify the connection with `/mcp` in Claude Code.
+
+## Security
+
+The server binds only to `127.0.0.1`, which limits network exposure but does not protect it from untrusted processes on the same machine. The Bearer API key is the sole server-side authorization boundary: anyone who has it can invoke every registered tool, including vault writes/deletes, frontmatter changes, UI navigation, and arbitrary registered Obsidian commands. The key is visible in settings and can be copied to the clipboard, so treat both locations as sensitive.
+
+Do not expose the endpoint through a proxy or network tunnel without adding appropriate transport and access controls. See the [architecture security and trust model](docs/architecture.md#security-and-trust-model) for the full boundary and the controls that are not currently implemented.
 
 ## Usage Examples
 
@@ -157,9 +174,21 @@ Once the server is connected, you can use natural language in Claude Code:
 | `periodic_read`   | Read a periodic note (daily, weekly, monthly, quarterly, yearly) |
 | `periodic_update` | Update a periodic note (creates from template if needed)         |
 
+## Known limitations
+
+The canonical known-issues list is the [live-validation log](testing/live-validation/log.md). As last confirmed on 2026-04-21, selected user-impacting observations include:
+
+- `frontmatter_manage set` accepts an omitted `value` as a misleading successful no-op.
+- `tags_manage` treats scalar `tags:` values as empty or drops them when adding a tag, and removing a nonexistent tag returns a misleading removal receipt.
+- `file_open` with `newLeaf: true` may not shift focus, while a nonexistent path can create an empty file and report success.
+- `search` accepts a negative `contextLength` and trims the match token rather than rejecting or normalizing it.
+- Structured `vault_update` operations can be permissive or surprising, including malformed frontmatter values, multi-block replacements, duplicate array values, and relocated block markers.
+
+These are concise snapshots, not a second issue ledger. Consult the canonical log for exact checklist references, evidence, and later confirmation or removal.
+
 ## Testing
 
-Tests target modules with meaningful logic — branching, parsing, transformation. Thin wrappers around Obsidian APIs are excluded; they're validated at runtime against a real Obsidian instance.
+The automated tests target modules with meaningful logic — branching, parsing, transformation. Thin wrappers around Obsidian APIs are excluded from dedicated automated suites and instead covered by live validation against a real Obsidian instance.
 
 | Module         | Tests | What's covered                                                   |
 | -------------- | ----- | ---------------------------------------------------------------- |
@@ -169,14 +198,16 @@ Tests target modules with meaningful logic — branching, parsing, transformatio
 | `metadata`     | 19    | Tag normalization/dedup, frontmatter read/set, edge cases        |
 
 ```bash
-pnpm test              # Run all 54 tests
+pnpm test              # Run all 54 automated tests
 pnpm test:watch        # Watch mode
 pnpm test:coverage     # With v8 coverage
 ```
 
-See [docs/testing-guidelines.md](docs/testing-guidelines.md) for the full testing philosophy, mock strategy, and module selection rationale.
+The `search` and `metadata` handler-level tests call captured tool handlers directly. They test handler logic but bypass MCP JSON-RPC dispatch and the SDK's Zod input validation. The `server` HTTP integration tests use a real localhost listener and real MCP initialization, but do not exercise end-to-end `tools/list` or `tools/call` behavior.
 
-Thin wrappers and integration behavior are validated manually against a real Obsidian instance using the checklists in [testing/live-validation/](testing/live-validation/README.md).
+Thin Obsidian wrappers are checked through the [live-validation protocol](testing/live-validation/README.md), which is structured and evidence-producing but manual and operator-mediated. The repository currently has no repository-owned CI workflow and no enforced coverage threshold.
+
+See [docs/testing-guidelines.md](docs/testing-guidelines.md#coverage-boundaries-and-gaps) for the detailed validation boundaries, mock strategy, and module selection rationale.
 
 ## Built With
 
